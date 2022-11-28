@@ -1,0 +1,50 @@
+import fetch from "node-fetch"
+import sharp from "sharp"
+
+export const steve = "LyANKx4NLx8PKBwLJBgIJhoKKx4NKh0NKx4NKx4NKx4NMyQRQioSPyoVLB4OKBwLKx4NtolsvY5yxpaAvYtyvY50rHZaNCUSqn1mtIRtqn1mrYBtnHJcu4lynGlMnGlMtIRt////Uj2JtXtnu4lyUj2J////qn1mnGNGs3tit4JyakAwakAwvohsompHgFM0kF5Dll9Ad0I1d0I1d0I1d0I1j14+gVM5b0UsbUMqgVM5gVM5ek4zg1U7g1U7ek4z"
+
+async function getMinecraftUuid(username: string): Promise<string | undefined> {
+  try {
+    const uuidResponse = await fetch(`https://api.mojang.com/users/profiles/minecraft/${username}`)
+    if (uuidResponse.status != 200) throw new Error(`Mojang API returned code ${uuidResponse.status} while getting the UUID of ${username}.`)
+    return (await uuidResponse.json() as any).id
+  } catch (e) {
+    console.warn(e)
+  }
+}
+
+async function getMinecraftAvatarFromUuid(uuid: string): Promise<string | undefined> {
+  try {
+    const profileResponse = await fetch(`https://sessionserver.mojang.com/session/minecraft/profile/${uuid}`)
+    if (profileResponse.status !== 200) throw new Error(`Mojang API returned code ${profileResponse.status} while getting profile data for ${uuid}.`)
+    const content = await profileResponse.json() as any
+    const textureUrl = JSON.parse(Buffer.from(content.properties[0].value, "base64").toString("ascii")).textures.SKIN.url
+    const textureResponse = await fetch(textureUrl)
+    const buffer = new Uint8ClampedArray(await textureResponse.arrayBuffer())
+    const helmet = await sharp(buffer).extract({ left: 40, top: 8, width: 8, height: 8 }).toBuffer()
+    const data = await sharp(buffer)
+      .extract({ left: 8, top: 8, width: 8, height: 8 })
+      .composite([{ input: helmet }])
+      .removeAlpha()
+      .raw()
+      .toBuffer()
+    return data.toString("base64")
+  } catch (e) {
+    console.warn(e)
+  }
+} 
+
+export async function getMinecraftAvatar(username: string): Promise<string | undefined> {
+  const uuid = await getMinecraftUuid(username)
+  if (!uuid) return
+  return await getMinecraftAvatarFromUuid(uuid)
+}
+
+export async function getSkinPng(data: string): Promise<Buffer> {
+  const array = new Uint8ClampedArray(Buffer.from(data, "base64"))
+  return await sharp(array, {raw: {width: 8, height: 8, channels: 3}})
+    .resize(128, 128, { kernel: sharp.kernel.nearest })
+    .png()
+    .toBuffer()
+}
+

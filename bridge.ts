@@ -1,3 +1,5 @@
-const a: string = "hello gaymers"
+import EventEmitter from "events"
+import TypedEmitter from "typed-emitter"
+import { BridgeEvents } from "./events/BridgeEvents"
 
-console.log(a)
+export const bridgeEmitter = new EventEmitter() as TypedEmitter<BridgeEvents>
