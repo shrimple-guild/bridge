@@ -1,14 +1,13 @@
 
 import { Message as DiscordMessage } from "discord.js"
-export type BridgeEvents = {
-  guildChat: (username: string, content: string, hypixelRank?: string, guildRank?: string) => void
-  mcJoined: (username: string) => void
-  mcLeft: (username: string) => void
-  enteredLimbo: () => void
-  spamProtection: () => void
-  partyInvite: (username: string) => void
-  discordChat: (message: DiscordMessage) => void
+
+export interface BridgeEvents {
+  guildChat: (event: {username: string, content: string, hypixelRank?: string, guildRank?: string}) => void
+  mcJoinLeave: (event: {username: string, action: "joined" | "left"}) => void
   botLeft: (reason: string) => void
+  botSpam: () => void
+  botJoinedLimbo: () => void
   botJoined: () => void
-  spawn: () => void
+  botSpawned: () => void
+  discordChat: (message: DiscordMessage) => void
 }
