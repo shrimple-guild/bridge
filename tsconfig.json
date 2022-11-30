@@ -5,8 +5,5 @@
     "target": "es2022",
     "moduleResolution": "node",
     "strict": true
-  },
-  "include": [
-    "./environent.d.ts"
-  ]
+  }
 }
