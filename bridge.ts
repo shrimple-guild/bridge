@@ -1,11 +1,11 @@
-import EventEmitter from "events"
-import TypedEmitter from "typed-emitter"
-import { BridgeEvents } from "./events/BridgeEvents"
+import dotenv from "dotenv"
+dotenv.config()
+
 import log4js from "log4js"
-import { MinecraftBot } from "./minecraft/MinecraftBot.js"
+import { minecraftBot } from "./minecraft/minecraftBot.js"
+import { discordBot } from "./discord/discordBot.js"
 import readline from "readline"
 
-export const bridgeEmitter = new EventEmitter() as TypedEmitter<BridgeEvents>
 log4js.configure({
   appenders: {
     out: { type: "stdout" },
@@ -13,11 +13,10 @@ log4js.configure({
   categories: {
     bridge: { appenders: ["out"], level: "debug" },
     minecraft: { appenders: ["out"], level: "debug" },
-    discord: { appenders: ["out"], level: "debug" }
+    discord: { appenders: ["out"], level: "debug" },
+    default: { appenders: ["out"], level: "debug" }
   },
 })
-
-const minecraft = new MinecraftBot("Fishre")
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -26,9 +25,31 @@ const rl = readline.createInterface({
 
 rl.on("line", (input) => {
   if (input != "quit") {
-    minecraft.chat(input)
+    minecraftBot.chat(input)
   } else {
-    minecraft.disconnect()
+    minecraftBot.disconnect()
   }
 })
+
+
+async function onDiscordChat(author: string, content: string, isStaff: boolean, replyAuthor?: string) {
+  const replyString = replyAuthor ? ` replying to ${replyAuthor}` : ""
+  const full = `${author}${replyString}: ${content}`
+  await minecraftBot.chat(full)
+}
+
+function onMinecraftChat(username: string, content: string, hypixelRank?: string, guildRank?: string) {
+  discordBot.sendGuildChatEmbed(username, content, hypixelRank, guildRank)
+}
+
+function onMinecraftJoinLeave(username: string, action: "joined" | "left") {
+
+}
+
+
+export const bridge = {
+  onDiscordChat,
+  onMinecraftChat,
+  onMinecraftJoinLeave
+}
 

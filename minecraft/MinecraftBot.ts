@@ -1,101 +1,102 @@
+import dotenv from "dotenv"
+dotenv.config()
+
 import mineflayer from "mineflayer"
 import { guildChatPattern, limboRegex as limboPattern, mcJoinLeavePattern } from "../utils/reggies.js"
 import AsyncLock from "async-lock"
-import TypedEmitter from "typed-emitter"
-import { BridgeEvents } from "../events/BridgeEvents.js"
-import { bridgeEmitter } from "../bridge.js"
+import { bridge } from "../bridge.js"
 import { sleep } from "../utils/utils.js"
 import log4js from "log4js"
 
-
 const chatDelay = 1000
-
 const logger = log4js.getLogger("minecraft")
+const chatLock = new AsyncLock({ maxPending: 10 })
+const username = process.env.MC_USERNAME!
 
-export class MinecraftBot  {
-  username: string
-  bot: mineflayer.Bot
+let bot: mineflayer.Bot = connect()
+let status: ("online" | "offline") = "offline" 
+let retries: number = 0
 
-  chatLock: AsyncLock = new AsyncLock({ maxPending: 10 })
-  status: ("online" | "offline") = "offline" 
-  retries: number = 0
+function connect(): mineflayer.Bot {
+  logger.info(`Connecting as ${username}`)
+  onConnecting()
+  return mineflayer.createBot({
+    host: "mc.hypixel.net",
+    port: 25565,
+    username: username,
+    auth: "microsoft",
+    version: "1.17.1",
+    checkTimeoutInterval: 10000
+  }).once("spawn", () => onSpawn())
+    .on("messagestr", (chat) => onChat(chat))
+    .on("end", async (reason) => onEnd(reason))
+}
 
-  constructor(username: string) {
-    this.username = username
-    this.bot = this.connect()
+function onConnecting() {
+  logger.info(`Attempting to connect`)
+}
 
-    bridgeEmitter.on("botJoinedLimbo", () => {
-      this.retries = 0
-      this.status = "online"
-    })
-  }
-
-  connect(): mineflayer.Bot {
-    logger.info(`BOT: Connecting...`)
-    return mineflayer.createBot({
-      host: "mc.hypixel.net",
-      port: 25565,
-      username: this.username,
-      auth: "microsoft",
-      version: "1.17.1",
-      checkTimeoutInterval: 10000
-    }).once("spawn", () => {
-      logger.info(`BOT: Spawned in world.`)
-      bridgeEmitter.emit("botJoined")
-      this.chat("§")
-    }).on("messagestr", chat => {
-      logger.info(`BOT: Message received: ${chat}`)
-      this.onPatternMatch(chat, guildChatPattern, "guildChat") 
-      this.onPatternMatch(chat, mcJoinLeavePattern, "mcJoinLeave")
-      this.onPatternTest(chat, limboPattern, "botJoinedLimbo")
-    }).on("end", async reason => {
-      bridgeEmitter.emit("botLeft", reason)
-      this.status = "offline"
-      if (reason != "disconnect.quitting") {
-        logger.warn(`BOT: Closed for reason ${reason}.`)
-        if (this.retries >= 5) {
-          logger.error(`BOT: Aborting because bot restarted 5 times.`)
-          process.exit(1)
-        } else {
-          const waitTime = Math.pow(2, this.retries)
-          logger.warn(`BOT: Attempting to reconnect: ${this.retries} / 5.`)
-          await sleep(waitTime)
-          this.connect()
-          this.retries++
-        }
-      }
-    })
-  }
-  
-  onPatternTest(chat: string, regex: RegExp, event: keyof BridgeEvents) {
-    if (regex.test(chat)) {
-      logger.debug(`BOT: ${event} emitted.`)
-      bridgeEmitter.emit(event)
+async function onEnd(reason: string) {
+  logger.warn(`Disconnected for reason: ${reason}`)
+  status = "offline"
+  if (reason != "disconnect.quitting") {
+    logger.warn(`Connection ended for reason ${reason}.`)
+    if (retries >= 4) {
+      logger.error(`Not reconnecting because bot restarted 5 times.`)
+    } else {
+      const waitTime = Math.pow(2, retries)
+      logger.info(`Attempting reconnect: retry ${retries + 1} of 4.`)
+      await sleep(waitTime)
+      retries++
+      bot = connect()
     }
-  }
-
-  onPatternMatch(chat: string, regex: RegExp, event: keyof BridgeEvents) {
-    const matchGroups = chat.match(regex)?.groups
-    if (matchGroups) {
-      logger.debug(`BOT: ${event} emitted with ${JSON.stringify(matchGroups)})`)
-      bridgeEmitter.emit(event, matchGroups as never)
-    }
-  }
-
-  async chat(chat: string): Promise<boolean> {
-    return await this.chatLock.acquire("chat", async () => {
-      this.bot.chat(chat)
-      await sleep(chatDelay)
-      return true
-    }).catch(e => {
-      logger.warn(`BOT: ${chat} not sent because message queue limit was exceeded.`)
-      return false
-    })
-  }
-
-  disconnect() {
-    logger.info(`BOT: Manually disconnected.`)
-    this.bot.quit()
+  } else {
+    logger.info(`Quitting.`)
   }
 }
 
+function onSpawn() {
+  chat("§")
+}
+
+function onChat(chat: string) {
+  logger.info(`[CHAT] ${chat}`)
+
+  if (limboPattern.test(chat)) {
+    retries = 0
+    status = "online"
+  } else {
+    
+    onPatternMatch(chat, guildChatPattern, (groups) => {
+      if (groups.username == username) return
+      bridge.onMinecraftChat(groups.username, groups.content, groups.hypixelRank, groups.guildRank)
+    }) 
+    onPatternMatch(chat, mcJoinLeavePattern, (groups) => {
+      bridge.onMinecraftJoinLeave(groups.username, groups.action as ("joined" | "left"))
+    })
+  }
+}
+
+function onPatternMatch(chat: string, regex: RegExp, cb: (groups: {[key: string]: string}) => void) {
+  const matchGroups = chat.match(regex)?.groups
+  if (matchGroups) cb(matchGroups)
+}
+
+async function chat(chat: string): Promise<boolean> {
+  return await chatLock.acquire("chat", async () => {
+    bot.chat(chat)
+    await sleep(chatDelay)
+    return true
+  }).catch(e => {
+    logger.warn(`Message not sent because ${e}.`)
+    return false
+  })
+}
+
+async function disconnect(): Promise<boolean>  {
+  logger.info(`Manually disconnected.`)
+  bot.quit()
+  return true
+}
+
+export const minecraftBot = { chat, disconnect }
