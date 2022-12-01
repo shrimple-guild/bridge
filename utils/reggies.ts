@@ -1,4 +1,4 @@
-export const guildChatPattern = /^Guild > (?:\[(?<hypixelRank>[\w+]+)\] )?(?<username>\w{2,16})(?: \[(?<guildRank>[\w+]+)\])?: (?<content>.+$)/
+export const guildChatPattern = /^Guild > (?:\[(?<hypixelRank>[\w+]+)\] )?(?<username>\w{2,16})(?: \[(?<guildRank>[\w+]+)\])?: (?<content>.+)$/
 export const mcJoinLeavePattern = /^Guild > (?<username>\w{2,16}) (?<action>joined|left).$/
 export const limboRegex = /^You were spawned in Limbo.$/
 export const numberFormatRegex = /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g

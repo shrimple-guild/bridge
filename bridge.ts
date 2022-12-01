@@ -32,10 +32,10 @@ rl.on("line", (input) => {
 })
 
 
-async function onDiscordChat(author: string, content: string, isStaff: boolean, replyAuthor?: string) {
+async function onDiscordChat(author: string, content: string, isStaff: boolean, replyAuthor: string | undefined, onCompletion: (status: string) => void) {
   const replyString = replyAuthor ? ` replying to ${replyAuthor}` : ""
   const full = `${author}${replyString}: ${content}`
-  await minecraftBot.chat(full)
+  await minecraftBot.chat(full, onCompletion)
 }
 
 function onMinecraftChat(username: string, content: string, hypixelRank?: string, guildRank?: string) {
@@ -45,6 +45,7 @@ function onMinecraftChat(username: string, content: string, hypixelRank?: string
 function onMinecraftJoinLeave(username: string, action: "joined" | "left") {
 
 }
+
 
 
 export const bridge = {

@@ -12,6 +12,7 @@ const chatDelay = 1000
 const logger = log4js.getLogger("minecraft")
 const chatLock = new AsyncLock({ maxPending: 10 })
 const username = process.env.MC_USERNAME!
+const messageFromBotPattern = RegExp(`^Guild > (?:\\[[\\w+]+\\] )?Fishre(?: \\[[\\w+]+\\])?: .+$`)
 
 let bot: mineflayer.Bot = connect()
 let status: ("online" | "offline") = "offline" 
@@ -24,6 +25,7 @@ function connect(): mineflayer.Bot {
     host: "mc.hypixel.net",
     port: 25565,
     username: username,
+    chatLengthLimit: 256,
     auth: "microsoft",
     version: "1.17.1",
     checkTimeoutInterval: 10000
@@ -48,7 +50,7 @@ async function onEnd(reason: string) {
       logger.info(`Attempting reconnect: retry ${retries + 1} of 4.`)
       await sleep(waitTime)
       retries++
-      bot = connect()
+      //bot = connect()
     }
   } else {
     logger.info(`Quitting.`)
@@ -82,14 +84,41 @@ function onPatternMatch(chat: string, regex: RegExp, cb: (groups: {[key: string]
   if (matchGroups) cb(matchGroups)
 }
 
-async function chat(chat: string): Promise<boolean> {
+
+
+async function chat(chat: string, onCompletion?: (status: string) => void): Promise<void> {
   return await chatLock.acquire("chat", async () => {
+    const sleepPromise = sleep(chatDelay, false)
     bot.chat(chat)
-    await sleep(chatDelay)
-    return true
+    if (onCompletion) {
+      logger.debug("Registering listener for chat message status.")
+      await new Promise<void>(async (resolve, reject) => {
+        let didComplete = false
+        const listener = (message: string) => {
+          logger.debug(`Chat message status listener received: "${message}"`)
+          if (messageFromBotPattern.test(message)) {
+            logger.debug(`Listener detected success."`)
+            onCompletion("success")
+            didComplete = true
+            bot.off("messagestr", listener)
+            resolve()
+          }
+        }
+        bot.on("messagestr", listener)
+        await sleepPromise
+        if (!didComplete) {
+          bot.off("messagestr", listener)
+          logger.debug("Listener timed out.")
+          onCompletion("failed")
+        }
+        resolve()
+      })
+    }
+    await sleepPromise
+    return
   }).catch(e => {
     logger.warn(`Message not sent because ${e}.`)
-    return false
+    return
   })
 }
 

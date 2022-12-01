@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
-    "module": "es2022",
-    "target": "es2022",
+    "module": "esnext",
+    "target": "esnext",
     "moduleResolution": "node",
-    "strict": true
+    "strict": true,
+    "resolveJsonModule": true
   }
 }

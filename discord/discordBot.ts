@@ -50,8 +50,9 @@ async function sendGuildChatEmbed(username: string, content: string, hypixelRank
   const channel = getTextChannel(guildChannelId)
   if (!channel) return
   const imageAttachment = content.match(imageLinkPattern)?.at(0)
+  const contentWithoutImage = content.replace(imageLinkPattern, "")
   const embed = (await new MinecraftEmbed().setMinecraftAuthor(username))
-    .setDescription(content.replace(imageLinkPattern, ""))
+    .setDescription((contentWithoutImage.length > 0) ? contentWithoutImage : null)
     .setColor(colorOf(hypixelRank))
     .setFooter(guildRank ? {text: guildRank} : null)
     .setTimestamp()
@@ -72,7 +73,10 @@ client.on("messageCreate", async (message) => {
   const replyAuthor = reply ? getBridgeAuthorName(reply) : undefined
   const content = cleanContent(message.cleanContent)
   logger.info(`Message: author: "${author}", replying to: "${replyAuthor}", isStaff: ${isStaff}, content: "${content}"`)
-  bridge.onDiscordChat(author, content, isStaff, replyAuthor)
+  bridge.onDiscordChat(author, content, isStaff, replyAuthor, (status) => {
+    logger.info(status)
+    message.reply(status == "success" ? "Successfully sent your message :)" : "Failed to send your message :(")
+  })
 })
 
 export const discordBot = {
