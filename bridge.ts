@@ -5,6 +5,7 @@ import log4js from "log4js"
 import { minecraftBot } from "./minecraft/minecraftBot.js"
 import { discordBot } from "./discord/discordBot.js"
 import readline from "readline"
+import { cleanContent } from "./utils/utils.js"
 
 log4js.configure({
   appenders: {

@@ -12,7 +12,6 @@ const chatDelay = 1000
 const logger = log4js.getLogger("minecraft")
 const chatLock = new AsyncLock({ maxPending: 10 })
 const username = process.env.MC_USERNAME!
-const messageFromBotPattern = RegExp(`^Guild > (?:\\[[\\w+]+\\] )?Fishre(?: \\[[\\w+]+\\])?: .+$`)
 
 let bot: mineflayer.Bot = connect()
 let status: ("online" | "offline") = "offline" 
@@ -50,7 +49,7 @@ async function onEnd(reason: string) {
       logger.info(`Attempting reconnect: retry ${retries + 1} of 4.`)
       await sleep(waitTime)
       retries++
-      //bot = connect()
+      bot = connect()
     }
   } else {
     logger.info(`Quitting.`)
@@ -84,8 +83,6 @@ function onPatternMatch(chat: string, regex: RegExp, cb: (groups: {[key: string]
   if (matchGroups) cb(matchGroups)
 }
 
-
-
 async function chat(chat: string, onCompletion?: (status: string) => void): Promise<void> {
   return await chatLock.acquire("chat", async () => {
     const sleepPromise = sleep(chatDelay, false)
@@ -96,7 +93,9 @@ async function chat(chat: string, onCompletion?: (status: string) => void): Prom
         let didComplete = false
         const listener = (message: string) => {
           logger.debug(`Chat message status listener received: "${message}"`)
-          if (messageFromBotPattern.test(message)) {
+          const escapedChat = chat.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+          const pattern = RegExp(`^Guild > (?:\\[[\\w+]+\\] )?${username}(?: \\[[\\w+]+\\])?: ${escapedChat}$`)
+          if (pattern.test(message)) {
             logger.debug(`Listener detected success."`)
             onCompletion("success")
             didComplete = true
@@ -109,7 +108,7 @@ async function chat(chat: string, onCompletion?: (status: string) => void): Prom
         if (!didComplete) {
           bot.off("messagestr", listener)
           logger.debug("Listener timed out.")
-          onCompletion("failed")
+          onCompletion("failed:timeout")
         }
         resolve()
       })
@@ -118,7 +117,7 @@ async function chat(chat: string, onCompletion?: (status: string) => void): Prom
     return
   }).catch(e => {
     logger.warn(`Message not sent because ${e}.`)
-    return
+    if (onCompletion) onCompletion("failed:lock")
   })
 }
 

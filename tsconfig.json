@@ -5,6 +5,5 @@
     "target": "esnext",
     "moduleResolution": "node",
     "strict": true,
-    "resolveJsonModule": true
   }
 }
