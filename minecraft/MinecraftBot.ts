@@ -79,7 +79,7 @@ function onChat(message: string, bot: mineflayer.Bot) {
   })
 
   onPatternMatch(message, mcJoinLeavePattern, (groups) => {
-    bridge.onMinecraftJoinLeave(groups.username, groups.action as ("joined" | "left"))
+    bridge.onMinecraftJoinLeave(groups.username, groups.action as ("**joined.**" | "**left.**"))
     return
   })
 

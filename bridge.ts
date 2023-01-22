@@ -49,7 +49,7 @@ async function onMinecraftChat(username: string, content: string, hypixelRank?: 
   if (response) await minecraftBot.chat(response)
 }
 
-function onMinecraftJoinLeave(username: string, action: "joined" | "left") {
+function onMinecraftJoinLeave(username: string, action: "**joined.**" | "**left.**") {
   discordBot.sendGuildChatEmbed(username, action)
 }
 
