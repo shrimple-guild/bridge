@@ -77,3 +77,7 @@ export async function getSkin(username: string): Promise<Buffer> {
   }
   return getSkinPng(skin ?? steve)
 }
+
+export function nameIsInDb(username: string): boolean {
+  return skinSelect.get(username)
+}

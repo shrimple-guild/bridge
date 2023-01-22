@@ -3,9 +3,10 @@ dotenv.config()
 
 import log4js from "log4js"
 import { minecraftBot } from "./minecraft/minecraftBot.js"
-import { discordBot } from "./discord/discordBot.js"
+import { discordBot } from "./discord/DiscordBot.js"
 import readline from "readline"
 import { cleanContent } from "./utils/utils.js"
+import { CommandManager } from "./command/CommandManager.js"
 
 log4js.configure({
   appenders: {
@@ -32,6 +33,7 @@ rl.on("line", (input) => {
   }
 })
 
+const commandManager = new CommandManager(process.env.PREFIX!, minecraftBot, discordBot)
 
 async function onDiscordChat(author: string, content: string, isStaff: boolean, replyAuthor: string | undefined, onCompletion: (status: string) => void) {
   const replyString = replyAuthor ? ` replying to ${replyAuthor}` : ""
@@ -44,10 +46,7 @@ function onMinecraftChat(username: string, content: string, hypixelRank?: string
 }
 
 function onMinecraftJoinLeave(username: string, action: "joined" | "left") {
-
 }
-
-
 
 export const bridge = {
   onDiscordChat,

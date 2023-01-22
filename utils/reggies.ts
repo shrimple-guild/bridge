@@ -5,4 +5,5 @@ export const numberFormatRegex = /\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g
 export const imageLinkRegex = /https?:\/\/.*\.(?:png|jpg|jpeg|gif|webp|bmp|tiff|svg)/g
 export const partyInviteRegex = /(?:You have been invited to join )?(?<username>\w{2,16})(?:'s party!| has invited you to join their party!)/
 export const spamRegex = /^You cannot say the same message twice!$/
-
+export const dungeonEnteredRegex = /^\[(?<rank>[\w+]+)\] (?<name>\w{2,16}) entered (?<dungeon>.+)$/m
+export const privateMessageRegex = /^From (?:\[(?<hypixelRank>[\w+]+)\] )?(?<name>\w{2,16}): (?<content>.+$)/

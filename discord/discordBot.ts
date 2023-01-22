@@ -7,7 +7,7 @@ import discord, {
 import { bridge } from "../bridge.js"
 import { imageLinkRegex as imageLinkPattern } from "../utils/reggies.js"
 import { cleanContent, colorOf } from "../utils/utils.js"
-import { MinecraftEmbed } from "./FullEmbed.js"
+import { MinecraftEmbed } from "./MinecraftEmbed.js"
 import log4js from "log4js"
 
 const token = process.env.DISCORD_TOKEN!

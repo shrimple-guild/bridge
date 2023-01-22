@@ -14,7 +14,7 @@ const chatLock = new AsyncLock({ maxPending: 10 })
 const username = process.env.MC_USERNAME!
 
 let bot: mineflayer.Bot = connect()
-let status: ("online" | "offline") = "offline" 
+let status: ("online" | "offline") = "offline"
 let retries: number = 0
 
 function connect(): mineflayer.Bot {
@@ -67,18 +67,17 @@ function onChat(chat: string) {
     retries = 0
     status = "online"
   } else {
-    
     onPatternMatch(chat, guildChatPattern, (groups) => {
       if (groups.username == username) return
       bridge.onMinecraftChat(groups.username, groups.content, groups.hypixelRank, groups.guildRank)
-    }) 
+    })
     onPatternMatch(chat, mcJoinLeavePattern, (groups) => {
       bridge.onMinecraftJoinLeave(groups.username, groups.action as ("joined" | "left"))
     })
   }
 }
 
-function onPatternMatch(chat: string, regex: RegExp, cb: (groups: {[key: string]: string}) => void) {
+function onPatternMatch(chat: string, regex: RegExp, cb: (groups: { [key: string]: string }) => void) {
   const matchGroups = chat.match(regex)?.groups
   if (matchGroups) cb(matchGroups)
 }
@@ -121,7 +120,7 @@ async function chat(chat: string, onCompletion?: (status: string) => void): Prom
   })
 }
 
-async function disconnect(): Promise<boolean>  {
+async function disconnect(): Promise<boolean> {
   logger.info(`Manually disconnected.`)
   bot.quit()
   return true
