@@ -7,6 +7,8 @@ import { jaro as jaroDistance} from "jaro-winkler-typescript"
 export class ElectionCommand implements Command {
   aliases = ["election", "mayor"]
 
+  usage = "(mayor)"
+
   skyblockEpoch = 1560275700000
   electionOver = 105600000
   year = 1000 * 50 * 24 * 31 * 12

@@ -16,6 +16,8 @@ bazaarNames.forEach((product) => {
 export class BazaarCommand implements Command {
   aliases = ["bazaar", "bz"]
 
+  usage = "<item name>"
+  
   closestBazaarProduct(phrase: string) {
     let uppercase = phrase.toUpperCase()
     let perfectMatches = expandedNames.filter((product) => product.alias.includes(uppercase))

@@ -37,6 +37,8 @@ let expandedNames = fullExpandedNames
 export class AuctionCommand implements Command {
   aliases = ["ah", "lowestbin", "lbin", "lb"]
 
+  usage = "<item name>"
+  
   closestAuctionProduct(phrase: string) {
     let uppercase = phrase.toUpperCase()
     let perfectMatches = expandedNames.filter(product => product.alias.includes(uppercase))
