@@ -2,10 +2,9 @@ import dotenv from "dotenv"
 dotenv.config()
 
 import log4js from "log4js"
-import { minecraftBot } from "./minecraft/minecraftBot.js"
+import { minecraftBot } from "./minecraft/MinecraftBot.js"
 import { discordBot } from "./discord/DiscordBot.js"
 import readline from "readline"
-import { cleanContent } from "./utils/utils.js"
 import { CommandManager } from "./command/CommandManager.js"
 
 log4js.configure({
@@ -29,23 +28,29 @@ rl.on("line", (input) => {
   if (input != "quit") {
     minecraftBot.chat(input)
   } else {
-    minecraftBot.disconnect()
+    minecraftBot.disconnect(false)
   }
 })
 
-const commandManager = new CommandManager(process.env.PREFIX!, minecraftBot, discordBot)
+export const commandManager = new CommandManager(process.env.PREFIX!)
 
-async function onDiscordChat(author: string, content: string, isStaff: boolean, replyAuthor: string | undefined, onCompletion: (status: string) => void) {
+async function onDiscordChat(author: string, content: string, isStaff: boolean, replyAuthor: string | undefined, onCompletion?: (status: string) => void) {
   const replyString = replyAuthor ? ` replying to ${replyAuthor}` : ""
   const full = `${author}${replyString}: ${content}`
   await minecraftBot.chat(full, onCompletion)
+  const response = await commandManager.onChatMessage(content, isStaff)
+  if (response) await minecraftBot.chat(response)
 }
 
-function onMinecraftChat(username: string, content: string, hypixelRank?: string, guildRank?: string) {
-  discordBot.sendGuildChatEmbed(username, content, hypixelRank, guildRank)
+async function onMinecraftChat(username: string, content: string, hypixelRank?: string, guildRank?: string) {
+  await discordBot.sendGuildChatEmbed(username, content, hypixelRank, guildRank)
+  let isStaff = guildRank === "GM" || guildRank === "Comm" || guildRank === "Bot"
+  const response = await commandManager.onChatMessage(content, isStaff)
+  if (response) await minecraftBot.chat(response)
 }
 
 function onMinecraftJoinLeave(username: string, action: "joined" | "left") {
+  discordBot.sendGuildChatEmbed(username, action)
 }
 
 export const bridge = {

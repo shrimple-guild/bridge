@@ -1,16 +1,11 @@
-import { CommandManager } from "../CommandManager"
+import { Command } from "./Command.js"
+import { minecraftBot } from "../../minecraft/MinecraftBot.js"
 
 export class ReloadCommand implements Command {
     aliases = ["reloadbot", "reload", "rlb"]
-    
-    constructor(private commandManager: CommandManager) {}
 
-    execute(args: string[]) {
-        const rank = args.pop()
-        if (rank === "Comm" || rank === "GM") {
-            this.commandManager.mcController.disconnect()
-            return null
-        }
-        return "No permission"
+    execute(args: string[], isStaff: boolean) {
+        if (!isStaff) return "No permission"
+        minecraftBot.disconnect(true)
     }
 }

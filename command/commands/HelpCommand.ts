@@ -1,3 +1,4 @@
+import { Command } from "./Command.js"
 import { CommandManager } from "../CommandManager"
 
 export class HelpCommand implements Command {
@@ -12,9 +13,10 @@ export class HelpCommand implements Command {
             if (command.aliases.length == 1) {
                 helpMessage += `${command.aliases[0]} `
             } else {
-                helpMessage += `(${command.aliases.join("|")}) `
+                helpMessage += `${command.aliases.join("|")}`
             }
-            helpMessage += `${command.usage ?? ""}, `
+            const usage = command.usage
+            helpMessage += usage ? ` ${usage}, ` : ", "
         })
         return helpMessage = helpMessage.substring(0, helpMessage.length - 2)
     }

@@ -56,3 +56,9 @@ export function secsToTime(num: number) {
 export function titleCase(string: string) {
   return string.toLowerCase().replaceAll("_", " ").replace(/\b([a-z])/g, letter => letter.toUpperCase())
 }
+
+export const privilegedUsers = [
+  "Ilmars112", 
+  "appable",
+  "Milo77"
+]

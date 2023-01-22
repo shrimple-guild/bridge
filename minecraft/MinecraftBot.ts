@@ -2,11 +2,12 @@ import dotenv from "dotenv"
 dotenv.config()
 
 import mineflayer from "mineflayer"
-import { guildChatPattern, limboRegex as limboPattern, mcJoinLeavePattern } from "../utils/reggies.js"
+import { bridgedMessageRegex, dungeonEnteredRegex, guildChatPattern, limboRegex, mcJoinLeavePattern, partyInviteRegex, privateMessageRegex } from "../utils/RegularExpressions.js"
 import AsyncLock from "async-lock"
 import { bridge } from "../bridge.js"
-import { sleep } from "../utils/utils.js"
+import { privilegedUsers, sleep } from "../utils/Utils.js"
 import log4js from "log4js"
+import { nameIsInDb } from "../utils/SkinUtils.js"
 
 const chatDelay = 1000
 const logger = log4js.getLogger("minecraft")
@@ -16,6 +17,8 @@ const username = process.env.MC_USERNAME!
 let bot: mineflayer.Bot = connect()
 let status: ("online" | "offline") = "offline"
 let retries: number = 0
+
+let timeout: NodeJS.Timeout
 
 function connect(): mineflayer.Bot {
   logger.info(`Connecting as ${username}`)
@@ -29,7 +32,7 @@ function connect(): mineflayer.Bot {
     version: "1.17.1",
     checkTimeoutInterval: 10000
   }).once("spawn", () => onSpawn())
-    .on("messagestr", (chat) => onChat(chat))
+    .on("messagestr", (chat) => onChat(chat, bot))
     .on("end", async (reason) => onEnd(reason))
 }
 
@@ -45,7 +48,7 @@ async function onEnd(reason: string) {
     if (retries >= 4) {
       logger.error(`Not reconnecting because bot restarted 5 times.`)
     } else {
-      const waitTime = Math.pow(2, retries)
+      const waitTime = 1000 * Math.pow(2, retries)
       logger.info(`Attempting reconnect: retry ${retries + 1} of 4.`)
       await sleep(waitTime)
       retries++
@@ -60,21 +63,52 @@ function onSpawn() {
   chat("§")
 }
 
-function onChat(chat: string) {
-  logger.info(`[CHAT] ${chat}`)
+function onChat(message: string, bot: mineflayer.Bot) {
+  logger.info(`[CHAT] ${message}`)
 
-  if (limboPattern.test(chat)) {
+  onPatternMatch(message, limboRegex, () => {
     retries = 0
     status = "online"
-  } else {
-    onPatternMatch(chat, guildChatPattern, (groups) => {
-      if (groups.username == username) return
-      bridge.onMinecraftChat(groups.username, groups.content, groups.hypixelRank, groups.guildRank)
-    })
-    onPatternMatch(chat, mcJoinLeavePattern, (groups) => {
-      bridge.onMinecraftJoinLeave(groups.username, groups.action as ("joined" | "left"))
-    })
-  }
+    return
+  })
+
+  onPatternMatch(message, guildChatPattern, (groups) => {
+    if (bridgedMessageRegex.test(message)) return
+    bridge.onMinecraftChat(groups.username, groups.content, groups.hypixelRank, groups.guildRank)
+    return
+  })
+
+  onPatternMatch(message, mcJoinLeavePattern, (groups) => {
+    bridge.onMinecraftJoinLeave(groups.username, groups.action as ("joined" | "left"))
+    return
+  })
+
+  onPatternMatch(message, partyInviteRegex, (groups) => {
+    const fragger = groups.username
+    if (!nameIsInDb(fragger)) return
+    chat(`/p join ${fragger}`)
+    timeout = setTimeout(() => {
+      chat("/pc Leaving because 10s passed")
+      chat("/p leave")
+    }, 10000)
+    return
+  })
+
+  onPatternMatch(message, dungeonEnteredRegex, () => {
+    setTimeout(() => {
+      chat("/pc Leaving because dungeon started")
+      chat("/p leave")
+      clearTimeout(timeout)
+    }, 2000)
+    return
+  })
+
+  onPatternMatch(message, privateMessageRegex, (groups) => {
+    if (privilegedUsers.includes(groups.name)) {
+      chat(groups.content)
+    }
+    return
+  })
 }
 
 function onPatternMatch(chat: string, regex: RegExp, cb: (groups: { [key: string]: string }) => void) {
@@ -82,47 +116,24 @@ function onPatternMatch(chat: string, regex: RegExp, cb: (groups: { [key: string
   if (matchGroups) cb(matchGroups)
 }
 
-async function chat(chat: string, onCompletion?: (status: string) => void): Promise<void> {
+async function chat(chat: string, onCompletion?: (status: string) => void) {
   return await chatLock.acquire("chat", async () => {
-    const sleepPromise = sleep(chatDelay, false)
     bot.chat(chat)
-    if (onCompletion) {
-      logger.debug("Registering listener for chat message status.")
-      await new Promise<void>(async (resolve, reject) => {
-        let didComplete = false
-        const listener = (message: string) => {
-          logger.debug(`Chat message status listener received: "${message}"`)
-          const escapedChat = chat.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-          const pattern = RegExp(`^Guild > (?:\\[[\\w+]+\\] )?${username}(?: \\[[\\w+]+\\])?: ${escapedChat}$`)
-          if (pattern.test(message)) {
-            logger.debug(`Listener detected success."`)
-            onCompletion("success")
-            didComplete = true
-            bot.off("messagestr", listener)
-            resolve()
-          }
-        }
-        bot.on("messagestr", listener)
-        await sleepPromise
-        if (!didComplete) {
-          bot.off("messagestr", listener)
-          logger.debug("Listener timed out.")
-          onCompletion("failed:timeout")
-        }
-        resolve()
-      })
-    }
-    await sleepPromise
-    return
+    await sleep(chatDelay)
   }).catch(e => {
     logger.warn(`Message not sent because ${e}.`)
     if (onCompletion) onCompletion("failed:lock")
   })
 }
 
-async function disconnect(): Promise<boolean> {
-  logger.info(`Manually disconnected.`)
+async function disconnect(isRestart: boolean): Promise<boolean> {
   bot.quit()
+  logger.info("Manually disconnected.")
+  if (isRestart) {
+    logger.info("Restarting bot.")
+    await sleep(2000)
+    bot = connect()
+  }
   return true
 }
 

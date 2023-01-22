@@ -1,28 +1,29 @@
-import { HelpCommand } from "./commands/HelpCommand"
-import { ElectionCommand } from "./commands/ElectionCommand"
-import { RainTimerCommand } from "./commands/RainTimerCommand"
-import { AuctionCommand } from "./commands/AuctionCommand"
-import { BazaarCommand } from "./commands/BazaarCommand"
-import { ReloadCommand } from "./commands/ReloadCommand"
+import { Command } from "./commands/Command.js"
+import { AuctionCommand } from "./commands/AuctionCommand.js"
+import { BazaarCommand } from "./commands/BazaarCommand.js"
+import { EightballCommand } from "./commands/EightBallCommand.js"
+import { ElectionCommand } from "./commands/ElectionCommand.js"
+import { HelpCommand } from "./commands/HelpCommand.js"
+import { PickCommand } from "./commands/PickCommand.js"
+import { PingCommand } from "./commands/PingCommand.js"
+import { RainTimerCommand } from "./commands/RainTimerCommand.js"
+import { RawCommand } from "./commands/RawCommand.js"
+import { ReloadCommand } from "./commands/ReloadCommand.js"
 
 export class CommandManager {
     commands: Command[] = []
-    prefix: string
-
-    mcController: any
-    discordBot: any
-    constructor(prefix: string, mcController: any, discordBot: any) {
-        this.prefix = prefix
-        this.mcController = mcController
-        this.discordBot = discordBot
+    constructor(public prefix: string) {
         this.registerCommands([
-            new HelpCommand(this),
-            new ReloadCommand(this),
-            new PingCommand(),
-            new ElectionCommand(),
-            new RainTimerCommand(),
             new AuctionCommand(),
-            new BazaarCommand()
+            new BazaarCommand(),
+            new EightballCommand(),
+            new ElectionCommand(),
+            new HelpCommand(this),
+            new PickCommand(),
+            new PingCommand(),
+            new RainTimerCommand(),
+            new RawCommand(),
+            new ReloadCommand()
         ])
     }
 
@@ -36,17 +37,16 @@ export class CommandManager {
         })
     }
 
-    async onChatMessage(message: string) {
+    async onChatMessage(message: string, isStaff: boolean) {
         if (!message.startsWith(this.prefix)) return
-
-        const command = message.substring(this.prefix.length)
-        const args = command.split(" ")
+        const commStr = message.substring(this.prefix.length)
+        const args = commStr.split(" ")
         const commandName = args.shift()
 
-        const commandObject = this.commands.find(comm => comm.aliases.includes(commandName))
+        const command = this.commands.find(comm => comm.aliases.includes(commandName))
 
-        if (!commandObject) return `Command ${commandName} not found`
-
-        return await commandObject.execute(args)
+        if (!command) return `Command ${commandName} not found, try ${this.prefix}help`
+        const response = await command.execute(args, isStaff)
+        return response
     }
 }

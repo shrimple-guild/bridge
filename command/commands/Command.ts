@@ -1,6 +1,6 @@
-interface Command {
+export interface Command {
     usage?: string
     
     aliases: (string | undefined)[]
-    execute(args: string[]): any
+    execute(args: string[], isStaff?: boolean): any
 }

@@ -1,4 +1,5 @@
-import { secsToTime } from "../../utils/utils"
+import { Command } from "./Command.js"
+import { secsToTime } from "../../utils/Utils.js"
 
 export class RainTimerCommand implements Command {
     aliases = ["rain", "rt"]

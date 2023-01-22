@@ -1,6 +1,6 @@
 import { EmbedBuilder } from "@discordjs/builders";
 import { AttachmentBuilder, TextChannel } from "discord.js";
-import { getSkin } from "../utils/skinUtils.js";
+import { getSkin } from "../utils/SkinUtils.js";
 
 export class MinecraftEmbed extends EmbedBuilder {
   files: AttachmentBuilder[]

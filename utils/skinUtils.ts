@@ -25,6 +25,12 @@ INSERT OR REPLACE INTO Members
 VALUES (:username, :skin, :lastUpdated)
 `)
 
+const nameInDB = db.prepare(`
+SELECT username
+FROM Members
+WHERE username = ?
+`)
+
 async function updateSkin(username: string): Promise<string | undefined> {
   const skin = await getMinecraftAvatar(username)
   if (!skin) return
@@ -79,5 +85,5 @@ export async function getSkin(username: string): Promise<Buffer> {
 }
 
 export function nameIsInDb(username: string): boolean {
-  return skinSelect.get(username)
+  return nameInDB.get(username) != null
 }

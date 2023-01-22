@@ -1,7 +1,8 @@
+import { Command } from "./Command.js"
 import fetch from "node-fetch"
-import humanize from "humanize-duration"
-import { titleCase } from "../../utils/utils.js"
-import jaroDistance from "jaro-winkler"
+import { HumanizeDurationLanguage, HumanizeDuration } from "humanize-duration-ts"
+import { titleCase } from "../../utils/Utils.js"
+import { jaro as jaroDistance} from "jaro-winkler-typescript"
 
 export class ElectionCommand implements Command {
   aliases = ["election", "mayor"]
@@ -9,6 +10,9 @@ export class ElectionCommand implements Command {
   skyblockEpoch = 1560275700000
   electionOver = 105600000
   year = 1000 * 50 * 24 * 31 * 12
+
+  langService = new HumanizeDurationLanguage();
+  humanizer = new HumanizeDuration(this.langService);
 
   nextRecurringEvent(epoch: number, offset: number, interval: number) {
     return interval - (Date.now() - (epoch + offset)) % interval
@@ -35,13 +39,13 @@ export class ElectionCommand implements Command {
       if (nextMayor != null) {
         res += `${nextMayor}, `
       }
-      res += `in ${humanize(nextElection, { largest: 2, delimiter: " and " })}. `
+      res += `in ${this.humanizer.humanize(nextElection, { largest: 2, delimiter: " and " })}. `
 
-      return `${res}Next special: ${titleCase(nextSpecial.name)}, in ${humanize(nextSpecial.time, { largest: 2, delimiter: " and " })}.`
+      return `${res}Next special: ${titleCase(nextSpecial.name)}, in ${this.humanizer.humanize(nextSpecial.time, { largest: 2, delimiter: " and " })}.`
     } else {
       let mayorQuery = args.join(" ").toLowerCase()
       let nextSpecial = nextSpecials.sort((a, b) => jaroDistance(mayorQuery, b.name) - jaroDistance(mayorQuery, a.name))[0]
-      return `${titleCase(nextSpecial.name)} is in ${humanize(nextSpecial.time, { largest: 2, delimiter: " and " })}.`
+      return `${titleCase(nextSpecial.name)} is in ${this.humanizer.humanize(nextSpecial.time, { largest: 2, delimiter: " and " })}.`
     }
   }
 }

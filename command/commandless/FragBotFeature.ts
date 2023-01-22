@@ -1,5 +1,5 @@
-import { partyInviteRegex } from '../../utils/reggies.js'
-import { nameIsInDb } from '../../utils/skinUtils.js'
+import { partyInviteRegex } from '../../utils/RegularExpressions.js'
+import { nameIsInDb } from '../../utils/SkinUtils.js'
 
 export function acceptFraggerInvite(content: string) {
     let match = content.match(partyInviteRegex)
