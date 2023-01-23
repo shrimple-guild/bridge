@@ -7,4 +7,4 @@ export const partyInviteRegex = /(?:You have been invited to join )?(?<username>
 export const spamRegex = /^You cannot say the same message twice!$/
 export const dungeonEnteredRegex = /^\[(?<rank>[\w+]+)\] (?<name>\w{2,16}) entered (?<dungeon>.+)$/m
 export const privateMessageRegex = /^From (?:\[(?<hypixelRank>[\w+]+)\] )?(?<name>\w{2,16}): (?<content>.+$)/
-export const bridgedMessageRegex = /^Guild > (?:\[(?<hypixelRank>[\w+]+)\] )?(?<username>\w{2,16})(?: \[(?<guildRank>[\w+]+)\])?: (?<user1>.{2,32})(: | replying to (?<user2>.{2,32}):)/
+export const bridgedMessageRegex = /^Guild > (?:\[(?<hypixelRank>[\w+]+)\] )?(?<username>\w{2,16})(?: \[(?<guildRank>[\w+]+)\])?: (?<user1>.+?(?=(: | replying to (?<user2>.{2,32}): )))/

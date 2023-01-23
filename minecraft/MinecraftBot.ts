@@ -73,13 +73,14 @@ function onChat(message: string, bot: mineflayer.Bot) {
   })
 
   onPatternMatch(message, guildChatPattern, (groups) => {
-    if (bridgedMessageRegex.test(message)) return
+    const match = message.match(bridgedMessageRegex)
+    if (match && match.groups?.username === username) return
     bridge.onMinecraftChat(groups.username, groups.content, groups.hypixelRank, groups.guildRank)
     return
   })
 
   onPatternMatch(message, mcJoinLeavePattern, (groups) => {
-    bridge.onMinecraftJoinLeave(groups.username, groups.action as ("**joined.**" | "**left.**"))
+    bridge.onMinecraftJoinLeave(groups.username, groups.action as ("joined" | "left"))
     return
   })
 

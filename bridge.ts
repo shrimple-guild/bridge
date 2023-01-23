@@ -49,8 +49,8 @@ async function onMinecraftChat(username: string, content: string, hypixelRank?: 
   if (response) await minecraftBot.chat(response)
 }
 
-function onMinecraftJoinLeave(username: string, action: "**joined.**" | "**left.**") {
-  discordBot.sendGuildChatEmbed(username, action)
+function onMinecraftJoinLeave(username: string, action: "joined" | "left") {
+  discordBot.sendGuildChatEmbed(username, `**${action}.**`)
 }
 
 export const bridge = {
