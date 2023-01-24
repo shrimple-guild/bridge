@@ -21,6 +21,12 @@ export function colorOf(hypixelRank: string | undefined): [red: number, green: n
       return [85, 255, 255]
     case "MVP++":
       return [255, 170, 0]
+    case "BOT":
+      return [139, 0, 0]
+    case "JOINED":
+      return [0, 150, 0]
+    case "LEFT":
+      return [150, 0, 0]
     default:
       return [85, 85, 255]
   }

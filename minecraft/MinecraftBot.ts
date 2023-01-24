@@ -2,7 +2,7 @@ import dotenv from "dotenv"
 dotenv.config()
 
 import mineflayer from "mineflayer"
-import { bridgedMessageRegex, dungeonEnteredRegex, guildChatPattern, limboRegex, mcJoinLeavePattern, partyInviteRegex, privateMessageRegex } from "../utils/RegularExpressions.js"
+import { dungeonEnteredRegex, guildChatPattern, limboRegex, mcJoinLeavePattern, partyInviteRegex, privateMessageRegex } from "../utils/RegularExpressions.js"
 import AsyncLock from "async-lock"
 import { bridge } from "../bridge.js"
 import { privilegedUsers, sleep } from "../utils/Utils.js"
@@ -73,8 +73,7 @@ function onChat(message: string, bot: mineflayer.Bot) {
   })
 
   onPatternMatch(message, guildChatPattern, (groups) => {
-    const match = message.match(bridgedMessageRegex)
-    if (match && match.groups?.username === username) return
+    if (groups.username === username) return
     bridge.onMinecraftChat(groups.username, groups.content, groups.hypixelRank, groups.guildRank)
     return
   })

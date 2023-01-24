@@ -33,24 +33,31 @@ rl.on("line", (input) => {
 })
 
 export const commandManager = new CommandManager(process.env.PREFIX!)
+const botName = process.env.MC_USERNAME!
 
 async function onDiscordChat(author: string, content: string, isStaff: boolean, replyAuthor: string | undefined, onCompletion?: (status: string) => void) {
-  const replyString = replyAuthor ? ` replying to ${replyAuthor}` : ""
+  const replyString = replyAuthor ? ` [to] ${replyAuthor}` : ""
   const full = `${author}${replyString}: ${content}`
   await minecraftBot.chat(full, onCompletion)
   const response = await commandManager.onChatMessage(content, isStaff)
-  if (response) await minecraftBot.chat(response)
+  if (response) {
+    await minecraftBot.chat(response)
+    await discordBot.sendGuildChatEmbed(botName, response, "BOT")
+  }
 }
 
 async function onMinecraftChat(username: string, content: string, hypixelRank?: string, guildRank?: string) {
   await discordBot.sendGuildChatEmbed(username, content, hypixelRank, guildRank)
   let isStaff = guildRank === "GM" || guildRank === "Comm" || guildRank === "Bot"
   const response = await commandManager.onChatMessage(content, isStaff)
-  if (response) await minecraftBot.chat(response)
+  if (response) {
+    await minecraftBot.chat(response)
+    await discordBot.sendGuildChatEmbed(botName, response, "BOT")
+  }
 }
 
 function onMinecraftJoinLeave(username: string, action: "joined" | "left") {
-  discordBot.sendGuildChatEmbed(username, `**${action}.**`)
+  discordBot.sendGuildChatEmbed(username, `**${action}.**`, action.toUpperCase())
 }
 
 export const bridge = {

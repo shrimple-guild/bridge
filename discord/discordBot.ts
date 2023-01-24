@@ -44,14 +44,14 @@ function getBridgeAuthorName(message: Message): string {
   return message.embeds.at(0)?.author?.name ?? authorName
 }
 
-async function sendGuildChatEmbed(username: string, content: string, hypixelRank?: string, guildRank?: string) {
+async function sendGuildChatEmbed(username: string, content: string, colorValue?: string, guildRank?: string) {
   const channel = getTextChannel(guildChannelId)
   if (!channel) return
   const imageAttachment = content.match(imageLinkPattern)?.at(0)
   const contentWithoutImage = content.replace(imageLinkPattern, "")
   const embed = (await new MinecraftEmbed().setMinecraftAuthor(username))
     .setDescription((contentWithoutImage.length > 0) ? contentWithoutImage : null)
-    .setColor(colorOf(hypixelRank))
+    .setColor(colorOf(colorValue))
     .setFooter(guildRank ? { text: guildRank } : null)
     .setTimestamp(Date.now())
   if (imageAttachment) embed.setImage(imageAttachment)
