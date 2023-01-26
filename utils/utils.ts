@@ -9,27 +9,20 @@ export function sleep<T>(ms: number, onCompletion?: T): Promise<T> {
   })
 }
 
+const colorMap: {[color: string]: [red: number, green: number, blue: number]} = {
+  "VIP": [85, 255, 85],
+  "VIP+": [85, 255, 85],
+  "MVP": [85, 255, 255],
+  "MVP+": [85, 255, 255],
+  "MVP++": [255, 170, 0],
+  "BOT": [95, 45, 200],
+  "JOINED": [0, 150, 0],
+  "LEFT": [150, 0, 0],
+  "DEFAULT": [85, 85, 255]
+}
+
 export function colorOf(hypixelRank: string | undefined): [red: number, green: number, blue: number] {
-  switch (hypixelRank) {
-    case undefined:
-      return [170, 170, 170]
-    case "VIP":
-    case "VIP+":
-      return [85, 255, 85]
-    case "MVP":
-    case "MVP+":
-      return [85, 255, 255]
-    case "MVP++":
-      return [255, 170, 0]
-    case "BOT":
-      return [139, 0, 0]
-    case "JOINED":
-      return [0, 150, 0]
-    case "LEFT":
-      return [150, 0, 0]
-    default:
-      return [85, 85, 255]
-  }
+  return colorMap[hypixelRank ?? "DEFAULT"]
 }
 
 export function cleanContent(content: string) {

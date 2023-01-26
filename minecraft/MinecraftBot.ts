@@ -2,7 +2,7 @@ import dotenv from "dotenv"
 dotenv.config()
 
 import mineflayer from "mineflayer"
-import { dungeonEnteredRegex, guildChatPattern, limboRegex, mcJoinLeavePattern, partyInviteRegex, privateMessageRegex } from "../utils/RegularExpressions.js"
+import { dungeonEnteredRegex, guildChatPattern, guildJoinRegex, guildKickRegex, guildLeaveRegex, limboRegex, mcJoinLeavePattern, partyInviteRegex, privateMessageRegex } from "../utils/RegularExpressions.js"
 import AsyncLock from "async-lock"
 import { bridge } from "../bridge.js"
 import { privilegedUsers, sleep } from "../utils/Utils.js"
@@ -70,6 +70,18 @@ function onChat(message: string, bot: mineflayer.Bot) {
     retries = 0
     status = "online"
     return
+  })
+
+  onPatternMatch(message, guildJoinRegex, (groups) => {
+    bridge.onMinecraftChat(username, `**${groups.name} joined the guild!**`, "JOINED")
+  })
+
+  onPatternMatch(message, guildLeaveRegex, (groups) => {
+    bridge.onMinecraftChat(username, `**${groups.name} left the guild!**`, "LEFT")
+  })
+
+  onPatternMatch(message, guildKickRegex, (groups) => {
+    bridge.onMinecraftChat(username, `**${groups.name} was kicked from the guild by ${groups.name2}!**`, "LEFT")
   })
 
   onPatternMatch(message, guildChatPattern, (groups) => {

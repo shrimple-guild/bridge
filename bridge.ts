@@ -46,8 +46,8 @@ async function onDiscordChat(author: string, content: string, isStaff: boolean, 
   }
 }
 
-async function onMinecraftChat(username: string, content: string, hypixelRank?: string, guildRank?: string) {
-  await discordBot.sendGuildChatEmbed(username, content, hypixelRank, guildRank)
+async function onMinecraftChat(username: string, content: string, colorAlias?: string, guildRank?: string) {
+  await discordBot.sendGuildChatEmbed(username, content, colorAlias, guildRank)
   let isStaff = guildRank === "GM" || guildRank === "Comm" || guildRank === "Bot"
   const response = await commandManager.onChatMessage(content, isStaff)
   if (response) {

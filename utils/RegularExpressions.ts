@@ -7,3 +7,6 @@ export const partyInviteRegex = /(?:You have been invited to join )?(?<username>
 export const spamRegex = /^You cannot say the same message twice!$/
 export const dungeonEnteredRegex = /^\[(?<rank>[\w+]+)\] (?<name>\w{2,16}) entered (?<dungeon>.+)$/m
 export const privateMessageRegex = /^From (?:\[(?<hypixelRank>[\w+]+)\] )?(?<name>\w{2,16}): (?<content>.+$)/
+export const guildLeaveRegex = /^\[(?<rank>[\w+]+)\] (?<name>\w{2,16}) left the guild!$/
+export const guildJoinRegex = /^\[(?<rank>[\w+]+)\] (?<name>\w{2,16}) joined the guild!$/
+export const guildKickRegex = /^\[(?<rank>[\w+]+)\] (?<name>\w{2,16}) was kicked from the guild by \[(?<rank2>[\w+]+)\] (?<name2>\w{2,16})!$/
