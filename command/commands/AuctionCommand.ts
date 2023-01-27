@@ -58,14 +58,7 @@ export class AuctionCommand implements Command {
 }
 
 (async function updateBinCache() {
-  let lastBinUpdate = 0
   try {
-    const binResponse = await fetch(`https://api.hypixel.net/skyblock/auctions`)
-    if (binResponse.status === 200) {
-      const binJson = await binResponse.json() as any
-      lastBinUpdate = binJson["lastUpdated"]
-    }
-
     const auctionResponse = await fetch(`https://moulberry.codes/lowestbin.json`)
     if (auctionResponse.status === 200) {
       cachedLowestBins = await auctionResponse.json() as { [id: string]: number }
@@ -78,5 +71,5 @@ export class AuctionCommand implements Command {
   }
 
   // hypixel updates the api site a bit later than the actual auction data, ~8s is what I've seen
-  setTimeout(updateBinCache, Math.max(0, lastBinUpdate + 78500 - Date.now()))
+  setTimeout(updateBinCache, 100000)
 })();

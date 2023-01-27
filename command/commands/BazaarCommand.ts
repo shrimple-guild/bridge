@@ -37,17 +37,15 @@ export class BazaarCommand implements Command {
 }
 
 (async function updateBazaarCache() {
-  let lastBazaarUpdate = 0
   try {
     const bazaarResponse = await fetch(`https://api.hypixel.net/skyblock/bazaar`)
     if (bazaarResponse.status === 200) {
       const bazaarJson = await bazaarResponse.json() as any
-      lastBazaarUpdate = bazaarJson["lastUpdated"]
       cachedBazaarData = bazaarJson["products"]
     }
   } catch (e) {
     console.error("Error fetching bazaar data.")
     console.error(e)
   }
-  setTimeout(updateBazaarCache, Math.max(0, lastBazaarUpdate + 78500 - Date.now()))
+  setTimeout(updateBazaarCache, 100000)
 })();
