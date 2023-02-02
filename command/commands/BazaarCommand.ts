@@ -1,16 +1,15 @@
 import { Command } from "./Command.js"
 import { readFileSync } from "fs"
 import fetch from "node-fetch"
-import { jaroDistance } from "../../utils/Utils.js"
+import fuzzysort from "fuzzysort"
 
 let cachedBazaarData: any = {}
 
-let bazaarNames = JSON.parse(readFileSync("./data/bazaar.json", "utf-8")) as [{ name: string, id: string, aliases: string[] }]
-let expandedNames: {id: string, name: string, alias: string}[] = []
+const bazaarNames = JSON.parse(readFileSync("./data/bazaar.json", "utf-8")) as [{ name: string, id: string, aliases: string[] }]
+let expandedNames: {id: string, name: string, alias: Fuzzysort.Prepared}[] = []
 bazaarNames.forEach((product) => {
-  expandedNames.push({ id: product.id, name: product.name, alias: product.name.toUpperCase() })
-  product.aliases.forEach(alias => {
-    expandedNames.push({ id: product.id, name: product.name, alias: alias.toUpperCase() })
+  [...product.aliases, product.name].forEach(alias => {
+    expandedNames.push({ id: product.id, name: product.name, alias: fuzzysort.prepare(alias.toUpperCase()) })
   })
 })
 
@@ -19,29 +18,20 @@ export class BazaarCommand implements Command {
 
   usage = "<item name>"
   
-  closestBazaarProduct(phrase: string[]) {
-    let uppercase = phrase.map(phrase => phrase.trim().toUpperCase())
-    let joined = uppercase.join(" ")
-    let perfectMatches: { id: string, name: string, alias: string }[] = []
-    perfectMatches = expandedNames.filter((product) => {
-      return uppercase.some((phrase) => product.alias.toUpperCase().includes(phrase))
-    })
-    let bestMatch
-    if (perfectMatches.length > 1) {
-      bestMatch = perfectMatches.sort((a, b) => {
-        return uppercase.filter(phrase => b.alias.toUpperCase().includes(phrase)).length - uppercase.filter(phrase => a.alias.toUpperCase().includes(phrase)).length
-      })[0]
-    } else if (perfectMatches.length === 1) {
-      bestMatch = perfectMatches[0]
-    } else {
-      bestMatch = expandedNames.sort((a, b) => jaroDistance(joined, b.alias) - jaroDistance(joined, a.alias))[0]
+  closestBazaarProduct(phrase: string) {
+    let uppercase = phrase.toUpperCase()
+    let bestMatch = fuzzysort.go(uppercase, expandedNames, { limit: 1, key: "alias"})?.[0]?.obj
+    if (bestMatch != null) {
+      return { id: bestMatch.id, name: bestMatch.name }
     }
-    return { id: bestMatch.id, name: bestMatch.name }
   }
 
   execute(args: string[]) {
     let formatter = Intl.NumberFormat("en", { notation: "compact" })
-    let { id: bestId, name: bestName } = this.closestBazaarProduct(args)
+    let name = args.join(" ")
+    let closestProduct = this.closestBazaarProduct(name)
+    if (closestProduct == null) return `No matching item found!`
+    let { id: bestId, name: bestName } = closestProduct
     let bazaarData = cachedBazaarData[bestId].quick_status
     return `Bazaar data for ${bestName}: insta-buy: ${formatter.format(+bazaarData.buyPrice)}, insta-sell: ${formatter.format(+bazaarData.sellPrice)}`
   }
