@@ -2,7 +2,7 @@ import dotenv from "dotenv"
 dotenv.config()
 
 import mineflayer from "mineflayer"
-import { dungeonEnteredRegex, guildChatPattern, guildJoinRegex, guildKickRegex, guildLeaveRegex, limboRegex, mcJoinLeavePattern, partyInviteRegex, privateMessageRegex } from "../utils/RegularExpressions.js"
+import { dungeonEnteredRegex, guildChatPattern, guildJoinRegex, guildKickRegex, guildLeaveRegex, limboRegex, mcJoinLeavePattern, partyInviteOtherRegex, partyInviteSelfRegex, privateMessageRegex } from "../utils/RegularExpressions.js"
 import AsyncLock from "async-lock"
 import { bridge } from "../bridge.js"
 import { privilegedUsers, sleep } from "../utils/Utils.js"
@@ -95,16 +95,8 @@ function onChat(message: string, bot: mineflayer.Bot) {
     return
   })
 
-  onPatternMatch(message, partyInviteRegex, (groups) => {
-    const fragger = groups.username
-    if (!nameIsInDb(fragger)) return
-    chat(`/p join ${fragger}`)
-    timeout = setTimeout(() => {
-      chat("/pc Leaving because 10s passed")
-      chat("/p leave")
-    }, 10000)
-    return
-  })
+  onPatternMatch(message, partyInviteSelfRegex, (g) => fragbot(g.username))
+  onPatternMatch(message, partyInviteOtherRegex, (g) => fragbot(g.username))
 
   onPatternMatch(message, dungeonEnteredRegex, () => {
     setTimeout(() => {
@@ -121,6 +113,16 @@ function onChat(message: string, bot: mineflayer.Bot) {
     }
     return
   })
+}
+
+function fragbot(username: string) {
+  if (!nameIsInDb(username)) return
+    chat(`/p join ${username}`)
+    timeout = setTimeout(() => {
+      chat("/pc Leaving because 10s passed")
+      chat("/p leave")
+    }, 10000)
+    return
 }
 
 function onPatternMatch(chat: string, regex: RegExp, cb: (groups: { [key: string]: string }) => void) {
