@@ -1,13 +1,14 @@
 import { Command } from "./Command.js"
 import { readFileSync } from "fs"
-import { jaro as jaroDistance } from "jaro-winkler-typescript"
 import fetch from "node-fetch"
+import { jaroDistance } from "../../utils/Utils.js"
 
 let cachedBazaarData: any = {}
 
 let bazaarNames = JSON.parse(readFileSync("./data/bazaar.json", "utf-8")) as [{ name: string, id: string, aliases: string[] }]
 let expandedNames: {id: string, name: string, alias: string}[] = []
 bazaarNames.forEach((product) => {
+  expandedNames.push({ id: product.id, name: product.name, alias: product.name.toUpperCase() })
   product.aliases.forEach(alias => {
     expandedNames.push({ id: product.id, name: product.name, alias: alias.toUpperCase() })
   })
@@ -18,19 +19,29 @@ export class BazaarCommand implements Command {
 
   usage = "<item name>"
   
-  closestBazaarProduct(phrase: string) {
-    let uppercase = phrase.toUpperCase()
-    let perfectMatches = expandedNames.filter((product) => product.alias.includes(uppercase))
-    let bestMatch = (perfectMatches.length == 1)
-      ? perfectMatches[0]
-      : expandedNames.sort((a, b) => jaroDistance(uppercase, b.alias) - jaroDistance(uppercase, a.alias))[0]
+  closestBazaarProduct(phrase: string[]) {
+    let uppercase = phrase.map(phrase => phrase.trim().toUpperCase())
+    let joined = uppercase.join(" ")
+    let perfectMatches: { id: string, name: string, alias: string }[] = []
+    perfectMatches = expandedNames.filter((product) => {
+      return uppercase.some((phrase) => product.alias.toUpperCase().includes(phrase))
+    })
+    let bestMatch
+    if (perfectMatches.length > 1) {
+      bestMatch = perfectMatches.sort((a, b) => {
+        return uppercase.filter(phrase => b.alias.toUpperCase().includes(phrase)).length - uppercase.filter(phrase => a.alias.toUpperCase().includes(phrase)).length
+      })[0]
+    } else if (perfectMatches.length === 1) {
+      bestMatch = perfectMatches[0]
+    } else {
+      bestMatch = expandedNames.sort((a, b) => jaroDistance(joined, b.alias) - jaroDistance(joined, a.alias))[0]
+    }
     return { id: bestMatch.id, name: bestMatch.name }
   }
 
-  async execute(args: string[]) {
+  execute(args: string[]) {
     let formatter = Intl.NumberFormat("en", { notation: "compact" })
-    let name = args.join(" ")
-    let { id: bestId, name: bestName } = this.closestBazaarProduct(name)
+    let { id: bestId, name: bestName } = this.closestBazaarProduct(args)
     let bazaarData = cachedBazaarData[bestId].quick_status
     return `Bazaar data for ${bestName}: insta-buy: ${formatter.format(+bazaarData.buyPrice)}, insta-sell: ${formatter.format(+bazaarData.sellPrice)}`
   }

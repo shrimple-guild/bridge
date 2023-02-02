@@ -1,32 +1,29 @@
-import dotenv from "dotenv"
-dotenv.config()
-
 import mineflayer from "mineflayer"
-import { dungeonEnteredRegex, guildChatPattern, guildJoinRegex, guildKickRegex, guildLeaveRegex, limboRegex, mcJoinLeavePattern, partyInviteOtherRegex, partyInviteSelfRegex, privateMessageRegex } from "../utils/RegularExpressions.js"
+import { dungeonEnteredRegex, guildChatPattern, guildJoinRegex, guildKickRegex, guildLeaveRegex, limboRegex, mcJoinLeavePattern, partyInviteRegex, partyInviteRegex2, privateMessageRegex } from "../utils/RegularExpressions.js"
 import AsyncLock from "async-lock"
 import { bridge } from "../bridge.js"
-import { privilegedUsers, sleep } from "../utils/Utils.js"
+import { botUsername, privilegedUsers, sleep } from "../utils/Utils.js"
 import log4js from "log4js"
 import { nameIsInDb } from "../utils/SkinUtils.js"
+import { discordBot } from "../discord/DiscordBot.js"
 
 const chatDelay = 1000
 const logger = log4js.getLogger("minecraft")
 const chatLock = new AsyncLock({ maxPending: 10 })
-const username = process.env.MC_USERNAME!
 
-let bot: mineflayer.Bot = connect()
+let bot = connect()
 let status: ("online" | "offline") = "offline"
 let retries: number = 0
 
 let timeout: NodeJS.Timeout
 
 function connect(): mineflayer.Bot {
-  logger.info(`Connecting as ${username}`)
+  logger.info(`Connecting as ${botUsername}`)
   onConnecting()
   return mineflayer.createBot({
     host: "mc.hypixel.net",
     port: 25565,
-    username: username,
+    username: botUsername,
     chatLengthLimit: 256,
     auth: "microsoft",
     version: "1.17.1",
@@ -73,19 +70,19 @@ function onChat(message: string, bot: mineflayer.Bot) {
   })
 
   onPatternMatch(message, guildJoinRegex, (groups) => {
-    bridge.onMinecraftChat(username, `**${groups.name} joined the guild!**`, "JOINED")
+    bridge.onMinecraftChat(botUsername, `**${groups.name} joined the guild!**`, "JOINED")
   })
 
   onPatternMatch(message, guildLeaveRegex, (groups) => {
-    bridge.onMinecraftChat(username, `**${groups.name} left the guild!**`, "LEFT")
+    bridge.onMinecraftChat(botUsername, `**${groups.name} left the guild!**`, "LEFT")
   })
 
   onPatternMatch(message, guildKickRegex, (groups) => {
-    bridge.onMinecraftChat(username, `**${groups.name} was kicked from the guild by ${groups.name2}!**`, "LEFT")
+    bridge.onMinecraftChat(botUsername, `**${groups.name} was kicked from the guild by ${groups.name2}!**`, "LEFT")
   })
 
   onPatternMatch(message, guildChatPattern, (groups) => {
-    if (groups.username === username) return
+    if (groups.username === botUsername) return
     bridge.onMinecraftChat(groups.username, groups.content, groups.hypixelRank, groups.guildRank)
     return
   })
@@ -95,8 +92,15 @@ function onChat(message: string, bot: mineflayer.Bot) {
     return
   })
 
-  onPatternMatch(message, partyInviteSelfRegex, (g) => fragbot(g.username))
-  onPatternMatch(message, partyInviteOtherRegex, (g) => fragbot(g.username))
+  onPatternMatch(message, partyInviteRegex, (groups) => {
+    fragbot(groups.name)
+    return
+  })
+
+  onPatternMatch(message, partyInviteRegex2, (groups) => {
+    fragbot(groups.name)
+    return
+  })
 
   onPatternMatch(message, dungeonEnteredRegex, () => {
     setTimeout(() => {
@@ -110,6 +114,7 @@ function onChat(message: string, bot: mineflayer.Bot) {
   onPatternMatch(message, privateMessageRegex, (groups) => {
     if (privilegedUsers.includes(groups.name)) {
       chat(groups.content)
+      discordBot.sendGuildChatEmbed(botUsername, groups.content, "BOT")
     }
     return
   })
@@ -122,7 +127,6 @@ function fragbot(username: string) {
       chat("/pc Leaving because 10s passed")
       chat("/p leave")
     }, 10000)
-    return
 }
 
 function onPatternMatch(chat: string, regex: RegExp, cb: (groups: { [key: string]: string }) => void) {

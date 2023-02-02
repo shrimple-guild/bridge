@@ -1,6 +1,6 @@
 import { Command } from "./Command.js"
 import fetch from "node-fetch"
-import { jaro as jaroDistance } from "jaro-winkler-typescript"
+import { jaroWinkler as jaroDistance } from "jaro-winkler-typescript"
 import { titleCase } from "../../utils/Utils.js"
 import { readFileSync } from "fs"
 
@@ -8,27 +8,29 @@ let cachedLowestBins: { [id: string]: number } = {}
 
 // get full names from api data + additional data
 const auctionAliases = JSON.parse(readFileSync("./data/auctionAliases.json", "utf-8")) as { [id: string]: string }
-const itemResponse = await fetch(`https://api.hypixel.net/resources/skyblock/items`)
-const itemResults = await itemResponse.json() as { success: boolean, lastUpdated: number, items: { id: string, name: string }[] }
+const itemResults = (await (await fetch(`https://api.hypixel.net/resources/skyblock/items`)).json() as { items: { id: string, name: string }[] }).items
 
-let itemApiNames = Object.fromEntries(itemResults.items.map(itemData => {
+let itemApiNames = Object.fromEntries(itemResults.map(itemData => {
   let aliases: string[] = []
   return [itemData.id, { id: itemData.id, name: itemData.name, aliases: aliases }]
 }))
 
 let itemRemappings = Object.fromEntries(Object.entries(auctionAliases).map(([id, aliases]) => {
-  let aliasArray = aliases.split(",")
+  let aliasArray = aliases.replace("_", " ").split(",")
   return [id, {
     id: id,
     name: titleCase(aliasArray[0]),
-    aliases: aliasArray.slice(1)?.map(alias => titleCase(alias))
+    aliases: aliasArray.map(alias => titleCase(alias))
   }]
 }))
 
 const remapped = Object.values({ ...itemApiNames, ...itemRemappings })
-const fullExpandedNames: { id: string, name: string, alias: string }[] = []
-remapped.forEach((product) => {
-  fullExpandedNames.push(...([product.name, ...product.aliases].map(alias => { return { id: product.id, name: product.name, alias: alias.toUpperCase() } })))
+let fullExpandedNames: { id: string, name: string, alias: string }[] = []
+remapped.forEach(product => {
+  fullExpandedNames.push({ id: product.id, name: product.name, alias: product.name.trim().toUpperCase() })
+  product.aliases.forEach(alias => {
+    fullExpandedNames.push({ id: product.id, name: product.name, alias: alias.trim().toUpperCase() })
+  })
 })
 
 // names that are actually in lbin, rather than items that can't actually be sold
@@ -39,21 +41,32 @@ export class AuctionCommand implements Command {
 
   usage = "<item name>"
   
-  closestAuctionProduct(phrase: string) {
-    let uppercase = phrase.toUpperCase()
-    let perfectMatches = expandedNames.filter(product => product.alias.includes(uppercase))
-    let bestMatch = (perfectMatches.length == 1)
-      ? perfectMatches[0]
-      : expandedNames.sort((a, b) => jaroDistance(uppercase, b.alias) - jaroDistance(uppercase, a.alias))[0]
+  closestAuctionProduct(phrase: string[]) {
+    let uppercase = phrase.map(phrase => phrase.trim().toUpperCase())
+    let joined = uppercase.join(" ")
+    let perfectMatches: { id: string, name: string, alias: string }[] = []
+
+    perfectMatches = expandedNames.filter((product) => {
+      return uppercase.some((phrase) => product.alias.includes(phrase))
+    })
+    let bestMatch
+    if (perfectMatches.length > 1) {
+      bestMatch = perfectMatches.sort((a, b) => {
+        return uppercase.filter(phrase => b.alias.toUpperCase().includes(phrase)).length - uppercase.filter(phrase => a.alias.toUpperCase().includes(phrase)).length
+      })[0]
+    } else if (perfectMatches.length === 1) {
+      bestMatch = perfectMatches[0]
+    } else {
+      bestMatch = expandedNames.sort((a, b) => jaroDistance(joined, b.alias) - jaroDistance(joined, a.alias))[0]
+    }
     return { id: bestMatch.id, name: bestMatch.name }
   }
 
   async execute(args: string[]) {
     let formatter = Intl.NumberFormat("en", { notation: "compact" })
-    let name = args.join(" ")
-    let { id: bestId, name: bestName } = this.closestAuctionProduct(name)
-    let lowestBin = cachedLowestBins[bestId]
-    return `Lowest BIN for ${bestName} is ${formatter.format(lowestBin)}`
+    let { id, name } = this.closestAuctionProduct(args)
+    let lowestBin = cachedLowestBins[id]
+    return `Lowest BIN for ${name} is ${formatter.format(lowestBin)}`
   }
 }
 

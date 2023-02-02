@@ -1,11 +1,9 @@
-import dotenv from "dotenv"
-dotenv.config()
-
 import log4js from "log4js"
 import { minecraftBot } from "./minecraft/MinecraftBot.js"
 import { discordBot } from "./discord/DiscordBot.js"
 import readline from "readline"
 import { CommandManager } from "./command/CommandManager.js"
+import { botPrefix, botUsername, staffRanks } from "./utils/Utils.js"
 
 log4js.configure({
   appenders: {
@@ -27,13 +25,13 @@ const rl = readline.createInterface({
 rl.on("line", (input) => {
   if (input != "quit") {
     minecraftBot.chat(input)
+    discordBot.sendGuildChatEmbed(botUsername, `Console: ${input}`, "BOT")
   } else {
     minecraftBot.disconnect(false)
   }
 })
 
-export const commandManager = new CommandManager(process.env.PREFIX!)
-const botName = process.env.MC_USERNAME!
+export const commandManager = new CommandManager(botPrefix)
 
 async function onDiscordChat(author: string, content: string, isStaff: boolean, replyAuthor: string | undefined, onCompletion?: (status: string) => void) {
   const replyString = replyAuthor ? ` [to] ${replyAuthor}` : ""
@@ -42,17 +40,17 @@ async function onDiscordChat(author: string, content: string, isStaff: boolean, 
   const response = await commandManager.onChatMessage(content, isStaff)
   if (response) {
     await minecraftBot.chat(response)
-    await discordBot.sendGuildChatEmbed(botName, response, "BOT")
+    await discordBot.sendGuildChatEmbed(botUsername, response, "BOT")
   }
 }
 
 async function onMinecraftChat(username: string, content: string, colorAlias?: string, guildRank?: string) {
   await discordBot.sendGuildChatEmbed(username, content, colorAlias, guildRank)
-  let isStaff = guildRank === "GM" || guildRank === "Comm" || guildRank === "Bot"
+  let isStaff = staffRanks.includes(guildRank ?? "")
   const response = await commandManager.onChatMessage(content, isStaff)
   if (response) {
     await minecraftBot.chat(response)
-    await discordBot.sendGuildChatEmbed(botName, response, "BOT")
+    await discordBot.sendGuildChatEmbed(botUsername, response, "BOT")
   }
 }
 

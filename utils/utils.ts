@@ -1,5 +1,9 @@
+import dotenv from "dotenv"
+dotenv.config()
+
 import emojiRegex from "emoji-regex"
 import { emojiToName } from "gemoji"
+import { jaro } from "jaro-winkler-typescript"
 let emojiPattern = emojiRegex()
 
 export function sleep<T>(ms: number, onCompletion?: T): Promise<T> {
@@ -56,8 +60,17 @@ export function titleCase(string: string) {
   return string.toLowerCase().replaceAll("_", " ").replace(/\b([a-z])/g, letter => letter.toUpperCase())
 }
 
-export const privilegedUsers = [
-  "Ilmars112", 
-  "appable",
-  "Milo77"
-]
+export function jaroDistance(string1: string, string2: string) {
+  return jaro(string1, string2, { caseSensitive: false })
+}
+
+// all values from .env as constants
+export const guildRanks = process.env.GUILD_RANKS!.split(",")           // comma seperated string in .env
+export const staffRanks = process.env.STAFF_RANKS!.split(",")           // comma seperated string in .env
+export const privilegedUsers = process.env.PRIVILEGED_USERS!.split(",") // comma seperated string in .env
+export const botUsername = process.env.MC_USERNAME!
+export const botToken = process.env.DISCORD_TOKEN!
+export const guildId = process.env.GUILD_ID!
+export const guildChannelId = process.env.GUILD_CHANNEL_ID!
+export const guildStaffId = process.env.GUILD_STAFF_ID!
+export const botPrefix = process.env.PREFIX!

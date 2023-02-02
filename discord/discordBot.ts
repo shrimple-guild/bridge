@@ -6,14 +6,9 @@ import discord, {
 } from "discord.js"
 import { bridge } from "../bridge.js"
 import { imageLinkRegex as imageLinkPattern } from "../utils/RegularExpressions.js"
-import { cleanContent, colorOf } from "../utils/Utils.js"
+import { botToken, cleanContent, colorOf, guildChannelId, guildStaffId } from "../utils/Utils.js"
 import { MinecraftEmbed } from "./MinecraftEmbed.js"
 import log4js from "log4js"
-
-const token = process.env.DISCORD_TOKEN!
-
-const guildChannelId = process.env.GUILD_CHANNEL_ID!
-const guildStaffId = process.env.GUILD_STAFF_ID!
 
 const logger = log4js.getLogger("discord")
 
@@ -25,7 +20,7 @@ const client = new discord.Client({
   ]
 })
 
-client.login(token)
+client.login(botToken)
 
 function getTextChannel(channelId: string): TextChannel | undefined {
   const channel = client.channels.cache.get(channelId)
@@ -78,7 +73,7 @@ client.on("messageCreate", async (message) => {
   }
   const stickers = message.stickers?.map(sticker => `<${sticker.name}>`)?.join(" ")
   if (stickers != null) {
-    content += ` ${stickers}`
+    content += `${stickers}`
   }
   bridge.onDiscordChat(author, content, isStaff, replyAuthor)
 })
