@@ -10,6 +10,9 @@ import { RainTimerCommand } from "./commands/RainTimerCommand.js"
 import { RawCommand } from "./commands/RawCommand.js"
 import { ReloadCommand } from "./commands/ReloadCommand.js"
 import { SkillsCommand } from "./commands/SkillsCommand.js"
+import { SlayerCommand } from "./commands/SlayerCommand.js"
+import { TrophyFishCommand } from "./commands/TrophyFishCommand.js"
+import { CataCommand } from "./commands/CataCommand.js"
 
 export class CommandManager {
     commands: Command[] = []
@@ -17,6 +20,7 @@ export class CommandManager {
         this.registerCommands([
             new AuctionCommand(),
             new BazaarCommand(),
+            new CataCommand(),
             new EightballCommand(),
             new ElectionCommand(),
             new HelpCommand(this),
@@ -25,7 +29,9 @@ export class CommandManager {
             new RainTimerCommand(),
             new RawCommand(),
             new ReloadCommand(),
-            new SkillsCommand()
+            new SkillsCommand(),
+            new SlayerCommand(),
+            new TrophyFishCommand()
         ])
     }
 

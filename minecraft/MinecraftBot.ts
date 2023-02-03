@@ -122,11 +122,11 @@ function onChat(message: string, bot: mineflayer.Bot) {
 
 function fragbot(username: string) {
   if (!nameIsInDb(username)) return
-    chat(`/p join ${username}`)
-    timeout = setTimeout(() => {
-      chat("/pc Leaving because 10s passed")
-      chat("/p leave")
-    }, 10000)
+  chat(`/p join ${username}`)
+  timeout = setTimeout(() => {
+    chat("/pc Leaving because 10s passed")
+    chat("/p leave")
+  }, 10000)
 }
 
 function onPatternMatch(chat: string, regex: RegExp, cb: (groups: { [key: string]: string }) => void) {
@@ -134,9 +134,18 @@ function onPatternMatch(chat: string, regex: RegExp, cb: (groups: { [key: string
   if (matchGroups) cb(matchGroups)
 }
 
-async function chat(chat: string, onCompletion?: (status: string) => void) {
+async function chat(msg: string, onCompletion?: (status: string) => void) {
+  const split = msg.match(/.{1,256}/g)
+  if (split) {
+    for (const chunk of split) {
+      chatRaw(chunk)
+    }
+  }
+}
+
+async function chatRaw(msg: string, onCompletion?: (status: string) => void) {
   return await chatLock.acquire("chat", async () => {
-    bot.chat(chat)
+    bot.chat(msg)
     await sleep(chatDelay)
   }).catch(e => {
     logger.warn(`Message not sent because ${e}.`)
