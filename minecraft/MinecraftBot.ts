@@ -138,7 +138,7 @@ async function chat(msg: string, onCompletion?: (status: string) => void) {
   const split = msg.match(/.{1,256}/g)
   if (split) {
     for (const chunk of split) {
-      chatRaw(chunk)
+      chatRaw(chunk, onCompletion)
     }
   }
 }

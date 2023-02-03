@@ -4,7 +4,7 @@ import { fetchProfiles, fetchUuid } from "../../utils/apiUtils.js"
 
 export class TrophyFishCommand implements Command {
     aliases = ["trophy", "trophyfish", "tfish"]
-    usage = "<player:[profile|bingo]> <total | tiers | fish> [fish]"
+    usage = "<player:[profile|bingo]> <total | tiers | fish [fish]>"
 
     async execute(args: string[]) {
         if (args.length < 2) return `Syntax: skill ${this.usage}`
