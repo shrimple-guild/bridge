@@ -12,7 +12,7 @@ export class CataCommand implements Command {
         if (args.length < 2) return `Syntax: skill ${this.usage}`
         const playerArg = args.shift()!.split(":")
         const playerName = playerArg[0]
-        const profileArg = playerArg[1].toLowerCase()
+        const profileArg = playerArg[1]?.toLowerCase()
         const commandArg = args.shift()!
         const optionalArg = args.shift()
         if (commandArg === "floor" && !optionalArg?.match(this.floorArgRegex)) return `Incorrect floor. Syntax: cata ${this.usage}`

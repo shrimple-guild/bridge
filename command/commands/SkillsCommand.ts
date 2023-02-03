@@ -10,8 +10,8 @@ export class SkillsCommand implements Command {
   async execute(args: string[]) {
     if (args.length < 2) return `Syntax: skill ${this.usage}`
     const playerArg = args.shift()!.split(":")
-        const playerName = playerArg[0]
-        const profileArg = playerArg[1].toLowerCase()
+    const playerName = playerArg[0]
+    const profileArg = playerArg[1]?.toLowerCase()
     const skillName = args.shift()!
     let message
     try {
