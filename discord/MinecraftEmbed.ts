@@ -1,6 +1,6 @@
 import { EmbedBuilder } from "@discordjs/builders";
 import { AttachmentBuilder, TextChannel } from "discord.js";
-import { getSkin } from "../utils/SkinUtils.js";
+import { fetchSkin } from "../utils/playerUtils.js";
 
 export class MinecraftEmbed extends EmbedBuilder {
   files: AttachmentBuilder[]
@@ -12,7 +12,7 @@ export class MinecraftEmbed extends EmbedBuilder {
 
   async setMinecraftAuthor(username: string): Promise<MinecraftEmbed> {
     this.setAuthor({ name: username, iconURL: "attachment://skin.png" })
-    this.files.push(new AttachmentBuilder(await getSkin(username), { name: "skin.png" }))
+    this.files.push(new AttachmentBuilder(await fetchSkin(username), { name: "skin.png" }))
     return this
   }
 

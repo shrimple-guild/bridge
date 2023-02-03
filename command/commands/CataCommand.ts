@@ -1,7 +1,8 @@
 import { Command } from "./Command.js"
 import { secsToTime, formatNumber, titleCase } from "../../utils/Utils.js"
-import { fetchProfiles, fetchUuid } from "../../utils/apiUtils.js"
-import { cataLevel, isSkill, skillLevel } from "../../utils/skillUtils.js"
+import { fetchProfiles } from "../../utils/apiUtils.js"
+import { cataLevel } from "../../utils/skillUtils.js"
+import { fetchUuid } from "../../utils/playerUtils.js"
 
 export class CataCommand implements Command {
     aliases = ["cata"]

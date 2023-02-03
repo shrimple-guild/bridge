@@ -3,6 +3,7 @@ import discord, {
   GatewayIntentBits,
   TextChannel,
   Message,
+  EmbedBuilder,
 } from "discord.js"
 import { bridge } from "../bridge.js"
 import { imageLinkRegex as imageLinkPattern } from "../utils/RegularExpressions.js"
@@ -14,9 +15,9 @@ const logger = log4js.getLogger("discord")
 
 const client = new discord.Client({
   intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent
+  GatewayIntentBits.Guilds,
+  GatewayIntentBits.GuildMessages,
+  GatewayIntentBits.MessageContent
   ]
 })
 
@@ -53,6 +54,20 @@ async function sendGuildChatEmbed(username: string, content: string, colorValue?
   embed.send(channel)
 }
 
+async function sendSimpleEmbed(title: string, content: string, footer?: string) {
+  const channel = getTextChannel(guildChannelId)
+  if (!channel) return
+
+  const embed = new EmbedBuilder()
+    .setColor(colorOf("BOT"))
+    .setTitle(title)
+    .setDescription(content)
+    .setFooter(footer ? { text: footer } : null)
+    .setTimestamp(Date.now())
+
+  channel.send({ embeds: [embed] })
+}
+
 client.once("ready", () => {
   logger.info(`Connected.`)
 })
@@ -79,5 +94,6 @@ client.on("messageCreate", async (message) => {
 })
 
 export const discordBot = {
-  sendGuildChatEmbed
+  sendGuildChatEmbed,
+  sendSimpleEmbed
 }

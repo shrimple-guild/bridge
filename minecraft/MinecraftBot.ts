@@ -4,7 +4,7 @@ import AsyncLock from "async-lock"
 import { bridge } from "../bridge.js"
 import { botUsername, privilegedUsers, sleep } from "../utils/Utils.js"
 import log4js from "log4js"
-import { nameIsInDb } from "../utils/SkinUtils.js"
+import { nameIsInDb } from "../utils/playerUtils.js"
 import { discordBot } from "../discord/DiscordBot.js"
 
 const chatDelay = 1000
@@ -38,6 +38,7 @@ function onConnecting() {
 }
 
 async function onEnd(reason: string) {
+  bridge.onBotLeave(reason)
   logger.warn(`Disconnected for reason: ${reason}`)
   status = "offline"
   if (reason != "disconnect.quitting") {
@@ -63,10 +64,10 @@ function onSpawn() {
 function onChat(message: string, bot: mineflayer.Bot) {
   logger.info(`[CHAT] ${message}`)
 
-  onPatternMatch(message, limboRegex, () => {
+  onPatternMatch(message, limboRegex, async () => {
     retries = 0
     status = "online"
-    return
+    await bridge.onBotJoin()
   })
 
   onPatternMatch(message, guildJoinRegex, (groups) => {

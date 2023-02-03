@@ -1,7 +1,8 @@
 import { Command } from "./Command.js"
 import { formatNumber, titleCase } from "../../utils/Utils.js"
-import { fetchProfiles, fetchUuid } from "../../utils/apiUtils.js"
+import { fetchProfiles } from "../../utils/apiUtils.js"
 import { isSkill, skillLevel } from "../../utils/skillUtils.js"
+import { fetchUuid } from "../../utils/playerUtils.js"
 
 export class SkillsCommand implements Command {
   aliases = ["skill"]

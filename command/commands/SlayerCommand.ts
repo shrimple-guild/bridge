@@ -1,6 +1,7 @@
 import { Command } from "./Command.js"
 import { formatNumber, titleCase } from "../../utils/Utils.js"
-import { fetchProfiles, fetchUuid } from "../../utils/apiUtils.js"
+import { fetchProfiles } from "../../utils/apiUtils.js"
+import { fetchUuid } from "../../utils/playerUtils.js"
 
 export class SlayerCommand implements Command {
     aliases = ["slayer"]
