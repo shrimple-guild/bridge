@@ -1,5 +1,4 @@
 import { Command } from "./Command.js"
-import fetch from "node-fetch"
 import { jaroWinkler as jaroDistance } from "jaro-winkler-typescript"
 import { titleCase } from "../../utils/Utils.js"
 import { readFileSync } from "fs"

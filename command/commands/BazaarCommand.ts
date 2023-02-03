@@ -1,6 +1,5 @@
 import { Command } from "./Command.js"
 import { readFileSync } from "fs"
-import fetch from "node-fetch"
 import { jaroDistance } from "../../utils/Utils.js"
 
 let cachedBazaarData: any = {}

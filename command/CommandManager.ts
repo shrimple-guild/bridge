@@ -9,6 +9,7 @@ import { PingCommand } from "./commands/PingCommand.js"
 import { RainTimerCommand } from "./commands/RainTimerCommand.js"
 import { RawCommand } from "./commands/RawCommand.js"
 import { ReloadCommand } from "./commands/ReloadCommand.js"
+import { SkillsCommand } from "./commands/SkillsCommand.js"
 
 export class CommandManager {
     commands: Command[] = []
@@ -23,7 +24,8 @@ export class CommandManager {
             new PingCommand(),
             new RainTimerCommand(),
             new RawCommand(),
-            new ReloadCommand()
+            new ReloadCommand(),
+            new SkillsCommand()
         ])
     }
 

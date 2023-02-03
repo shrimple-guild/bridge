@@ -6,6 +6,14 @@ import { emojiToName } from "gemoji"
 import { jaro } from "jaro-winkler-typescript"
 let emojiPattern = emojiRegex()
 
+export function formatNumber(num: number, decimals: number, abbreviate: boolean) {
+  const formatter = Intl.NumberFormat("us-EN", {
+    maximumFractionDigits: decimals,
+    notation: abbreviate ? "compact" : "standard" 
+  })
+  return formatter.format(num)
+}
+
 export function sleep<T>(ms: number, onCompletion?: T): Promise<T> {
   return new Promise<T>(resolve => {
     setTimeout(resolve, ms)
@@ -74,3 +82,4 @@ export const guildId = process.env.GUILD_ID!
 export const guildChannelId = process.env.GUILD_CHANNEL_ID!
 export const guildStaffId = process.env.GUILD_STAFF_ID!
 export const botPrefix = process.env.PREFIX!
+export const apiKey = process.env.API_KEY!

@@ -1,5 +1,4 @@
 import Database from "better-sqlite3"
-import fetch from "node-fetch"
 import sharp from "sharp"
 
 const db = new Database("./data/members.db")
