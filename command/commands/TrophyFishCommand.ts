@@ -4,11 +4,13 @@ import { fetchProfiles, fetchUuid } from "../../utils/apiUtils.js"
 
 export class TrophyFishCommand implements Command {
     aliases = ["trophy", "trophyfish", "tfish"]
-    usage = "<player> <total | tiers | fish> [fish]"
+    usage = "<player:[profile|bingo]> <total | tiers | fish> [fish]"
 
     async execute(args: string[]) {
         if (args.length < 2) return `Syntax: skill ${this.usage}`
-        const playerName = args.shift()!
+        const playerArg = args.shift()!.split(":")
+        const playerName = playerArg[0]
+        const profileArg = playerArg[1].toLowerCase()
         const arg = args.shift()!
         const fish = args?.join("_")
         if (arg === "fish" && !fish) return `Syntax: trophy ${this.usage}`
@@ -18,8 +20,14 @@ export class TrophyFishCommand implements Command {
             const profiles = await fetchProfiles(uuid)
 
             // Fetch correct profile
-            let profile = profiles.find(p => p.selected)
-
+            let profile
+            if (!profileArg) {
+              profile = profiles.find(p => p.selected)
+            } else if (profileArg === "bingo") {
+              profile = profiles.find(p => p.game_mode == "bingo")
+            } else {
+              profile = profiles.find(p => p.cute_name?.toLowerCase() === profileArg)
+            }
             if (!profile) {
                 return "Profile could not be determined."
             }

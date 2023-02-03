@@ -5,13 +5,14 @@ import { isSkill, skillLevel } from "../../utils/skillUtils.js"
 
 export class SkillsCommand implements Command {
   aliases = ["skill"]
-  usage = "<player> <skill> [profileName | \"bingo\"]"
+  usage = "<player:[profile|bingo]> <skill>"
 
   async execute(args: string[]) {
     if (args.length < 2) return `Syntax: skill ${this.usage}`
-    const playerName = args.shift()!
+    const playerArg = args.shift()!.split(":")
+        const playerName = playerArg[0]
+        const profileArg = playerArg[1].toLowerCase()
     const skillName = args.shift()!
-    const profileArgument = args.shift()
     let message
     try {
       if (!isSkill(skillName)) return `"${titleCase(skillName)}" is not a skill!`
@@ -20,12 +21,12 @@ export class SkillsCommand implements Command {
 
       // Fetch correct profile
       let profile
-      if (!profileArgument) {
+      if (!profileArg) {
         profile = profiles.find(p => p.selected)
-      } else if (profileArgument === "bingo") {
+      } else if (profileArg === "bingo") {
         profile = profiles.find(p => p.game_mode == "bingo")
       } else {
-        profile = profiles.find(p => p.cute_name?.toLowerCase() === profileArgument)
+        profile = profiles.find(p => p.cute_name?.toLowerCase() === profileArg)
       }
       if (!profile) {
         return "Profile could not be found."

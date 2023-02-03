@@ -4,13 +4,14 @@ import { fetchProfiles, fetchUuid } from "../../utils/apiUtils.js"
 
 export class SlayerCommand implements Command {
     aliases = ["slayer"]
-    usage = "<player> <slayer> [profile | bingo]"
+    usage = "<player:[profile|bingo]> <slayer>"
 
     async execute(args: string[]) {
         if (args.length < 2) return `Syntax: skill ${this.usage}`
-        const playerName = args.shift()!
+        const playerArg = args.shift()!.split(":")
+        const playerName = playerArg[0]
+        const profileArg = playerArg[1].toLowerCase()
         const slayer = args.shift()!
-        const profileArg = args.shift()
         let message
         try {
             const uuid = await fetchUuid(playerName)

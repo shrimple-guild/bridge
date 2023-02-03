@@ -5,12 +5,14 @@ import { cataLevel, isSkill, skillLevel } from "../../utils/skillUtils.js"
 
 export class CataCommand implements Command {
     aliases = ["cata"]
-    usage = "<player> <level | classLevel [class] | floor [f[0-7]|m[1-7]]>"
+    usage = "<player:[profile|bingo]> <level | classLevel [class] | floor [f[0-7]|m[1-7]]>"
 
     floorArgRegex = /^(f[0-7]|m[1-7])$/
     async execute(args: string[]) {
         if (args.length < 2) return `Syntax: skill ${this.usage}`
-        const playerName = args.shift()!
+        const playerArg = args.shift()!.split(":")
+        const playerName = playerArg[0]
+        const profileArg = playerArg[1].toLowerCase()
         const commandArg = args.shift()!
         const optionalArg = args.shift()
         if (commandArg === "floor" && !optionalArg?.match(this.floorArgRegex)) return `Incorrect floor. Syntax: cata ${this.usage}`
@@ -20,7 +22,14 @@ export class CataCommand implements Command {
             const uuid = await fetchUuid(playerName)
             const profiles = await fetchProfiles(uuid)
 
-            let profile = profiles.find(p => p.selected)
+            let profile
+            if (!profileArg) {
+                profile = profiles.find(p => p.selected)
+            } else if (profileArg === "bingo") {
+                profile = profiles.find(p => p.game_mode == "bingo")
+            } else {
+                profile = profiles.find(p => p.cute_name?.toLowerCase() === profileArg)
+            }
             if (!profile) {
                 return "Profile could not be determined."
             }
