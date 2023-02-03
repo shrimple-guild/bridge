@@ -4,7 +4,7 @@ import AsyncLock from "async-lock"
 import { bridge } from "../bridge.js"
 import { botUsername, privilegedUsers, sleep } from "../utils/Utils.js"
 import log4js from "log4js"
-import { nameIsInDb } from "../utils/SkinUtils.js"
+import { nameIsInDb } from "../utils/playerUtils.js"
 import { discordBot } from "../discord/DiscordBot.js"
 
 const chatDelay = 1000

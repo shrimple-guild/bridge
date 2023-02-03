@@ -1,6 +1,6 @@
 import { Command } from "./Command.js"
 import { formatNumber, titleCase } from "../../utils/Utils.js"
-import { fetchProfiles, fetchUuid } from "../../utils/apiUtils.js"
+import { fetchProfiles } from "../../utils/apiUtils.js"
 import { isSkill, skillLevel } from "../../utils/skillUtils.js"
 
 export class SkillsCommand implements Command {
@@ -16,7 +16,7 @@ export class SkillsCommand implements Command {
     let message
     try {
       if (!isSkill(skillName)) return `"${titleCase(skillName)}" is not a skill!`
-      const uuid = await fetchUuid(playerName)
+      const uuid = await fetchUuidFromAPI(playerName)
       const profiles = await fetchProfiles(uuid)
 
       // Fetch correct profile
