@@ -47,7 +47,7 @@ export class SkillsCommand implements Command {
         message += `XP for level ${Math.ceil(skillData.level)}: ${formatNumber(skillData.xpToNext, 2, true)}`
       }
     } catch (e) {
-      message = "Something went wrong!"
+      message = "Something went wrong, API might be down!"
       console.error(e)
     }
     return message

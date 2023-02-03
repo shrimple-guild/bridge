@@ -67,7 +67,7 @@ export class TrophyFishCommand implements Command {
             }
 
         } catch (e) {
-            message = "Something went wrong!"
+            message = "Something went wrong, API might be down!"
             console.error(e)
         }
         return message

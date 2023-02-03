@@ -78,7 +78,7 @@ export class CataCommand implements Command {
                     return `Syntax: cata ${this.usage}`
             }
         } catch (e) {
-            message = "Something went wrong!"
+            message = "Something went wrong, API might be down!"
             console.error(e)
         }
         return message
