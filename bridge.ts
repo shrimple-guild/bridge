@@ -3,7 +3,8 @@ import { minecraftBot } from "./minecraft/MinecraftBot.js"
 import { discordBot } from "./discord/DiscordBot.js"
 import readline from "readline"
 import { CommandManager } from "./command/CommandManager.js"
-import { botPrefix, botUsername, staffRanks } from "./utils/Utils.js"
+import { botPrefix, botUsername, sleep, staffRanks } from "./utils/Utils.js"
+import exitHook from "async-exit-hook"
 
 log4js.configure({
   appenders: {
@@ -58,9 +59,27 @@ function onMinecraftJoinLeave(username: string, action: "joined" | "left") {
   discordBot.sendGuildChatEmbed(username, `**${action}.**`, action.toUpperCase())
 }
 
+async function onBotLeave(reason: string) {
+  await discordBot.sendSimpleEmbed(botUsername, "❌ Bot offline.", reason)
+}
+
+async function onBotJoin() {
+  await discordBot.sendSimpleEmbed(botUsername, "✅ Bot online.")
+}
+
 export const bridge = {
   onDiscordChat,
   onMinecraftChat,
-  onMinecraftJoinLeave
+  onMinecraftJoinLeave,
+  onBotLeave,
+  onBotJoin
 }
+
+exitHook(async (cb) => {
+  minecraftBot.disconnect(false)
+  await sleep(1000)
+  cb()
+})
+
+
 
