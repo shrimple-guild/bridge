@@ -1,6 +1,6 @@
 import { Command } from "./Command.js"
 import { formatNumber, titleCase } from "../../utils/Utils.js"
-import { fetchProfiles, fetchUuidFromAPI } from "../../utils/apiUtils.js"
+import { fetchProfiles } from "../../utils/apiUtils.js"
 
 export class SlayerCommand implements Command {
     aliases = ["slayer"]
@@ -14,7 +14,7 @@ export class SlayerCommand implements Command {
         const slayer = args.shift()!
         let message
         try {
-            const uuid = await fetchUuidFromAPI(playerName)
+            const uuid = await fetchUuid(playerName)
             const profiles = await fetchProfiles(uuid)
 
             // Fetch correct profile

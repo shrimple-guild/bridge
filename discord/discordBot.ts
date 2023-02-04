@@ -84,11 +84,11 @@ client.on("messageCreate", async (message) => {
 
   const attachments = message.attachments.map((attachment) => attachment.url)?.join(" ")
   if (attachments != null) {
-  content += ` ${attachments}`
+    content += ` ${attachments}`
   }
   const stickers = message.stickers?.map(sticker => `<${sticker.name}>`)?.join(" ")
   if (stickers != null) {
-  content += `${stickers}`
+    content += `${stickers}`
   }
   bridge.onDiscordChat(author, content, isStaff, replyAuthor)
 })
