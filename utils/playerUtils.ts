@@ -2,9 +2,9 @@ import sharp from "sharp"
 import { fetchWithTimeout } from "./apiUtils.js"
 import { db } from "./database.js"
 
-const steve = "LyANKx4NLx8PKBwLJBgIJhoKKx4NKh0NKx4NKx4NKx4NMyQRQioSPyoVLB4OKBwLKx4NtolsvY5yxpaAvYtyvY50rHZaNCUSqn1mtIRtqn1mrYBtnHJcu4lynGlMnGlMtIRt////Uj2JtXtnu4lyUj2J////qn1mnGNGs3tit4JyakAwakAwvohsompHgFM0kF5Dll9Ad0I1d0I1d0I1d0I1j14+gVM5b0UsbUMqgVM5gVM5ek4zg1U7g1U7ek4z"
-const skinTimeout = 60
-const uuidTimeout = 86400
+const steve = getSkinPng("LyANKx4NLx8PKBwLJBgIJhoKKx4NKh0NKx4NKx4NKx4NMyQRQioSPyoVLB4OKBwLKx4NtolsvY5yxpaAvYtyvY50rHZaNCUSqn1mtIRtqn1mrYBtnHJcu4lynGlMnGlMtIRt////Uj2JtXtnu4lyUj2J////qn1mnGNGs3tit4JyakAwakAwvohsompHgFM0kF5Dll9Ad0I1d0I1d0I1d0I1j14+gVM5b0UsbUMqgVM5gVM5ek4zg1U7g1U7ek4z")
+const skinTimeout = 60 * 1000
+const uuidTimeout = 86400 * 1000
 
 const skinSelect = db.prepare(`
 SELECT skin, skinLastUpdated AS lastUpdated
@@ -95,14 +95,19 @@ export async function fetchUuid(username: string) {
 }
 
 export async function fetchSkin(username: string) {
-  const { skin: cachedSkin, lastUpdated } = selectSkin(username)
-  if (cachedSkin == null || (Date.now() - lastUpdated) > skinTimeout) {
-    const uuid = await fetchUuid(username)
-    const skin = await fetchSkinFromAPI(uuid)
-    skinUpsert.run({ username: username, skin: skin, lastUpdated: Date.now() })
-    return skin
+  try {
+    const { skin: cachedSkin, lastUpdated } = selectSkin(username)
+    if (cachedSkin == null || (Date.now() - lastUpdated) > skinTimeout) {
+      const uuid = await fetchUuid(username)
+      const skin = await fetchSkinFromAPI(uuid)      
+      skinUpsert.run({ username: username, skin: skin, lastUpdated: Date.now() })
+      return getSkinPng(skin)
+    }
+    return getSkinPng(cachedSkin)
+  } catch (e) {
+    console.error(e)
+    return steve
   }
-  return cachedSkin
 }
 
 async function getSkinPng(data: string): Promise<Buffer> {
