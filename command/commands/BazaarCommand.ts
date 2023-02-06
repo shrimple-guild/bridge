@@ -7,9 +7,9 @@ let cachedBazaarData: any = {}
 let bazaarNames = JSON.parse(readFileSync("./data/bazaar.json", "utf-8")) as [{ name: string, id: string, aliases: string[] }]
 let expandedNames: {id: string, name: string, alias: string}[] = []
 bazaarNames.forEach((product) => {
-  expandedNames.push({ id: product.id, name: product.name, alias: product.name.toUpperCase() })
+  expandedNames.push({ id: product.id, name: product.name, alias: product.name.replaceAll(/[^a-zA-Z0-9 ]/g, '').toUpperCase() })
   product.aliases.forEach(alias => {
-  expandedNames.push({ id: product.id, name: product.name, alias: alias.toUpperCase() })
+  expandedNames.push({ id: product.id, name: product.name, alias: alias.replaceAll(/[^a-zA-Z0-9 ]/g, '').toUpperCase() })
   })
 })
 
@@ -19,7 +19,7 @@ export class BazaarCommand implements Command {
   usage = "<item name>"
   
   closestBazaarProduct(phrase: string[]) {
-  let uppercase = phrase.map(phrase => phrase.trim().toUpperCase())
+  let uppercase = phrase.map(phrase => phrase.replaceAll(/[^a-zA-Z0-9 ,]/, '').trim().toUpperCase())
   let joined = uppercase.join(" ")
   let perfectMatches: { id: string, name: string, alias: string }[] = []
   perfectMatches = expandedNames.filter((product) => {

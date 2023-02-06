@@ -8,7 +8,7 @@ export class SlayerCommand implements Command {
     usage = "<player:[profile|bingo]> <slayer>"
 
     async execute(args: string[]) {
-        if (args.length < 2) return `Syntax: skill ${this.usage}`
+        if (args.length < 2) return `Syntax: slayer ${this.usage}`
         const playerArg = args.shift()!.split(":")
         const playerName = playerArg[0]
         const profileArg = playerArg[1]?.toLowerCase()

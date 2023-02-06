@@ -10,7 +10,7 @@ export class CataCommand implements Command {
 
     floorArgRegex = /^(f[0-7]|m[1-7])$/
     async execute(args: string[]) {
-        if (args.length < 2) return `Syntax: skill ${this.usage}`
+        if (args.length < 2) return `Syntax: cata ${this.usage}`
         const playerArg = args.shift()!.split(":")
         const playerName = playerArg[0]
         const profileArg = playerArg[1]?.toLowerCase()

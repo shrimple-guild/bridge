@@ -1,5 +1,5 @@
 import mineflayer from "mineflayer"
-import { dungeonEnteredRegex, guildChatPattern, guildJoinRegex, guildKickRegex, guildLeaveRegex, limboRegex, mcJoinLeavePattern, partyInviteRegex, partyInviteRegex2, privateMessageRegex } from "../utils/RegularExpressions.js"
+import { dungeonEnteredRegex, guildChatPattern, guildJoinRegex, guildKickRegex, guildLeaveRegex, limboRegex, mcJoinLeavePattern, partyInviteRegex, partyInviteRegex2, privateMessageRegex, spamRegex } from "../utils/RegularExpressions.js"
 import AsyncLock from "async-lock"
 import { bridge } from "../bridge.js"
 import { botUsername, privilegedUsers, sleep } from "../utils/Utils.js"
@@ -17,6 +17,8 @@ let retries: number = 0
 
 let timeout: NodeJS.Timeout
 
+let lastSent = 0
+
 function connect(): mineflayer.Bot {
   logger.info(`Connecting as ${botUsername}`)
   onConnecting()
@@ -29,7 +31,7 @@ function connect(): mineflayer.Bot {
     version: "1.17.1",
     checkTimeoutInterval: 10000
   }).once("spawn", () => onSpawn())
-    .on("messagestr", (chat) => onChat(chat, bot))
+    .on("messagestr", (chat) => onChat(chat))
     .on("end", async (reason) => onEnd(reason))
 }
 
@@ -61,25 +63,36 @@ function onSpawn() {
   chat("§")
 }
 
-function onChat(message: string, bot: mineflayer.Bot) {
+function onChat(message: string) {
   logger.info(`[CHAT] ${message}`)
 
-  onPatternMatch(message, limboRegex, async () => {
+  onPatternMatchNoGroups(message, limboRegex, async () => {
     retries = 0
     status = "online"
     await bridge.onBotJoin()
+    return
+  })
+
+  onPatternMatchNoGroups(message, spamRegex, async () => {
+    if (Date.now() - lastSent < 120000) return
+    chat("Spam protection moment")
+    lastSent = Date.now()
+    return
   })
 
   onPatternMatch(message, guildJoinRegex, (groups) => {
     bridge.onMinecraftChat(botUsername, `**${groups.name} joined the guild!**`, "JOINED")
+    return
   })
 
   onPatternMatch(message, guildLeaveRegex, (groups) => {
     bridge.onMinecraftChat(botUsername, `**${groups.name} left the guild!**`, "LEFT")
+    return
   })
 
   onPatternMatch(message, guildKickRegex, (groups) => {
     bridge.onMinecraftChat(botUsername, `**${groups.name} was kicked from the guild by ${groups.name2}!**`, "LEFT")
+    return
   })
 
   onPatternMatch(message, guildChatPattern, (groups) => {
@@ -135,6 +148,10 @@ function onPatternMatch(chat: string, regex: RegExp, cb: (groups: { [key: string
   if (matchGroups) cb(matchGroups)
 }
 
+function onPatternMatchNoGroups(chat: string, regex: RegExp, cb: () => void) {
+  if (regex.test(chat)) cb()
+}
+
 async function chat(msg: string, onCompletion?: (status: string) => void) {
   const split = msg.match(/.{1,256}/g)
   if (split) {
@@ -156,11 +173,13 @@ async function chatRaw(msg: string, onCompletion?: (status: string) => void) {
 
 async function disconnect(isRestart: boolean): Promise<boolean> {
   bot.quit()
-  logger.info("Manually disconnected.")
+  logger.info("Bot disconnected...")
   if (isRestart) {
     logger.info("Restarting bot.")
     await sleep(2000)
     bot = connect()
+  } else {
+    bridge.onBotLeave("Leaving...")
   }
   return true
 }

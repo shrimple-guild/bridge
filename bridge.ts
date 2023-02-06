@@ -75,11 +75,7 @@ export const bridge = {
   onBotJoin
 }
 
-exitHook(async (cb) => {
+exitHook((cb) => {
   minecraftBot.disconnect(false)
-  await sleep(1000)
-  cb()
+  sleep(1000).then(() => cb())
 })
-
-
-

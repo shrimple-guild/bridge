@@ -8,7 +8,7 @@ export class TrophyFishCommand implements Command {
     usage = "<player:[profile|bingo]> <total | tiers | fish [fish]>"
 
     async execute(args: string[]) {
-        if (args.length < 2) return `Syntax: skill ${this.usage}`
+        if (args.length < 2) return `Syntax: trophy ${this.usage}`
         const playerArg = args.shift()!.split(":")
         const playerName = playerArg[0]
         const profileArg = playerArg[1]?.toLowerCase()
