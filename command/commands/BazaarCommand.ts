@@ -19,7 +19,7 @@ export class BazaarCommand implements Command {
   usage = "<item name>"
   
   closestBazaarProduct(phrase: string[]) {
-  let uppercase = phrase.map(phrase => phrase.replaceAll(/[^a-zA-Z0-9 ,]/, '').trim().toUpperCase())
+  let uppercase = phrase.map(phrase => phrase.replaceAll(/[^a-zA-Z0-9 ,]/g, '').trim().toUpperCase())
   let joined = uppercase.join(" ")
   let perfectMatches: { id: string, name: string, alias: string }[] = []
   perfectMatches = expandedNames.filter((product) => {
