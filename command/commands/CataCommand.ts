@@ -17,7 +17,7 @@ export class CataCommand implements Command {
     const playerArg = args.shift()!.split(":")
     const playerName = playerArg[0]
     const profileArg = playerArg[1]?.toLowerCase()
-    const commandArg = args.join("").toLowerCase()
+    const commandArg = args[0]?.toLowerCase()
     let message
     try {
       const uuid = await fetchUuid(playerName)
