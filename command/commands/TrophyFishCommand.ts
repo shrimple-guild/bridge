@@ -6,7 +6,7 @@ import { resolveProfile } from "../../utils/profileUtils.js"
 
 export class TrophyFishCommand implements Command {
     aliases = ["trophy", "trophyfish", "tfish"]
-    usage = "<player:[profile|bingo|main]> <total | tiers | fish [fish]>"
+    usage = "<player:[profile|bingo|main]> <total | tiers | [fish]>"
 
     async execute(args: string[]) {
         if (args.length < 2) return `Syntax: trophy ${this.usage}`
@@ -14,8 +14,8 @@ export class TrophyFishCommand implements Command {
         const playerName = playerArg[0]
         const profileArg = playerArg[1]?.toLowerCase()
         const arg = args.shift()!
-        const fish = args?.join("_")
-        if (arg === "fish" && !fish) return `Syntax: trophy ${this.usage}`
+        let fish = args?.join("_")
+        if (arg !== "total" && arg !== "tiers") fish = `${arg}_` + fish
         let message
         try {
             const uuid = await fetchUuid(playerName)
@@ -44,15 +44,13 @@ export class TrophyFishCommand implements Command {
                     message = `Trophy fish tiers unlocked for ${playerName} (${cuteName}): `
                     message += `Bronze: ${bronzeUnlocked}/${bronzeTotal.length} | Silver: ${silverUnlocked}/${silverTotal.length} | Gold: ${goldUnlocked}/${goldTotal.length} | Diamond: ${diamondUnlocked}/${diamondTotal.length}`
                     break
-                case "fish":
+                default:
                     const fsih = this.guessFish(obj, fish)
                     if (!fsih) return "Invalid fish."
                     const name = fsih[0]
                     message = `${name} caught for ${playerName} (${cuteName}): `
                     message += `Total ${titleCase(name.replaceAll("_", " "))}: ${fsih[1] ?? 0} | Bronze: ${data[`${name}_bronze`] ?? 0} | Silver: ${data[`${name}_silver`] ?? 0} | Gold: ${data[`${name}_gold`] ?? 0} | Diamond: ${data[`${name}_diamond`] ?? 0}`
                     break
-                default:
-                    return `Syntax: trophy ${this.usage}`
             }
 
         } catch (e) {
