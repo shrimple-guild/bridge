@@ -32,11 +32,12 @@ export class CataCommand implements Command {
       if (floor != null) {
         const floor = commandArg!.charAt(1)
         const type = commandArg!.charAt(0) === "f" ? "catacombs" : "master_catacombs"
-        const comps = dungeonData.dungeon_types?.[type]?.tier_completions?.[floor]
+        const dungeon = dungeonData.dungeon_types?.[type]
+        const comps = dungeon?.tier_completions?.[floor]
         if (!comps) return "No data found for this floor."
-        const fastestRun = secsToTime(dungeonData.dungeon_types?.[type]?.fastest_time?.[floor] / 1000)
-        const fastestRunS = secsToTime(dungeonData.dungeon_types?.[type]?.fastest_time_s?.[floor] / 1000)
-        const fastestRunSPlus = secsToTime(dungeonData.dungeon_types?.[type]?.fastest_time_s_plus?.[floor] / 1000)
+        const fastestRun = secsToTime(dungeon?.fastest_time?.[floor] / 1000)
+        const fastestRunS = secsToTime(dungeon?.fastest_time_s?.[floor] / 1000)
+        const fastestRunSPlus = secsToTime(dungeon?.fastest_time_s_plus?.[floor] / 1000)
         message = `${titleCase(type).replace("_", " ")} floor ${floor} for ${playerName} (${cuteName}): `
         message += `Completions: ${comps} | `
         message += `Fastest time: ${fastestRun} | `
@@ -44,7 +45,7 @@ export class CataCommand implements Command {
         message += `Fastest time (S+): ${fastestRunSPlus}`
       } else {
         let xp
-        if (commandArg == null) {
+        if (!commandArg) {
           xp = dungeonData.dungeon_types?.catacombs.experience
         } else if (this.classes.includes(commandArg)) {
           xp = dungeonData.player_classes?.[commandArg!].experience
