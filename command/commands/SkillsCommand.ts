@@ -42,6 +42,3 @@ export class SkillsCommand implements Command {
     return message
   }
 } 
-
-const skillCommand = new SkillsCommand()
-console.log(await skillCommand.execute(["appable:main", "fishing"]))
