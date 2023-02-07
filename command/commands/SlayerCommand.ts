@@ -2,10 +2,11 @@ import { Command } from "./Command.js"
 import { formatNumber, titleCase } from "../../utils/Utils.js"
 import { fetchProfiles } from "../../utils/apiUtils.js"
 import { fetchUuid } from "../../utils/playerUtils.js"
+import { resolveProfile } from "../../utils/profileUtils.js"
 
 export class SlayerCommand implements Command {
     aliases = ["slayer"]
-    usage = "<player:[profile|bingo]> <slayer>"
+    usage = "<player:[profile|bingo|main]> <slayer>"
 
     async execute(args: string[]) {
         if (args.length < 2) return `Syntax: slayer ${this.usage}`
@@ -17,20 +18,7 @@ export class SlayerCommand implements Command {
         try {
             const uuid = await fetchUuid(playerName)
             const profiles = await fetchProfiles(uuid)
-
-            // Fetch correct profile
-            let profile
-            if (!profileArg) {
-                profile = profiles.find(p => p.selected)
-            } else if (profileArg === "bingo") {
-                profile = profiles.find(p => p.game_mode == "bingo")
-            } else {
-                profile = profiles.find(p => p.cute_name?.toLowerCase() === profileArg)
-            }
-            if (!profile) {
-                return "Profile could not be found."
-            }
-
+            const profile = resolveProfile(profileArg, uuid, profiles)
             const cuteName = profile.cute_name
             const data = profile?.members?.[uuid]?.['slayer_bosses']?.[slayer]
             if (!data || !data.xp) {

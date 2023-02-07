@@ -3,10 +3,11 @@ import { formatNumber, titleCase } from "../../utils/Utils.js"
 import { fetchProfiles } from "../../utils/apiUtils.js"
 import { isSkill, skillLevel } from "../../utils/skillUtils.js"
 import { fetchUuid } from "../../utils/playerUtils.js"
+import { resolveProfile } from "../../utils/profileUtils.js"
 
 export class SkillsCommand implements Command {
   aliases = ["skill"]
-  usage = "<player:[profile|bingo]> <skill>"
+  usage = "<player:[profile|bingo|main]> <skill>"
 
   async execute(args: string[]) {
     if (args.length < 2) return `Syntax: skill ${this.usage}`
@@ -19,20 +20,7 @@ export class SkillsCommand implements Command {
       if (!isSkill(skillName)) return `"${titleCase(skillName)}" is not a skill!`
       const uuid = await fetchUuid(playerName)
       const profiles = await fetchProfiles(uuid)
-
-      // Fetch correct profile
-      let profile
-      if (!profileArg) {
-        profile = profiles.find(p => p.selected)
-      } else if (profileArg === "bingo") {
-        profile = profiles.find(p => p.game_mode == "bingo")
-      } else {
-        profile = profiles.find(p => p.cute_name?.toLowerCase() === profileArg)
-      }
-      if (!profile) {
-        return "Profile could not be found."
-      }
-
+      const profile = resolveProfile(profileArg, uuid, profiles)
       const cuteName = profile.cute_name
       const skillExp = profile?.members?.[uuid]?.[`experience_skill_${skillName}`]
       if (!skillExp) {
@@ -54,3 +42,6 @@ export class SkillsCommand implements Command {
     return message
   }
 } 
+
+const skillCommand = new SkillsCommand()
+console.log(await skillCommand.execute(["appable:main", "fishing"]))

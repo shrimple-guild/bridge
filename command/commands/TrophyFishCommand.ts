@@ -2,10 +2,11 @@ import { Command } from "./Command.js"
 import { titleCase } from "../../utils/Utils.js"
 import { fetchProfiles } from "../../utils/apiUtils.js"
 import { fetchUuid } from "../../utils/playerUtils.js"
+import { resolveProfile } from "../../utils/profileUtils.js"
 
 export class TrophyFishCommand implements Command {
     aliases = ["trophy", "trophyfish", "tfish"]
-    usage = "<player:[profile|bingo]> <total | tiers | fish [fish]>"
+    usage = "<player:[profile|bingo|main]> <total | tiers | fish [fish]>"
 
     async execute(args: string[]) {
         if (args.length < 2) return `Syntax: trophy ${this.usage}`
@@ -19,20 +20,7 @@ export class TrophyFishCommand implements Command {
         try {
             const uuid = await fetchUuid(playerName)
             const profiles = await fetchProfiles(uuid)
-
-            // Fetch correct profile
-            let profile
-            if (!profileArg) {
-                profile = profiles.find(p => p.selected)
-            } else if (profileArg === "bingo") {
-                profile = profiles.find(p => p.game_mode == "bingo")
-            } else {
-                profile = profiles.find(p => p.cute_name?.toLowerCase() === profileArg)
-            }
-            if (!profile) {
-                return "Profile could not be determined."
-            }
-
+            const profile = resolveProfile(profileArg, uuid, profiles)
             const cuteName = profile.cute_name
             const data = profile?.members?.[uuid]?.['trophy_fish']
             if (!data) {

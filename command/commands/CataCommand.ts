@@ -3,10 +3,11 @@ import { secsToTime, formatNumber, titleCase } from "../../utils/Utils.js"
 import { fetchProfiles } from "../../utils/apiUtils.js"
 import { cataLevel } from "../../utils/skillUtils.js"
 import { fetchUuid } from "../../utils/playerUtils.js"
+import { resolveProfile } from "../../utils/profileUtils.js"
 
 export class CataCommand implements Command {
     aliases = ["cata"]
-    usage = "<player:[profile|bingo]> <level | classLevel [class] | floor [f[0-7]|m[1-7]]>"
+    usage = "<player:[profile|bingo|main]> <level | classLevel [class] | floor [f[0-7]|m[1-7]]>"
 
     floorArgRegex = /^(f[0-7]|m[1-7])$/
     async execute(args: string[]) {
@@ -22,19 +23,7 @@ export class CataCommand implements Command {
         try {
             const uuid = await fetchUuid(playerName)
             const profiles = await fetchProfiles(uuid)
-
-            let profile
-            if (!profileArg) {
-                profile = profiles.find(p => p.selected)
-            } else if (profileArg === "bingo") {
-                profile = profiles.find(p => p.game_mode == "bingo")
-            } else {
-                profile = profiles.find(p => p.cute_name?.toLowerCase() === profileArg)
-            }
-            if (!profile) {
-                return "Profile could not be determined."
-            }
-
+            const profile = resolveProfile(profileArg, uuid, profiles)
             const cuteName = profile.cute_name
             const dungeonData = profile?.members?.[uuid]?.dungeons
             if (!dungeonData) {
