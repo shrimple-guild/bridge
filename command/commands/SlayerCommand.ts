@@ -32,8 +32,10 @@ export class SlayerCommand implements Command {
                 if (i !== 4) message += `| `
             }
 
-        } catch (e) {
-            message = "Something went wrong, API might be down!"
+        } catch (e: any) {
+            if (e?.message) {
+                message = e.message
+            } else message = `Something went wrong, API might be down?`
             console.error(e)
         }
         return message

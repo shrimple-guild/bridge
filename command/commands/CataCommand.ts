@@ -26,7 +26,7 @@ export class CataCommand implements Command {
       const cuteName = profile.cute_name
       const dungeonData = profile?.members?.[uuid]?.dungeons
       if (!dungeonData) {
-          return `No data found for ${cuteName} profile; is your skills API on?`
+        return `No data found for ${cuteName} profile; is your skills API on?`
       }
       const floor = commandArg?.match(this.floorArgRegex)
       if (floor != null) {
@@ -63,8 +63,10 @@ export class CataCommand implements Command {
           message += `XP for level ${Math.ceil(cataData.level)}: ${formatNumber(cataData.xpToNext, 2, true)}`
         }
       }
-    } catch (e) {
-      message = "Something went wrong, API might be down!"
+    } catch (e: any) {
+      if (e?.message) {
+        message = e.message
+      } else message = `Something went wrong, API might be down?`
       console.error(e)
     }
     return message
