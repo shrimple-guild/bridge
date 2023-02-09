@@ -1,12 +1,11 @@
 import { Command } from "./Command.js"
 import { jaroWinkler as jaroDistance } from "jaro-winkler-typescript"
 import { titleCase } from "../../utils/Utils.js"
-import { readFileSync } from "fs"
+import auctionAliases from "../../data/auctionAliases.json" assert { type: "json" }
 
 let cachedLowestBins: { [id: string]: number } = {}
 
 // get full names from api data + additional data
-const auctionAliases = JSON.parse(readFileSync("./data/auctionAliases.json", "utf-8")) as { [id: string]: string }
 const itemResults = (await (await fetch(`https://api.hypixel.net/resources/skyblock/items`)).json() as { items: { id: string, name: string }[] }).items
 
 let itemApiNames = Object.fromEntries(itemResults.map(itemData => {

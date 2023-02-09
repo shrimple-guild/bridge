@@ -17,7 +17,7 @@ import { HypixelAPI } from "../api/HypixelAPI.js"
 
 export class CommandManager {
     commands: Command[] = []
-    constructor(public prefix: string, hypixelAPI: HypixelAPI) {
+    constructor(public prefix: string, public botUsername: string, hypixelAPI: HypixelAPI) {
         this.registerCommands([
             new AuctionCommand(),
             new BazaarCommand(),
@@ -28,7 +28,7 @@ export class CommandManager {
             new PickCommand(),
             new PingCommand(),
             new RainTimerCommand(),
-            new RawCommand(),
+            new RawCommand(botUsername),
             new ReloadCommand(),
             new SkillsCommand(hypixelAPI),
             new SlayerCommand(hypixelAPI),

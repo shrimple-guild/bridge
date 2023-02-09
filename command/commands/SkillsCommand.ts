@@ -1,5 +1,5 @@
 import { Command } from "./Command.js"
-import { apiKey, formatNumber, titleCase } from "../../utils/Utils.js"
+import { formatNumber, titleCase } from "../../utils/Utils.js"
 import { fetchUuid } from "../../utils/playerUtils.js"
 import { HypixelAPI } from "../../api/HypixelAPI.js"
 import { isSkill } from "../../api/Skills.js"
@@ -43,9 +43,3 @@ export class SkillsCommand implements Command {
     return message
   }
 } 
-
-async function testSkillCommand() {
-  const testAPI = new HypixelAPI(apiKey)
-  const command = new SkillsCommand(testAPI)
-  console.log(await command.execute(["appable:blueberry", "foraging"]))
-}

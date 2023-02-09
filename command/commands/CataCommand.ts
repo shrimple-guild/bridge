@@ -1,5 +1,5 @@
 import { Command } from "./Command.js"
-import { msToTime, formatNumber, titleCase, apiKey } from "../../utils/Utils.js"
+import { msToTime, formatNumber, titleCase } from "../../utils/Utils.js"
 import { fetchUuid } from "../../utils/playerUtils.js"
 import { isDungeonClass } from "../../api/Dungeons.js"
 import { HypixelAPI } from "../../api/HypixelAPI.js"
@@ -63,11 +63,4 @@ export class CataCommand implements Command {
     return message
   }
 } 
-
-async function testCataCommand() {
-  const testAPI = new HypixelAPI(apiKey)
-  const command = new CataCommand(testAPI)
-  console.log(await command.execute(["appable", "m7"]))
-}
-
 

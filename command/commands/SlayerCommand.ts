@@ -1,5 +1,5 @@
 import { Command } from "./Command.js"
-import { apiKey, formatNumber, titleCase } from "../../utils/Utils.js"
+import { formatNumber, titleCase } from "../../utils/Utils.js"
 import { fetchUuid } from "../../utils/playerUtils.js"
 import { HypixelAPI } from "../../api/HypixelAPI.js"
 import { isSlayer } from "../../api/Slayers.js"
@@ -38,10 +38,4 @@ export class SlayerCommand implements Command {
     return message
   }
 } 
-
-async function testSlayerCommand() {
-  const testAPI = new HypixelAPI(apiKey)
-  const command = new SlayerCommand(testAPI)
-  console.log(await command.execute(["appable:orange", "blaze"]))
-}
 

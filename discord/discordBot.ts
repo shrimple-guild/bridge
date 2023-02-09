@@ -7,9 +7,15 @@ import discord, {
 } from "discord.js"
 import { bridge } from "../bridge.js"
 import { imageLinkRegex as imageLinkPattern } from "../utils/RegularExpressions.js"
-import { botToken, cleanContent, colorOf, guildChannelId, guildStaffId } from "../utils/Utils.js"
+import { cleanContent, colorOf } from "../utils/Utils.js"
 import { MinecraftEmbed } from "./MinecraftEmbed.js"
 import log4js from "log4js"
+
+// config importing
+import config from "../config.json" assert { type: "json" }
+const { token: botToken, channel: guildChannelId } = config.discord
+const guildStaffIds = config.roles.filter(role => role.isStaff).map(role => role.discord)
+
 
 const logger = log4js.getLogger("discord")
 
@@ -76,7 +82,7 @@ client.on("messageCreate", async (message) => {
   if (message.author.bot) return
   if (guildChannelId != message.channelId) return
   const author = getBridgeAuthorName(message)
-  const isStaff = message.member?.roles.cache.has(guildStaffId) ?? false
+  const isStaff = guildStaffIds.some(id => message.member?.roles.cache.has(id)) ?? false
   const reply = getMessage(guildChannelId, message.reference?.messageId)
   const replyAuthor = reply ? getBridgeAuthorName(reply) : undefined
 

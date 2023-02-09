@@ -1,10 +1,8 @@
 import { Command } from "./Command.js"
-import { readFileSync } from "fs"
 import { jaroDistance } from "../../utils/Utils.js"
-
+import bazaarNames from "../../data/bazaar.json" assert { type: "json" }
 let cachedBazaarData: any = {}
 
-let bazaarNames = JSON.parse(readFileSync("./data/bazaar.json", "utf-8")) as [{ name: string, id: string, aliases: string[] }]
 let expandedNames: {id: string, name: string, alias: string}[] = []
 bazaarNames.forEach((product) => {
   expandedNames.push({ id: product.id, name: product.name, alias: product.name.replaceAll(/[^a-zA-Z0-9 ]/g, '').toUpperCase() })

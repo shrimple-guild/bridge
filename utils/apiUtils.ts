@@ -1,6 +1,3 @@
-import { apiKey } from "./Utils.js";
-
-
 const maxRequestTime = 3
 
 export async function fetchWithTimeout(url: URL) {

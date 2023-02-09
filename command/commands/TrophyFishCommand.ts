@@ -1,5 +1,5 @@
 import { Command } from "./Command.js"
-import { apiKey, titleCase } from "../../utils/Utils.js"
+import { titleCase } from "../../utils/Utils.js"
 import { fetchUuid } from "../../utils/playerUtils.js"
 import { HypixelAPI } from "../../api/HypixelAPI.js"
 import { trophyFishNames } from "../../api/TrophyFish.js"
@@ -68,9 +68,3 @@ export class TrophyFishCommand implements Command {
       return bestMatch
     }
 } 
-
-async function testTrophyFishCommand() {
-  const testAPI = new HypixelAPI(apiKey)
-  const command = new TrophyFishCommand(testAPI)
-  console.log(await command.execute(["appable", "obfuscated", "1"]))
-}

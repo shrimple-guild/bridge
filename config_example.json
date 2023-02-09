@@ -1,0 +1,33 @@
+{
+  "minecraft": {
+    "email": "example@gmail.com",
+    "username": "ExampleIGN",
+    "password": "hunter2",
+    "privilegedUsers": [
+      "TrustedMCUser1",
+      "TrustedMCUser2"
+    ]
+  },
+  "discord": {
+    "token": "token",
+    "guild": "snowflake",
+    "channel": "snowflake"
+  },
+  "bridge": {
+    "prefix": "_",
+    "apiKey": "uuid",
+    "hypixelGuild": "guildId"
+  },
+  "roles": [
+    {
+      "hypixelTag": "in-game role tag",
+      "discord": "snowflake",
+      "isStaff": true
+    },
+    {
+      "hypixelTag": "in-game role tag",
+      "discord": "snowflake",
+      "isStaff": false
+    }
+  ]
+}

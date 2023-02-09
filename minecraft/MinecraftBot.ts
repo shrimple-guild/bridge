@@ -2,10 +2,13 @@ import mineflayer from "mineflayer"
 import { dungeonEnteredRegex, guildChatPattern, guildJoinRegex, guildKickRegex, guildLeaveRegex, limboRegex, mcJoinLeavePattern, partyInviteRegex, partyInviteRegex2, privateMessageRegex, spamRegex } from "../utils/RegularExpressions.js"
 import AsyncLock from "async-lock"
 import { bridge } from "../bridge.js"
-import { botUsername, privilegedUsers, sleep } from "../utils/Utils.js"
 import log4js from "log4js"
 import { nameIsInDb } from "../utils/playerUtils.js"
 import { discordBot } from "../discord/DiscordBot.js"
+import { sleep } from "../utils/Utils.js"
+
+import config from "../config.json" assert { type: "json" }
+const { username: botUsername, privilegedUsers } = config.minecraft
 
 const chatDelay = 1000
 const logger = log4js.getLogger("minecraft")
