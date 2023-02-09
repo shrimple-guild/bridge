@@ -4,16 +4,13 @@ import { fetchUuid } from "../../utils/playerUtils.js"
 import { isDungeonClass } from "../../api/Dungeons.js"
 import { HypixelAPI } from "../../api/HypixelAPI.js"
 
+const floorArgRegex = /^(f[0-7]|m[1-7])$/
+
 export class CataCommand implements Command {
   aliases = ["cata"]
   usage = "<player:[profile|bingo|main]> [class|f[0-7]|m[1-7]]"
 
-  private floorArgRegex = /^(f[0-7]|m[1-7])$/
-  private api: HypixelAPI
-
-  constructor(hypixelAPI: HypixelAPI) {
-    this.api = hypixelAPI
-  }
+  constructor(private hypixelAPI: HypixelAPI) {}
 
   async execute(args: string[]) {
     if (args.length < 1) return `Syntax: cata ${this.usage}`
@@ -24,9 +21,9 @@ export class CataCommand implements Command {
     let message
     try {
       const uuid = await fetchUuid(playerName)
-      const profiles = await this.api.fetchProfiles(uuid)
+      const profiles = await this.hypixelAPI.fetchProfiles(uuid)
       const profile = profiles.getByQuery(profileArg)
-      const floorMatch = commandArg?.match(this.floorArgRegex)
+      const floorMatch = commandArg?.match(floorArgRegex)
       if (floorMatch != null) {
         const floor = parseInt(commandArg.charAt(1))
         const type = commandArg.charAt(0) === "f" ? "normal" : "master"

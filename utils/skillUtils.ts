@@ -13,7 +13,3 @@ async function fetchSkillData() {
 }
 
 export const skillData = { ...(await fetchSkillData()), ...leveling } as {[key: string]: number[]}
-
-
-
-
