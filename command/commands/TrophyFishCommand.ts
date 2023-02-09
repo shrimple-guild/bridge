@@ -54,15 +54,13 @@ export class TrophyFishCommand implements Command {
 
     guessFish(input: string) {
       let phrase = input.toLowerCase().trim().split(" ")
-      console.log(phrase)
       let bestMatches = trophyFishNames.filter(name => {
         return phrase.some((phrase) => name.toLowerCase().includes(phrase))
       })
-      console.log(bestMatches)
       let bestMatch
       if (bestMatches.length > 1) {
         bestMatch = bestMatches.sort((a, b) => {
-          return phrase.filter(phrase => b[0].includes(phrase)).length - phrase.filter(phrase => a[0].includes(phrase)).length
+          return phrase.filter(phrase => b.includes(phrase)).length - phrase.filter(phrase => a.includes(phrase)).length
         })[0]
       } else if (bestMatches.length === 1) {
         bestMatch = bestMatches[0]
