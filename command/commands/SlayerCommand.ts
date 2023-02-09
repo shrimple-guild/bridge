@@ -35,6 +35,7 @@ export class SlayerCommand implements Command {
       }
       console.error(e)
     }
+    return message
   }
 } 
 
@@ -44,4 +45,3 @@ async function testSlayerCommand() {
   console.log(await command.execute(["appable:orange", "blaze"]))
 }
 
-await testSlayerCommand()

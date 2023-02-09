@@ -48,8 +48,8 @@ export class TrophyFishCommand implements Command {
             message = e.message
         } else message = `Something went wrong, API might be down?`
         console.error(e)
-      return message
       }
+      return message
     }
 
     guessFish(input: string) {
@@ -74,5 +74,5 @@ export class TrophyFishCommand implements Command {
 async function testTrophyFishCommand() {
   const testAPI = new HypixelAPI(apiKey)
   const command = new TrophyFishCommand(testAPI)
-  console.log(await command.execute(["appable:orange", "Sulphur"]))
+  console.log(await command.execute(["appable", "obfuscated", "1"]))
 }
