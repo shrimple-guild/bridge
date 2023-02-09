@@ -96,14 +96,14 @@ export async function fetchUuid(username: string) {
 
 export async function fetchSkin(username: string) {
   try {
-    const { skin: cachedSkin, lastUpdated } = selectSkin(username)
-    if (cachedSkin == null || (Date.now() - lastUpdated) > skinTimeout) {
+    const { skin, lastUpdated } = selectSkin(username)
+    if (!skin || (Date.now() - lastUpdated) > skinTimeout) {
       const uuid = await fetchUuid(username)
-      const skin = await fetchSkinFromAPI(uuid)      
+      const skin = await fetchSkinFromAPI(uuid)
       skinUpsert.run({ username: username, skin: skin, lastUpdated: Date.now() })
       return getSkinPng(skin)
     }
-    return getSkinPng(cachedSkin)
+    return getSkinPng(skin)
   } catch (e) {
     console.error(e)
     return steve
