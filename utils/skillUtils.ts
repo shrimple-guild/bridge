@@ -1,4 +1,4 @@
-import leveling from "./leveling.json" assert { type: "json" }
+import leveling from "../data/leveling.json" assert { type: "json" }
 
 async function fetchSkillData() {
   const skillsResponse = await fetch(`https://api.hypixel.net/resources/skyblock/skills`)
