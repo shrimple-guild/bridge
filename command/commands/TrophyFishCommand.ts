@@ -60,7 +60,7 @@ export class TrophyFishCommand implements Command {
       let bestMatch
       if (bestMatches.length > 1) {
         bestMatch = bestMatches.sort((a, b) => {
-          return phrase.filter(phrase => b.includes(phrase)).length - phrase.filter(phrase => a.includes(phrase)).length
+          return phrase.filter(phrase => b.toLowerCase().includes(phrase)).length - phrase.filter(phrase => a.toLowerCase().includes(phrase)).length
         })[0]
       } else if (bestMatches.length === 1) {
         bestMatch = bestMatches[0]
