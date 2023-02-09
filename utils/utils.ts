@@ -34,7 +34,7 @@ const colorMap: {[color: string]: [red: number, green: number, blue: number]} = 
 }
 
 export function colorOf(hypixelRank: string | undefined): [red: number, green: number, blue: number] {
-  return colorMap[hypixelRank ?? "DEFAULT"]
+  return colorMap[hypixelRank ?? "DEFAULT"]!
 }
 
 export function cleanContent(content: string) {
@@ -53,11 +53,17 @@ export function randRange(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+export function msToTime(ms: number | undefined) {
+  if (ms == undefined) return undefined
+  return secsToTime(ms / 1000)
+}
+
 // taken from https://github.com/mat9369/skyblock-rain-timer/blob/main/index.html
-export function secsToTime(num: number) {
-  var hours: string | number = Math.floor(num / 3600)
-  var minutes: string | number = Math.floor((num - (hours * 3600)) / 60)
-  var seconds: string | number = num - (hours * 3600) - (minutes * 60)
+export function secsToTime(num: number | undefined) {
+  if (num == undefined) return undefined
+  let hours: string | number = Math.floor(num / 3600)
+  let minutes: string | number = Math.floor((num - (hours * 3600)) / 60)
+  let seconds: string | number = num - (hours * 3600) - (minutes * 60)
   if (hours < 10) hours = "0" + hours
   if (minutes < 10) minutes = "0" + minutes
   if (seconds < 10) seconds = "0" + Math.floor(seconds)
@@ -84,3 +90,4 @@ export const guildChannelId = process.env.GUILD_CHANNEL_ID!
 export const guildStaffId = process.env.GUILD_STAFF_ID!
 export const botPrefix = process.env.PREFIX!
 export const apiKey = process.env.API_KEY!
+export const hypixelGuildId = process.env.HYPIXEL_GUILD_ID!

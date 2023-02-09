@@ -3,8 +3,9 @@ import { minecraftBot } from "./minecraft/MinecraftBot.js"
 import { discordBot } from "./discord/DiscordBot.js"
 import readline from "readline"
 import { CommandManager } from "./command/CommandManager.js"
-import { botPrefix, botUsername, sleep, staffRanks } from "./utils/Utils.js"
+import { apiKey, botPrefix, botUsername, sleep, staffRanks } from "./utils/Utils.js"
 import exitHook from "async-exit-hook"
+import { HypixelAPI } from "./api/HypixelAPI.js"
 
 log4js.configure({
   appenders: {
@@ -32,7 +33,8 @@ rl.on("line", (input) => {
   }
 })
 
-export const commandManager = new CommandManager(botPrefix)
+export const hypixelAPI = new HypixelAPI(apiKey)
+export const commandManager = new CommandManager(botPrefix, hypixelAPI)
 
 async function onDiscordChat(author: string, content: string, isStaff: boolean, replyAuthor: string | undefined, onCompletion?: (status: string) => void) {
   const replyString = replyAuthor ? ` [to] ${replyAuthor}` : ""

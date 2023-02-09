@@ -1,16 +1,16 @@
 import { Command } from "./Command.js"
-import { secsToTime, formatNumber, titleCase } from "../../utils/Utils.js"
-import { fetchProfiles } from "../../utils/apiUtils.js"
-import { cataLevel } from "../../utils/skillUtils.js"
+import { msToTime, formatNumber, titleCase, apiKey } from "../../utils/Utils.js"
 import { fetchUuid } from "../../utils/playerUtils.js"
-import { resolveProfile } from "../../utils/profileUtils.js"
+import { isDungeonClass } from "../../api/Dungeons.js"
+import { HypixelAPI } from "../../api/HypixelAPI.js"
+
+const floorArgRegex = /^(f[0-7]|m[1-7])$/
 
 export class CataCommand implements Command {
   aliases = ["cata"]
   usage = "<player:[profile|bingo|main]> [class|f[0-7]|m[1-7]]"
 
-  private floorArgRegex = /^(f[0-7]|m[1-7])$/
-  private classes = ["healer", "tank", "berserk", "mage", "archer"]
+  constructor(private hypixelAPI: HypixelAPI) {}
 
   async execute(args: string[]) {
     if (args.length < 1) return `Syntax: cata ${this.usage}`
@@ -21,46 +21,37 @@ export class CataCommand implements Command {
     let message
     try {
       const uuid = await fetchUuid(playerName)
-      const profiles = await fetchProfiles(uuid)
-      const profile = resolveProfile(profileArg, uuid, profiles)
-      const cuteName = profile.cute_name
-      const dungeonData = profile?.members?.[uuid]?.dungeons
-      if (!dungeonData) {
-        return `No data found for ${cuteName} profile; is your skills API on?`
-      }
-      const floor = commandArg?.match(this.floorArgRegex)
-      if (floor != null) {
-        const floor = commandArg!.charAt(1)
-        const type = commandArg!.charAt(0) === "f" ? "catacombs" : "master_catacombs"
-        const dungeon = dungeonData.dungeon_types?.[type]
-        const comps = dungeon?.tier_completions?.[floor]
+      const profiles = await this.hypixelAPI.fetchProfiles(uuid)
+      const profile = profiles.getByQuery(profileArg)
+      const floorMatch = commandArg?.match(floorArgRegex)
+      if (floorMatch != null) {
+        const floor = parseInt(commandArg.charAt(1))
+        const type = commandArg.charAt(0) === "f" ? "normal" : "master"
+        const dungeonFloor = profile.dungeons.floor(type, floor)
+        const comps = dungeonFloor?.completions
         if (!comps) return "No data found for this floor."
-        const fastestRun = secsToTime(dungeon?.fastest_time?.[floor] / 1000)
-        const fastestRunS = secsToTime(dungeon?.fastest_time_s?.[floor] / 1000)
-        const fastestRunSPlus = secsToTime(dungeon?.fastest_time_s_plus?.[floor] / 1000)
-        message = `${titleCase(type).replace("_", " ")} floor ${floor} for ${playerName} (${cuteName}): `
+        const fastestRun = msToTime(dungeonFloor?.pb)
+        const fastestRunS = msToTime(dungeonFloor?.sPb)
+        const fastestRunSPlus = msToTime(dungeonFloor?.sPlusPb)
+        message = `${commandArg.toUpperCase()} data for ${playerName} (${profile.cuteName}): `
         message += `Completions: ${comps} | `
         message += `Fastest time: ${fastestRun} | `
-        message += `Fastest time (S): ${fastestRunS} | `
-        message += `Fastest time (S+): ${fastestRunSPlus}`
+        message += `Fastest time (S): ${fastestRunS ?? "None"} | `
+        message += `Fastest time (S+): ${fastestRunSPlus ?? "None"}`
       } else {
-        let xp
-        if (!commandArg) {
-          xp = dungeonData.dungeon_types?.catacombs.experience
-        } else if (this.classes.includes(commandArg)) {
-          xp = dungeonData.player_classes?.[commandArg!].experience
+        let level
+        if (isDungeonClass(commandArg)) {
+          level = profile.dungeons.classes[commandArg]
         } else {
-          return "Must specify a floor (f1-7 or m1-7) or a class (archer, tank, berserk, mage, or healer)."
+          level = profile.dungeons.level
         }
-        if (!xp) return `No data found for ${cuteName} profile`
-        const cataData = cataLevel(xp)
-        message = `${titleCase(commandArg != null ? commandArg! : "Catacombs")} level for ${playerName} (${cuteName}): `
-        message += `${formatNumber(cataData.level, 2, false)} | `
-        message += `Total XP: ${formatNumber(cataData.totalXp, 2, true)} | `
-        if (cataData.level == cataData.maxLevel) {
-          message += `Overflow XP: ${formatNumber(cataData.overflow, 2, true)}`
+        message = `${titleCase(commandArg != null ? commandArg! : "Catacombs")} level for ${playerName} (${profile.cuteName}): `
+        message += `${formatNumber(level.fractionalLevel, 2, false)} | `
+        message += `Total XP: ${formatNumber(level.xp, 2, true)} | `
+        if (level.level == level.maxLevel) {
+          message += `Overflow XP: ${formatNumber(level.overflow, 2, true)}`
         } else {
-          message += `XP for level ${Math.ceil(cataData.level)}: ${formatNumber(cataData.xpToNext, 2, true)}`
+          message += `XP for level ${level.level + 1}: ${formatNumber(level.xpToNext, 2, true)}`
         }
       }
     } catch (e: any) {
@@ -72,3 +63,11 @@ export class CataCommand implements Command {
     return message
   }
 } 
+
+async function testCataCommand() {
+  const testAPI = new HypixelAPI(apiKey)
+  const command = new CataCommand(testAPI)
+  console.log(await command.execute(["appable", "m7"]))
+}
+
+

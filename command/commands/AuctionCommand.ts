@@ -24,13 +24,16 @@ let itemRemappings = Object.fromEntries(Object.entries(auctionAliases).map(([id,
 }))
 
 const remapped = Object.values({ ...itemApiNames, ...itemRemappings })
-let expandedNames: { id: string, name: string, alias: string }[] = []
+let fullExpandedNames: { id: string, name: string, alias: string }[] = []
 remapped.forEach(product => {
-  expandedNames.push({ id: product.id, name: product.name, alias: product.name.replaceAll(/[^a-zA-Z0-9 ,]/g, '').trim().toUpperCase() })
+  fullExpandedNames.push({ id: product.id, name: product.name, alias: product.name.trim().toUpperCase() })
   product.aliases.forEach(alias => {
-    expandedNames.push({ id: product.id, name: product.name, alias: alias.replaceAll(/[^a-zA-Z0-9 ,]/g, '').trim().toUpperCase() })
+    fullExpandedNames.push({ id: product.id, name: product.name, alias: alias.trim().toUpperCase() })
   })
 })
+
+// names that are actually in lbin, rather than items that can't actually be sold
+let expandedNames = fullExpandedNames
 
 export class AuctionCommand implements Command {
   aliases = ["ah", "lowestbin", "lbin", "lb"]
@@ -38,7 +41,7 @@ export class AuctionCommand implements Command {
   usage = "<item name>"
   
   closestAuctionProduct(phrase: string[]) {
-    let uppercase = phrase.map(phrase => phrase.replaceAll(/[^a-zA-Z0-9 ,]/g, '').trim().toUpperCase())
+    let uppercase = phrase.map(phrase => phrase.trim().toUpperCase())
     let joined = uppercase.join(" ")
     let perfectMatches: { id: string, name: string, alias: string }[] = []
 
@@ -72,7 +75,7 @@ export class AuctionCommand implements Command {
     if (auctionResponse.status === 200) {
       cachedLowestBins = await auctionResponse.json() as { [id: string]: number }
       let binNames = Object.keys(cachedLowestBins)
-      expandedNames = expandedNames.filter(nameData => binNames.includes(nameData.id))
+      expandedNames = fullExpandedNames.filter(nameData => binNames.includes(nameData.id))
     }
   } catch (e) {
     console.error("Error fetching auction data.")

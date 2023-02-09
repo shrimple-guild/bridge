@@ -13,14 +13,15 @@ import { SkillsCommand } from "./commands/SkillsCommand.js"
 import { SlayerCommand } from "./commands/SlayerCommand.js"
 import { TrophyFishCommand } from "./commands/TrophyFishCommand.js"
 import { CataCommand } from "./commands/CataCommand.js"
+import { HypixelAPI } from "../api/HypixelAPI.js"
 
 export class CommandManager {
     commands: Command[] = []
-    constructor(public prefix: string) {
+    constructor(public prefix: string, hypixelAPI: HypixelAPI) {
         this.registerCommands([
             new AuctionCommand(),
             new BazaarCommand(),
-            new CataCommand(),
+            new CataCommand(hypixelAPI),
             new EightballCommand(),
             new ElectionCommand(),
             new HelpCommand(this),
@@ -29,9 +30,9 @@ export class CommandManager {
             new RainTimerCommand(),
             new RawCommand(),
             new ReloadCommand(),
-            new SkillsCommand(),
-            new SlayerCommand(),
-            new TrophyFishCommand()
+            new SkillsCommand(hypixelAPI),
+            new SlayerCommand(hypixelAPI),
+            new TrophyFishCommand(hypixelAPI)
         ])
     }
 

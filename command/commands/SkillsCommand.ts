@@ -1,39 +1,38 @@
 import { Command } from "./Command.js"
-import { formatNumber, titleCase } from "../../utils/Utils.js"
-import { fetchProfiles } from "../../utils/apiUtils.js"
-import { isSkill, skillLevel } from "../../utils/skillUtils.js"
+import { apiKey, formatNumber, titleCase } from "../../utils/Utils.js"
 import { fetchUuid } from "../../utils/playerUtils.js"
-import { resolveProfile } from "../../utils/profileUtils.js"
+import { HypixelAPI } from "../../api/HypixelAPI.js"
+import { isSkill } from "../../api/Skills.js"
 
 export class SkillsCommand implements Command {
   aliases = ["skill"]
   usage = "<player:[profile|bingo|main]> <skill>"
+
+  constructor(private hypixelAPI: HypixelAPI) {}
 
   async execute(args: string[]) {
     if (args.length < 2) return `Syntax: skill ${this.usage}`
     const playerArg = args.shift()!.split(":")
     const playerName = playerArg[0]
     const profileArg = playerArg[1]?.toLowerCase()
-    const skillName = args.shift()!
+    const skillName = args.shift()?.toLowerCase()
     let message
     try {
-      if (!isSkill(skillName)) return `"${titleCase(skillName)}" is not a skill!`
+      if (skillName == null) return "A skill must be specified!"
       const uuid = await fetchUuid(playerName)
-      const profiles = await fetchProfiles(uuid)
-      const profile = resolveProfile(profileArg, uuid, profiles)
-      const cuteName = profile.cute_name
-      const skillExp = profile?.members?.[uuid]?.[`experience_skill_${skillName}`]
-      if (!skillExp) {
-        return `No data found for ${cuteName} profile; is your skills API on?`
-      }
-      const skillData = skillLevel(skillName, skillExp)
+      const profiles = await this.hypixelAPI.fetchProfiles(uuid)
+      const profile = profiles.getByQuery(profileArg)
+      const cuteName = profile.cuteName
+      if (!isSkill(skillName)) return `"${titleCase(skillName)}" is not a skill!`
+      const skillLevel = profile.skills[skillName]
+      if (!skillLevel) return `No data found for ${cuteName} profile; is your skills API on?`
       message = `${titleCase(skillName)} level for ${playerName} (${cuteName}): `
-      message += `${formatNumber(skillData.level, 2, false)} | `
-      message += `Total XP: ${formatNumber(skillData.totalXp, 2, true)} | `
-      if (skillData.level == skillData.maxLevel) {
-        message += `Overflow XP: ${formatNumber(skillData.overflow, 2, true)}`
+      message += `${formatNumber(skillLevel.fractionalLevel, 2, false)} | `
+      message += `Total XP: ${formatNumber(skillLevel.xp, 2, true)} | `
+      if (skillLevel.level == skillLevel.maxLevel) {
+        message += `Overflow XP: ${formatNumber(skillLevel.overflow, 2, true)}`
       } else {
-        message += `XP for level ${Math.ceil(skillData.level)}: ${formatNumber(skillData.xpToNext, 2, true)}`
+        message += `XP for level ${skillLevel.level + 1}: ${formatNumber(skillLevel.xpToNext, 2, true)}`
       }
     } catch (e: any) {
       if (e?.message) {
@@ -44,3 +43,9 @@ export class SkillsCommand implements Command {
     return message
   }
 } 
+
+async function testSkillCommand() {
+  const testAPI = new HypixelAPI(apiKey)
+  const command = new SkillsCommand(testAPI)
+  console.log(await command.execute(["appable:blueberry", "foraging"]))
+}

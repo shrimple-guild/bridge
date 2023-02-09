@@ -13,7 +13,7 @@ export class RainTimerCommand implements Command {
         let message = ""
 
         if (rain <= 3850) {
-            message = `Raining: No, time until rain: ${secsToTime(3850 - rain)}`
+            message = `Raining: No, time until rain: ${secsToTime((3850 - rain))}`
         } else {
             message = `Raining: Yes, rain time left: ${secsToTime(4850 - rain)}, time until rain: ${secsToTime(8700 - rain)}`
         }
