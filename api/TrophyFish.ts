@@ -65,10 +65,10 @@ class Fish {
   readonly diamond: number
 
   constructor(apiName: string, trophyData: any) {
-    this.bronze = trophyData[`${apiName}_bronze`] ?? 0
-    this.silver = trophyData[`${apiName}_silver`] ?? 0
-    this.gold = trophyData[`${apiName}_gold`] ?? 0
-    this.diamond = trophyData[`${apiName}_diamond`] ?? 0
+    this.bronze = trophyData?.[`${apiName}_bronze`] ?? 0
+    this.silver = trophyData?.[`${apiName}_silver`] ?? 0
+    this.gold = trophyData?.[`${apiName}_gold`] ?? 0
+    this.diamond = trophyData?.[`${apiName}_diamond`] ?? 0
   }
 
   get total() {

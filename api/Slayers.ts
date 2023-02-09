@@ -37,8 +37,8 @@ export class Slayer {
 
   constructor(slayer: string, bosses: any) {
     const slayerData = bosses[slayer]
-    this.level = new Level(slayer, slayerData.xp ?? 0)
-    this.kills = [0, 1, 2, 3, 4].map(i => (slayerData[`boss_kills_tier_${i}`] ?? 0) as number)
+    this.level = new Level(slayer, slayerData?.xp ?? 0)
+    this.kills = [0, 1, 2, 3, 4].map(i => (slayerData?.[`boss_kills_tier_${i}`] ?? 0) as number)
   }
 }
 
