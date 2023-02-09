@@ -43,5 +43,3 @@ async function testSlayerCommand() {
   const command = new SlayerCommand(testAPI)
   console.log(await command.execute(["appable:orange", "blaze"]))
 }
-
-await testSlayerCommand()
