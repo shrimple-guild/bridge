@@ -4,6 +4,7 @@ export class HypixelPlayer {
   readonly joined: Date
   readonly status: HypixelStatus
   readonly raw: any
+  readonly discordTag?: string
 
   constructor(raw: any) {
     this.raw = raw
@@ -11,6 +12,7 @@ export class HypixelPlayer {
     this.hypixelName = raw.displayname
     this.joined = new Date(raw.firstLogin)
     this.status = resolveStatus(raw.lastLogin, raw.lastLogout)
+    this.discordTag = raw.socialMedia?.links?.DISCORD
   }
 }
 
