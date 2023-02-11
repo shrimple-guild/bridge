@@ -4,16 +4,16 @@ export class Verification {
   private insertUser: Statement
   private deleteUser: Statement
   private selectDiscordId: Statement
-  private selectMinecraftId: Statement
+  private selectMinecraftId: Statement  
 
-  constructor(readonly db: Database) {
+  constructor(private db: Database) {
     this.insertUser = db.prepare(`
-      INSERT INTO Users (discordId, minecraftId) VALUES (:discordId, :minecraftId)
+      INSERT INTO DiscordMembers (discordId, minecraftId) VALUES (:discordId, :minecraftId)
       ON CONFLICT (discordId) DO UPDATE SET minecraftId = excluded.minecraftId
     `)
-    this.deleteUser = db.prepare(`DELETE FROM Users WHERE discordId = ?`)
-    this.selectDiscordId = db.prepare(`SELECT discordId FROM Users WHERE minecraftId = ?`)
-    this.selectMinecraftId = db.prepare(`SELECT minecraftId FROM Users WHERE discordId = ?`)
+    this.deleteUser = db.prepare(`DELETE FROM DiscordMembers WHERE discordId = ?`)
+    this.selectDiscordId = db.prepare(`SELECT discordId FROM DiscordMembers WHERE minecraftId = ?`)
+    this.selectMinecraftId = db.prepare(`SELECT minecraftId FROM DiscordMembers WHERE discordId = ?`)
   }
 
   getMinecraft(discordId: string) {

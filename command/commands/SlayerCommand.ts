@@ -17,24 +17,15 @@ export class SlayerCommand implements Command {
     const profileArg = playerArg[1]?.toLowerCase()
     const slayerName = args.shift()?.toLowerCase()
     let message
-    try {
-      if (!slayerName) return "A slayer name must be specified!"
-      const uuid = await fetchUuid(playerName)
-      const profiles = await this.hypixelAPI.fetchProfiles(uuid)
-      const profile = profiles.getByQuery(profileArg)
-      if (!isSlayer(slayerName)) return `${titleCase(slayerName)} is not a valid slayer name!`
-      const slayer = profile.slayers[slayerName]
-      message = `${titleCase(slayerName)} slayer data for ${playerName} (${profile.cuteName}): `
-      message += `Total XP: ${formatNumber(slayer.level.xp, 2, true)} | Tier kills: `
-      message += `(${slayer.kills.join(" | ")})`
-    } catch (e: any) {
-      if (e?.message) {
-        message = e.message
-      } else {
-        message = `Something went wrong, API might be down?`
-      }
-      console.error(e)
-    }
+    if (!slayerName) return "A slayer name must be specified!"
+    const uuid = await fetchUuid(playerName)
+    const profiles = await this.hypixelAPI.fetchProfiles(uuid)
+    const profile = profiles.getByQuery(profileArg)
+    if (!isSlayer(slayerName)) return `${titleCase(slayerName)} is not a valid slayer name!`
+    const slayer = profile.slayers[slayerName]
+    message = `${titleCase(slayerName)} slayer data for ${playerName} (${profile.cuteName}): `
+    message += `Total XP: ${formatNumber(slayer.level.xp, 2, true)} | Tier kills: `
+    message += `(${slayer.kills.join(" | ")})`
     return message
   }
 } 

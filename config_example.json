@@ -10,6 +10,7 @@
   },
   "discord": {
     "token": "token",
+    "client": "snowflake",
     "guild": "snowflake",
     "channel": "snowflake"
   },

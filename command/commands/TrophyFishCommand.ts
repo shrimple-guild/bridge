@@ -19,35 +19,28 @@ export class TrophyFishCommand implements Command {
       let fish = args?.join(" ")
       if (arg !== "total" && arg !== "tiers") fish = [arg, fish].join(" ")
       let message
-      try {
-        const uuid = await fetchUuid(playerName)
-        const profiles = await this.hypixelAPI.fetchProfiles(uuid)
-        const profile = profiles.getByQuery(profileArg)
-        const cuteName = profile.cuteName
-        const trophyFish = profile.trophyFish
-        message = `${titleCase(arg)} data for ${playerName} (${cuteName}): `
-        switch (arg) {
-          case "total":
-            message += `Total trophy fish caught: ${trophyFish.total}`
-            break
-          case "tiers":
-            message = `Trophy fish tiers unlocked for ${playerName} (${cuteName}): `
-            message += `Bronze: ${trophyFish.unlocked("bronze")}/18 | Silver: ${trophyFish.unlocked("silver")}/18 | Gold: ${trophyFish.unlocked("gold")}/18 | Diamond: ${trophyFish.unlocked("diamond")}/18`
-            break
-          default:
-            const fishMatch = this.guessFish(fish)
-            if (!fishMatch) return "Invalid fish."
-            const name = fishMatch
-            const fishData = trophyFish.get(name)
-            message = `${name} caught for ${playerName} (${cuteName}): `
-            message += `Total ${titleCase(name)}: ${fishData.total} | Bronze: ${fishData.bronze} | Silver: ${fishData.silver} | Gold: ${fishData.gold} | Diamond: ${fishData.diamond}`
-            break
-        }
-      } catch (e: any) {
-        if (e?.message) {
-            message = e.message
-        } else message = `Something went wrong, API might be down?`
-        console.error(e)
+      const uuid = await fetchUuid(playerName)
+      const profiles = await this.hypixelAPI.fetchProfiles(uuid)
+      const profile = profiles.getByQuery(profileArg)
+      const cuteName = profile.cuteName
+      const trophyFish = profile.trophyFish
+      message = `${titleCase(arg)} data for ${playerName} (${cuteName}): `
+      switch (arg) {
+        case "total":
+          message += `Total trophy fish caught: ${trophyFish.total}`
+          break
+        case "tiers":
+          message = `Trophy fish tiers unlocked for ${playerName} (${cuteName}): `
+          message += `Bronze: ${trophyFish.unlocked("bronze")}/18 | Silver: ${trophyFish.unlocked("silver")}/18 | Gold: ${trophyFish.unlocked("gold")}/18 | Diamond: ${trophyFish.unlocked("diamond")}/18`
+          break
+        default:
+          const fishMatch = this.guessFish(fish)
+          if (!fishMatch) return "Invalid fish."
+          const name = fishMatch
+          const fishData = trophyFish.get(name)
+          message = `${name} caught for ${playerName} (${cuteName}): `
+          message += `Total ${titleCase(name)}: ${fishData.total} | Bronze: ${fishData.bronze} | Silver: ${fishData.silver} | Gold: ${fishData.gold} | Diamond: ${fishData.diamond}`
+          break
       }
       return message
     }

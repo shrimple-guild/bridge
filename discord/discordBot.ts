@@ -3,7 +3,7 @@ import discord, {
   GatewayIntentBits,
   TextChannel,
   Message,
-  EmbedBuilder,
+  Events,
 } from "discord.js"
 import { bridge } from "../bridge.js"
 import { imageLinkRegex as imageLinkPattern } from "../utils/RegularExpressions.js"
@@ -13,9 +13,9 @@ import log4js from "log4js"
 
 // config importing
 import config from "../config.json" assert { type: "json" }
+import { simpleEmbed } from "../utils/discordUtils.js"
 const { token: botToken, channel: guildChannelId } = config.discord
 const guildStaffIds = config.roles.filter(role => role.isStaff).map(role => role.discord)
-
 
 const logger = log4js.getLogger("discord")
 
@@ -26,7 +26,6 @@ const client = new discord.Client({
   GatewayIntentBits.MessageContent
   ]
 })
-
 client.login(botToken)
 
 function getTextChannel(channelId: string): TextChannel | undefined {
@@ -63,14 +62,7 @@ async function sendGuildChatEmbed(username: string, content: string, colorValue?
 async function sendSimpleEmbed(title: string, content: string, footer?: string) {
   const channel = getTextChannel(guildChannelId)
   if (!channel) return
-
-  const embed = new EmbedBuilder()
-    .setColor(colorOf("BOT"))
-    .setTitle(title)
-    .setDescription(content)
-    .setFooter(footer ? { text: footer } : null)
-    .setTimestamp(Date.now())
-
+  const embed = simpleEmbed(title, content, footer)
   channel.send({ embeds: [embed] })
 }
 
@@ -78,7 +70,7 @@ client.once("ready", () => {
   logger.info(`Connected.`)
 })
 
-client.on("messageCreate", async (message) => {
+client.on(Events.MessageCreate, async (message) => {
   if (message.author.bot) return
   if (guildChannelId != message.channelId) return
   const author = getBridgeAuthorName(message)

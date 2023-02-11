@@ -1,3 +1,4 @@
 node_modules/
-data/*.db
+database/main.db
+database/backups/*
 config.json

@@ -16,46 +16,45 @@ import { CataCommand } from "./commands/CataCommand.js"
 import { HypixelAPI } from "../api/HypixelAPI.js"
 
 export class CommandManager {
-    commands: Command[] = []
-    constructor(public prefix: string, public botUsername: string, hypixelAPI: HypixelAPI) {
-        this.registerCommands([
-            new AuctionCommand(),
-            new BazaarCommand(),
-            new CataCommand(hypixelAPI),
-            new EightballCommand(),
-            new ElectionCommand(),
-            new HelpCommand(this),
-            new PickCommand(),
-            new PingCommand(),
-            new RainTimerCommand(),
-            new RawCommand(botUsername),
-            new ReloadCommand(),
-            new SkillsCommand(hypixelAPI),
-            new SlayerCommand(hypixelAPI),
-            new TrophyFishCommand(hypixelAPI)
-        ])
+  commands: Command[]
+
+  constructor(public prefix: string, public botUsername: string, hypixelAPI: HypixelAPI) {
+    this.commands = [
+      new AuctionCommand(),
+      new BazaarCommand(),
+      new CataCommand(hypixelAPI),
+      new EightballCommand(),
+      new ElectionCommand(),
+      new HelpCommand(this),
+      new PickCommand(),
+      new PingCommand(),
+      new RainTimerCommand(),
+      new RawCommand(botUsername),
+      new ReloadCommand(),
+      new SkillsCommand(hypixelAPI),
+      new SlayerCommand(hypixelAPI),
+      new TrophyFishCommand(hypixelAPI)
+    ]
+  }
+
+  async onChatMessage(message: string, isStaff: boolean) {
+    if (!message.startsWith(this.prefix)) return
+    const commStr = message.substring(this.prefix.length)
+    const args = commStr.trim().split(" ")
+    const commandName = args.shift()
+
+    const command = this.commands.find(comm => comm.aliases.includes(commandName))
+
+    if (!command) return `Command ${commandName} not found, try ${this.prefix}help`
+    try {
+      return await command.execute(args, isStaff)
+    } catch (e: any) {
+      console.error(e)
+      if (e?.message) {
+        return e.message
+      } else {
+        return `Something went wrong, API might be down?`
+      }
     }
-
-    registerCommand(command: Command) {
-        this.commands.push(command)
-    }
-
-    registerCommands(commandList: Command[]) {
-        commandList.forEach(comm => {
-            this.registerCommand(comm)
-        })
-    }
-
-    async onChatMessage(message: string, isStaff: boolean) {
-        if (!message.startsWith(this.prefix)) return
-        const commStr = message.substring(this.prefix.length)
-        const args = commStr.trim().split(" ")
-        const commandName = args.shift()
-
-        const command = this.commands.find(comm => comm.aliases.includes(commandName))
-
-        if (!command) return `Command ${commandName} not found, try ${this.prefix}help`
-        const response = await command.execute(args, isStaff)
-        return response
-    }
+  }
 }

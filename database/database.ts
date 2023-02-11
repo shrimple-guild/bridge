@@ -1,15 +1,18 @@
 import Database from "better-sqlite3"
-import fs from "fs"
-export const db = new Database("./data/members.db")
+import { existsSync } from "fs"
 
 const getDbVersion = () => db.prepare("PRAGMA user_version").get().user_version
 const setDbVersion = (version: number) => db.prepare(`PRAGMA user_version = ${version}`).run()
+
+const path = "./database/main.db"
+const databaseExists = existsSync(path)
+export const db = new Database(path)
 
 const migrations = [
   {
     version: 0,
     script: `
-    CREATE TABLE IF NOT EXISTS Members (
+    CREATE TABLE Members (
       username TEXT PRIMARY KEY,
       skin TEXT NOT NULL,
       lastUpdated INTEGER NOT NULL
@@ -61,10 +64,20 @@ async function runMigrations() {
   const targetVersion = Math.max(...migrations.map(migration => migration.version))
   if (currentVersion != targetVersion) {
     console.log(`Beginning migrations to version ${targetVersion}...`)
-    await db.backup(`./data/members_v${currentVersion}_backup_${Date.now()}.db`)
+    await db.backup(`./database/backups/members_${currentVersion}_${Date.now()}.db`)
     await migrate(currentVersion, targetVersion)
     console.log(`Completed migrations to version ${targetVersion}.`)
   }
 }
 
+if (!databaseExists) {
+  const initial = migrations.find(migration => migration.version == 0)?.script
+  if (initial != null) {
+    db.transaction(() => {
+      db.exec(initial)
+    })()
+  }
+}
+
 await runMigrations()
+
