@@ -12,7 +12,11 @@
     "token": "token",
     "client": "snowflake",
     "guild": "snowflake",
-    "channel": "snowflake"
+    "channel": "snowflake",
+    "verificationRoles": {
+      "unverified": "snowflake",
+      "verified": "snowflake"
+    }
   },
   "bridge": {
     "prefix": "_",

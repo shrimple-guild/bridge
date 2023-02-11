@@ -8,7 +8,7 @@ import { SlashCommand } from "./SlashCommand.js";
 export class VerifyCommand implements SlashCommand {
   data = new SlashCommandBuilder()
     .setName("verify")
-    .setDescription("Verify in server using Minecraft username.")
+    .setDescription("Verify in this server using a linked Hypixel account.")
     .addStringOption(option => 
       option
         .setRequired(true)
@@ -26,7 +26,7 @@ export class VerifyCommand implements SlashCommand {
       const player = await this.hypixelAPI.fetchPlayer(uuid)
       if (player.discordTag == null) throw new Error("Your discord account isn't linked to your Hypixel account.")
       if (player.discordTag != interaction.user.tag) throw new Error(`${username} is linked to \`${player.discordTag}\`.`)
-      this.verification.verify(interaction.user.id, uuid)
+      await this.verification.verify(interaction.member, uuid)
       await interaction.followUp({ ephemeral: true, embeds: [statusEmbed("success", `Verified as \`${username}\`.`)] })
     } catch (e) {
       if (e instanceof Error) {

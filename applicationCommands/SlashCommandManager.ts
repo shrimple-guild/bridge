@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction, Client, Events, REST, Routes, SlashCommandBuilder } from "discord.js";
 import { HypixelAPI } from "../api/HypixelAPI.js";
 import { Verification } from "../verify/Verification.js";
+import { ManualVerifyCommand } from "./commands/ManualVerifyCommand.js";
 import { SlashCommand } from "./commands/SlashCommand.js";
 import { VerifyCommand } from "./commands/VerifyCommand.js";
 
@@ -9,7 +10,8 @@ export class SlashCommandManager {
     
     constructor(verification?: Verification, hypixelAPI?: HypixelAPI) {
       this.commands = [
-        new VerifyCommand(verification, hypixelAPI)
+        new VerifyCommand(verification, hypixelAPI),
+        new ManualVerifyCommand(verification, hypixelAPI)
       ]
     }
 

@@ -8,9 +8,8 @@ import { SlashCommandManager } from "./applicationCommands/SlashCommandManager.j
 import config from "./config.json" assert { type: "json" }
 
 const hypixelAPI = new HypixelAPI(config.bridge.apiKey)
-const verification = new Verification(db)
+const verification = new Verification(db, config.discord.verificationRoles)
 const slashCommands = new SlashCommandManager(verification, hypixelAPI)
 
-const discord = createDiscordBot(config.discord.token, slashCommands)
-
+const discord = await createDiscordBot(config.discord.token, slashCommands)
 

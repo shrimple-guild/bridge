@@ -14,7 +14,9 @@ export function statusEmbed(status: "success" | "failure", content: string) {
   return simpleEmbed(
     status == "success" ? "Success" : "Failure", 
     `${(status == "success" ? "✅" : "❌")} ${content}`,
-    null,
+    undefined,
     status == "success" ? "Green" : "Red"
   )
 }
+
+

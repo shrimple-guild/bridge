@@ -2,7 +2,7 @@ import { Client, Events, GatewayIntentBits } from "discord.js";
 import { SlashCommandManager } from "../applicationCommands/SlashCommandManager";
 
 class DiscordBot {
-  constructor(private client: Client<true>, private slashCommands: SlashCommandManager) {
+  constructor(readonly client: Client<true>, private slashCommands: SlashCommandManager) {
     this.client.on(Events.InteractionCreate, async (interaction) => {
       if (!interaction.isChatInputCommand()) return
       if (!interaction.inCachedGuild()) return
