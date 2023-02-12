@@ -42,7 +42,10 @@ rl.on("line", (input) => {
   }
 })
 
-exitHook((cb) => {
+exitHook(async (cb) => {
+  bridge.chatAsBot("Process ended.")
+  await sleep(1000)
   bridge.quit()
-  sleep(1000).then(() => cb())
+  await sleep(1000)
+  cb()
 })
