@@ -1,4 +1,4 @@
-import { fetchWithTimeout } from "../utils/apiUtils.js"
+import { fetchWithTimeout } from "../utils/fetchUtils.js"
 import { HypixelGuildMember } from "./HypixelGuildMember.js"
 import { HypixelPlayer } from "./HypixelPlayer.js"
 import { SkyblockProfiles } from "./SkyblockProfiles.js"

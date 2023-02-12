@@ -1,4 +1,4 @@
-import { SlashCommandManager } from "./applicationCommands/SlashCommandManager.js"
+import { SlashCommandManager } from "./discord/commands/SlashCommandManager.js"
 
 import config from "./config.json" assert { type: "json" }
 

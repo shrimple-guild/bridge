@@ -75,3 +75,4 @@ export function titleCase(string: string) {
 export function jaroDistance(string1: string, string2: string) {
   return jaro(string1, string2, { caseSensitive: false })
 }
+

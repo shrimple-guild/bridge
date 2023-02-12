@@ -1,8 +1,9 @@
 import { EmbedBuilder } from "@discordjs/builders";
 import { AttachmentBuilder, ChannelType, Client, Events, GatewayIntentBits, GuildMember, Message, TextChannel } from "discord.js";
-import { SlashCommandManager } from "../applicationCommands/SlashCommandManager.js";
-import { Bridge } from "../features/bridge/Bridge.js";
+import { SlashCommandManager } from "./commands/SlashCommandManager.js";
+import { Bridge } from "../bridge/Bridge.js";
 import { simpleEmbed } from "../utils/discordUtils.js";
+import { LoggerCategory } from "../utils/Logger.js";
 import { fetchSkin } from "../utils/playerUtils.js";
 import { imageLinkRegex } from "../utils/RegularExpressions.js";
 import { colorOf, cleanContent } from "../utils/utils.js";
@@ -15,9 +16,13 @@ export class DiscordBot {
     private slashCommands: SlashCommandManager,
     private staffRoles: string[],
     private guildBridgeChannelId: string,
+    private logger?: LoggerCategory
   ) {
+    logger?.info(`Discord bot online.`)
+
     this.client.on(Events.InteractionCreate, async (interaction) => {
       if (!interaction.isChatInputCommand() || !interaction.inCachedGuild()) return
+      logger?.info(`Slash command used: ${interaction.commandName}`)
       await this.slashCommands.onSlashCommandInteraction(interaction)
     })
 
@@ -41,7 +46,8 @@ export class DiscordBot {
       if (stickers != null) {
         content += `${stickers}`
       }
-
+      
+      logger?.info(`Discord chat: ${authorName} to ${replyAuthor}: ${content}`)
       this.bridge.onDiscordChat(authorName, content, this.isStaff(author), replyAuthor)
     })
   }
@@ -96,6 +102,7 @@ export async function createDiscordBot(
   slashCommands: SlashCommandManager,
   staffRoles: string[],
   guildBridgeChannelId: string,
+  logger?: LoggerCategory
 ) {
   const client = new Client({
     intents: [
@@ -112,5 +119,5 @@ export async function createDiscordBot(
       resolve(readyClient)
     })
   })
-  return new DiscordBot(readyClient, slashCommands, staffRoles, guildBridgeChannelId)
+  return new DiscordBot(readyClient, slashCommands, staffRoles, guildBridgeChannelId, logger)
 }
