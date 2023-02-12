@@ -5,7 +5,7 @@ import discord, {
   Message,
   Events,
 } from "discord.js"
-import { bridge } from "../bridge.js"
+import { bridge } from "../features/bridge/bridge.js"
 import { imageLinkRegex as imageLinkPattern } from "../utils/RegularExpressions.js"
 import { cleanContent, colorOf } from "../utils/Utils.js"
 import { MinecraftEmbed } from "./MinecraftEmbed.js"

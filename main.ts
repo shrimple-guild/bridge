@@ -1,6 +1,6 @@
 //import "./bridge.js"
 
-import { Verification } from "./verify/Verification.js"
+import { Verification } from "./features/verify/Verification.js"
 import { db } from "./database/database.js"
 import { HypixelAPI } from "./api/HypixelAPI.js"
 import { createDiscordBot } from "./discord/Discord.js"

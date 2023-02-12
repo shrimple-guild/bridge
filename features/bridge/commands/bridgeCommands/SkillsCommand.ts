@@ -1,8 +1,8 @@
 import { BridgeCommand } from "./Command.js"
-import { formatNumber, titleCase } from "../../utils/Utils.js"
-import { fetchUuid } from "../../utils/playerUtils.js"
-import { HypixelAPI } from "../../api/HypixelAPI.js"
-import { isSkill } from "../../api/Skills.js"
+import { formatNumber, titleCase } from "../../../../utils/Utils.js"
+import { fetchUuid } from "../../../../utils/playerUtils.js"
+import { HypixelAPI } from "../../../../api/HypixelAPI.js"
+import { isSkill } from "../../../../api/Skills.js"
 
 export class SkillsCommand implements BridgeCommand {
   aliases = ["skill"]

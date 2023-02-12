@@ -1,8 +1,8 @@
 import { BridgeCommand } from "./Command.js"
-import { msToTime, formatNumber, titleCase } from "../../utils/Utils.js"
-import { fetchUuid } from "../../utils/playerUtils.js"
-import { isDungeonClass } from "../../api/Dungeons.js"
-import { HypixelAPI } from "../../api/HypixelAPI.js"
+import { msToTime, formatNumber, titleCase } from "../../../../utils/Utils.js"
+import { fetchUuid } from "../../../../utils/playerUtils.js"
+import { isDungeonClass } from "../../../../api/Dungeons.js"
+import { HypixelAPI } from "../../../../api/HypixelAPI.js"
 
 const floorArgRegex = /^(f[0-7]|m[1-7])$/
 

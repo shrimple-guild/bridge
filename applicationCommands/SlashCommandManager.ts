@@ -1,9 +1,9 @@
 import { ChatInputCommandInteraction, Client, Events, REST, Routes, SlashCommandBuilder } from "discord.js";
 import { HypixelAPI } from "../api/HypixelAPI.js";
-import { Verification } from "../verify/Verification.js";
-import { ManualVerifyCommand } from "./commands/ManualVerifyCommand.js";
-import { SlashCommand } from "./commands/SlashCommand.js";
-import { VerifyCommand } from "./commands/VerifyCommand.js";
+import { Verification } from "../features/verify/Verification.js";
+import { ManualVerifyCommand } from "../features/verify/commands/ManualVerifyCommand.js";
+import { SlashCommand } from "./SlashCommand.js";
+import { VerifyCommand } from "../features/verify/commands/VerifyCommand.js";
 
 export class SlashCommandManager {
     commands: SlashCommand[]

@@ -1,8 +1,8 @@
 import { BridgeCommand } from "./Command.js"
-import { titleCase } from "../../utils/Utils.js"
-import { fetchUuid } from "../../utils/playerUtils.js"
-import { HypixelAPI } from "../../api/HypixelAPI.js"
-import { trophyFishNames } from "../../api/TrophyFish.js"
+import { titleCase } from "../../../../utils/Utils.js"
+import { fetchUuid } from "../../../../utils/playerUtils.js"
+import { HypixelAPI } from "../../../../api/HypixelAPI.js"
+import { trophyFishNames } from "../../../../api/TrophyFish.js"
 
 export class TrophyFishCommand implements BridgeCommand {
     aliases = ["trophy", "trophyfish", "tfish"]

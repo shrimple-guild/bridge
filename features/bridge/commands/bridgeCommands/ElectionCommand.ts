@@ -1,6 +1,6 @@
 import { BridgeCommand } from "./Command.js"
 import { HumanizeDurationLanguage, HumanizeDuration } from "humanize-duration-ts"
-import { titleCase } from "../../utils/Utils.js"
+import { titleCase } from "../../../../utils/Utils.js"
 import { jaroWinkler as jaroDistance} from "jaro-winkler-typescript"
 
 export class ElectionCommand implements BridgeCommand {

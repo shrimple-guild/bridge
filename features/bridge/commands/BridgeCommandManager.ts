@@ -13,7 +13,7 @@ import { SkillsCommand } from "./bridgeCommands/SkillsCommand.js"
 import { SlayerCommand } from "./bridgeCommands/SlayerCommand.js"
 import { TrophyFishCommand } from "./bridgeCommands/TrophyFishCommand.js"
 import { CataCommand } from "./bridgeCommands/CataCommand.js"
-import { HypixelAPI } from "../api/HypixelAPI.js"
+import { HypixelAPI } from "../../../api/HypixelAPI.js"
 
 export class BridgeCommandManager {
   commands: BridgeCommand[]

@@ -1,6 +1,6 @@
 import { BridgeCommand } from "./Command.js"
-import { jaroDistance } from "../../utils/Utils.js"
-import bazaarNames from "../../data/bazaar.json" assert { type: "json" }
+import { jaroDistance } from "../../../../utils/Utils.js"
+import bazaarNames from "../../../../data/bazaar.json" assert { type: "json" }
 let cachedBazaarData: any = {}
 
 let expandedNames: {id: string, name: string, alias: string}[] = []

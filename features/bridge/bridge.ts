@@ -1,13 +1,13 @@
 import log4js from "log4js"
 import { minecraftBot } from "./minecraft/MinecraftBot.js"
-import { discordBot } from "./discord/DiscordBot.js"
+import { discordBot } from "../../discord/DiscordBot.js"
 import readline from "readline"
 import { BridgeCommandManager } from "./commands/BridgeCommandManager.js"
-import { sleep } from "./utils/Utils.js"
+import { sleep } from "../../utils/Utils.js"
 import exitHook from "async-exit-hook"
-import { HypixelAPI } from "./api/HypixelAPI.js"
+import { HypixelAPI } from "../../api/HypixelAPI.js"
 
-import config from "./config.json" assert { type: "json" }
+import config from "../../config.json" assert { type: "json" }
 const { apiKey, prefix } = config.bridge
 const botUsername = config.minecraft.username
 const staffRanks = config.roles.filter(role => role.isStaff).map(role => role.hypixelTag)

@@ -1,7 +1,7 @@
 import { BridgeCommand } from "./Command.js"
 import { jaroWinkler as jaroDistance } from "jaro-winkler-typescript"
-import { titleCase } from "../../utils/Utils.js"
-import auctionAliases from "../../data/auctionAliases.json" assert { type: "json" }
+import { titleCase } from "../../../../utils/Utils.js"
+import auctionAliases from "../../../../data/auctionAliases.json" assert { type: "json" }
 
 let cachedLowestBins: { [id: string]: number } = {}
 

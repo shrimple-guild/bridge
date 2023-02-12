@@ -1,5 +1,5 @@
 import { BridgeCommand } from "./Command.js"
-import { secsToTime } from "../../utils/Utils.js"
+import { secsToTime } from "../../../../utils/Utils.js"
 
 export class RainTimerCommand implements BridgeCommand {
     aliases = ["rain", "rt"]

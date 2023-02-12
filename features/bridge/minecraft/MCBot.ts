@@ -1,8 +1,8 @@
 import AsyncLock from "async-lock"
 import mineflayer from "mineflayer"
 import { Bridge } from "../MinecraftBridge.js"
-import { nameIsInDb } from "../utils/playerUtils.js"
-import { sleep } from "../utils/utils.js"
+import { nameIsInDb } from "../../../utils/playerUtils.js"
+import { sleep } from "../../../utils/utils.js"
 import { PatternManager } from "./PatternManager.js"
 
 export class MinecraftBot {

@@ -1,7 +1,7 @@
 import { EmbedBuilder } from "@discordjs/builders";
 import { AttachmentBuilder, ChannelType, Client, Events, GatewayIntentBits, GuildMember, Message, TextChannel } from "discord.js";
 import { SlashCommandManager } from "../applicationCommands/SlashCommandManager.js";
-import { Bridge } from "../MinecraftBridge.js";
+import { Bridge } from "../features/bridge/MinecraftBridge.js";
 import { simpleEmbed } from "../utils/discordUtils.js";
 import { fetchSkin } from "../utils/playerUtils.js";
 import { imageLinkRegex } from "../utils/RegularExpressions.js";

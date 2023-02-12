@@ -1,5 +1,5 @@
 import { BridgeCommandManager } from "./commands/BridgeCommandManager.js";
-import { DiscordBot } from "./discord/Discord.js";
+import { DiscordBot } from "../../discord/Discord.js";
 import { MinecraftBot } from "./minecraft/MCBot.js";
 
 

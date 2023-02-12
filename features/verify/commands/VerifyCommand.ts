@@ -1,9 +1,9 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { HypixelAPI } from "../../api/HypixelAPI.js";
-import { statusEmbed } from "../../utils/discordUtils.js";
-import { fetchUuid } from "../../utils/playerUtils.js";
-import { Verification } from "../../verify/Verification.js";
-import { SlashCommand } from "./SlashCommand.js";
+import { HypixelAPI } from "../../../api/HypixelAPI.js";
+import { statusEmbed } from "../../../utils/discordUtils.js";
+import { fetchUuid } from "../../../utils/playerUtils.js";
+import { Verification } from "../Verification.js";
+import { SlashCommand } from "../../../applicationCommands/SlashCommand.js";
 
 export class VerifyCommand implements SlashCommand {
   data = new SlashCommandBuilder()
