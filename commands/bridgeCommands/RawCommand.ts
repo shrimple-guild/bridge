@@ -1,8 +1,8 @@
-import { Command } from "./Command.js"
+import { BridgeCommand } from "./Command.js"
 import { minecraftBot } from "../../minecraft/MinecraftBot.js"
 import { discordBot } from "../../discord/DiscordBot.js"
 
-export class RawCommand implements Command {
+export class RawCommand implements BridgeCommand {
     aliases = ["raw"]
     usage = "<data>"
 

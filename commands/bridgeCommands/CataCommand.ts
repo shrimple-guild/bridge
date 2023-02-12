@@ -1,4 +1,4 @@
-import { Command } from "./Command.js"
+import { BridgeCommand } from "./Command.js"
 import { msToTime, formatNumber, titleCase } from "../../utils/Utils.js"
 import { fetchUuid } from "../../utils/playerUtils.js"
 import { isDungeonClass } from "../../api/Dungeons.js"
@@ -6,7 +6,7 @@ import { HypixelAPI } from "../../api/HypixelAPI.js"
 
 const floorArgRegex = /^(f[0-7]|m[1-7])$/
 
-export class CataCommand implements Command {
+export class CataCommand implements BridgeCommand {
   aliases = ["cata"]
   usage = "<player:[profile|bingo|main]> [class|f[0-7]|m[1-7]]"
 

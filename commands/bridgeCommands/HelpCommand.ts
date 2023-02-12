@@ -1,10 +1,10 @@
-import { Command } from "./Command.js"
-import { CommandManager } from "../CommandManager"
+import { BridgeCommand } from "./Command.js"
+import { BridgeCommandManager } from "../BridgeCommandManager"
 
-export class HelpCommand implements Command {
+export class HelpCommand implements BridgeCommand {
     aliases = ["help"]
 
-    constructor(private commandManager: CommandManager) {}
+    constructor(private commandManager: BridgeCommandManager) {}
 
     execute(args: string[]) {
         let helpMessage = "Available commands: "

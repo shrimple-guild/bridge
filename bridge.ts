@@ -2,7 +2,7 @@ import log4js from "log4js"
 import { minecraftBot } from "./minecraft/MinecraftBot.js"
 import { discordBot } from "./discord/DiscordBot.js"
 import readline from "readline"
-import { CommandManager } from "./command/CommandManager.js"
+import { BridgeCommandManager } from "./commands/BridgeCommandManager.js"
 import { sleep } from "./utils/Utils.js"
 import exitHook from "async-exit-hook"
 import { HypixelAPI } from "./api/HypixelAPI.js"
@@ -39,7 +39,7 @@ rl.on("line", (input) => {
 })
 
 export const hypixelAPI = new HypixelAPI(apiKey)
-export const commandManager = new CommandManager(prefix, botUsername, hypixelAPI)
+export const commandManager = new BridgeCommandManager(prefix, botUsername, hypixelAPI)
 
 async function onDiscordChat(author: string, content: string, isStaff: boolean, replyAuthor: string | undefined, onCompletion?: (status: string) => void) {
   const replyString = replyAuthor ? ` [to] ${replyAuthor}` : ""

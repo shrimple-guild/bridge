@@ -1,10 +1,10 @@
-import { Command } from "./Command.js"
+import { BridgeCommand } from "./Command.js"
 import { titleCase } from "../../utils/Utils.js"
 import { fetchUuid } from "../../utils/playerUtils.js"
 import { HypixelAPI } from "../../api/HypixelAPI.js"
 import { trophyFishNames } from "../../api/TrophyFish.js"
 
-export class TrophyFishCommand implements Command {
+export class TrophyFishCommand implements BridgeCommand {
     aliases = ["trophy", "trophyfish", "tfish"]
     usage = "<player:[profile|bingo|main]> <total | tiers | [fish]>"
 

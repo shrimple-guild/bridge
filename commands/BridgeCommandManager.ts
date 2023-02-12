@@ -1,22 +1,22 @@
-import { Command } from "./commands/Command.js"
-import { AuctionCommand } from "./commands/AuctionCommand.js"
-import { BazaarCommand } from "./commands/BazaarCommand.js"
-import { EightballCommand } from "./commands/EightBallCommand.js"
-import { ElectionCommand } from "./commands/ElectionCommand.js"
-import { HelpCommand } from "./commands/HelpCommand.js"
-import { PickCommand } from "./commands/PickCommand.js"
-import { PingCommand } from "./commands/PingCommand.js"
-import { RainTimerCommand } from "./commands/RainTimerCommand.js"
-import { RawCommand } from "./commands/RawCommand.js"
-import { ReloadCommand } from "./commands/ReloadCommand.js"
-import { SkillsCommand } from "./commands/SkillsCommand.js"
-import { SlayerCommand } from "./commands/SlayerCommand.js"
-import { TrophyFishCommand } from "./commands/TrophyFishCommand.js"
-import { CataCommand } from "./commands/CataCommand.js"
+import { BridgeCommand } from "./bridgeCommands/Command.js"
+import { AuctionCommand } from "./bridgeCommands/AuctionCommand.js"
+import { BazaarCommand } from "./bridgeCommands/BazaarCommand.js"
+import { EightballCommand } from "./bridgeCommands/EightBallCommand.js"
+import { ElectionCommand } from "./bridgeCommands/ElectionCommand.js"
+import { HelpCommand } from "./bridgeCommands/HelpCommand.js"
+import { PickCommand } from "./bridgeCommands/PickCommand.js"
+import { PingCommand } from "./bridgeCommands/PingCommand.js"
+import { RainTimerCommand } from "./bridgeCommands/RainTimerCommand.js"
+import { RawCommand } from "./bridgeCommands/RawCommand.js"
+import { ReloadCommand } from "./bridgeCommands/ReloadCommand.js"
+import { SkillsCommand } from "./bridgeCommands/SkillsCommand.js"
+import { SlayerCommand } from "./bridgeCommands/SlayerCommand.js"
+import { TrophyFishCommand } from "./bridgeCommands/TrophyFishCommand.js"
+import { CataCommand } from "./bridgeCommands/CataCommand.js"
 import { HypixelAPI } from "../api/HypixelAPI.js"
 
-export class CommandManager {
-  commands: Command[]
+export class BridgeCommandManager {
+  commands: BridgeCommand[]
 
   constructor(public prefix: string, public botUsername: string, hypixelAPI: HypixelAPI) {
     this.commands = [

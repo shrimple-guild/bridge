@@ -1,4 +1,4 @@
-import { Command } from "./Command.js"
+import { BridgeCommand } from "./Command.js"
 import { jaroWinkler as jaroDistance } from "jaro-winkler-typescript"
 import { titleCase } from "../../utils/Utils.js"
 import auctionAliases from "../../data/auctionAliases.json" assert { type: "json" }
@@ -34,7 +34,7 @@ remapped.forEach(product => {
 // names that are actually in lbin, rather than items that can't actually be sold
 let expandedNames = fullExpandedNames
 
-export class AuctionCommand implements Command {
+export class AuctionCommand implements BridgeCommand {
   aliases = ["ah", "lowestbin", "lbin", "lb"]
 
   usage = "<item name>"

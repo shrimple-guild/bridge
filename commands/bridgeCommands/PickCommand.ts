@@ -1,7 +1,7 @@
-import { Command } from "./Command.js"
+import { BridgeCommand } from "./Command.js"
 import { randRange } from "../../utils/Utils.js"
 
-export class PickCommand implements Command {
+export class PickCommand implements BridgeCommand {
     aliases = ["pick", "choose"]
     usage = "<option1> <option2> [option3] ..."
 

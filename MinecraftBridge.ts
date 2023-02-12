@@ -1,4 +1,4 @@
-import { CommandManager } from "./command/CommandManager.js";
+import { BridgeCommandManager } from "./commands/BridgeCommandManager.js";
 import { DiscordBot } from "./discord/Discord.js";
 import { MinecraftBot } from "./minecraft/MCBot.js";
 
@@ -7,7 +7,7 @@ export class Bridge {
   constructor(
     private discord: DiscordBot,
     private minecraft: MinecraftBot,
-    private bridgeCommandManager: CommandManager,
+    private bridgeCommandManager: BridgeCommandManager,
   ) {}
 
   async onMinecraftChat(username: string, content: string, isStaff: boolean, colorAlias?: string, guildRank?: string) {

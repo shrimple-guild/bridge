@@ -1,10 +1,10 @@
-import { Command } from "./Command.js"
+import { BridgeCommand } from "./Command.js"
 import { formatNumber, titleCase } from "../../utils/Utils.js"
 import { fetchUuid } from "../../utils/playerUtils.js"
 import { HypixelAPI } from "../../api/HypixelAPI.js"
 import { isSkill } from "../../api/Skills.js"
 
-export class SkillsCommand implements Command {
+export class SkillsCommand implements BridgeCommand {
   aliases = ["skill"]
   usage = "<player:[profile|bingo|main]> <skill>"
 

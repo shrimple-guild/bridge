@@ -1,4 +1,4 @@
-export interface Command {
+export interface BridgeCommand {
     usage?: string
     
     aliases: (string | undefined)[]

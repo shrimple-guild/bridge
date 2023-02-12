@@ -1,4 +1,4 @@
-import { Command } from "./Command.js"
+import { BridgeCommand } from "./Command.js"
 import { jaroDistance } from "../../utils/Utils.js"
 import bazaarNames from "../../data/bazaar.json" assert { type: "json" }
 let cachedBazaarData: any = {}
@@ -11,7 +11,7 @@ bazaarNames.forEach((product) => {
   })
 })
 
-export class BazaarCommand implements Command {
+export class BazaarCommand implements BridgeCommand {
   aliases = ["bazaar", "bz"]
 
   usage = "<item name>"

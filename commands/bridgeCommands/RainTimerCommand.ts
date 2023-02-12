@@ -1,7 +1,7 @@
-import { Command } from "./Command.js"
+import { BridgeCommand } from "./Command.js"
 import { secsToTime } from "../../utils/Utils.js"
 
-export class RainTimerCommand implements Command {
+export class RainTimerCommand implements BridgeCommand {
     aliases = ["rain", "rt"]
 
     execute(args: string[]) {

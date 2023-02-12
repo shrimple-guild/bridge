@@ -1,10 +1,10 @@
-import { Command } from "./Command.js"
+import { BridgeCommand } from "./Command.js"
 import { formatNumber, titleCase } from "../../utils/Utils.js"
 import { fetchUuid } from "../../utils/playerUtils.js"
 import { HypixelAPI } from "../../api/HypixelAPI.js"
 import { isSlayer } from "../../api/Slayers.js"
 
-export class SlayerCommand implements Command {
+export class SlayerCommand implements BridgeCommand {
   aliases = ["slayer"]
   usage = "<player:[profile|bingo|main]> <slayer>"
 
