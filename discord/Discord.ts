@@ -1,17 +1,103 @@
-import { Client, Events, GatewayIntentBits } from "discord.js";
-import { SlashCommandManager } from "../applicationCommands/SlashCommandManager";
+import { EmbedBuilder } from "@discordjs/builders";
+import { AttachmentBuilder, ChannelType, Client, Events, GatewayIntentBits, GuildMember, Message, TextChannel } from "discord.js";
+import { SlashCommandManager } from "../applicationCommands/SlashCommandManager.js";
+import { Bridge } from "../MinecraftBridge.js";
+import { simpleEmbed } from "../utils/discordUtils.js";
+import { fetchSkin } from "../utils/playerUtils.js";
+import { imageLinkRegex } from "../utils/RegularExpressions.js";
+import { colorOf, cleanContent } from "../utils/utils.js";
 
-class DiscordBot {
-  constructor(readonly client: Client<true>, private slashCommands: SlashCommandManager) {
+export class DiscordBot {
+
+  constructor(
+    readonly client: Client<true>, 
+    private slashCommands: SlashCommandManager,
+    private staffRoles: string[],
+    private guildBridgeChannelId: string,
+    private bridge?: Bridge
+  ) {
     this.client.on(Events.InteractionCreate, async (interaction) => {
-      if (!interaction.isChatInputCommand()) return
-      if (!interaction.inCachedGuild()) return
-      await slashCommands.onSlashCommandInteraction(interaction)
+      if (!interaction.isChatInputCommand() || !interaction.inCachedGuild()) return
+      await this.slashCommands.onSlashCommandInteraction(interaction)
     })
+
+    this.client.on(Events.MessageCreate, async (message) => {
+      if (!this.bridge || !message.inGuild() || message.author.bot) return
+      if (this.guildBridgeChannelId != message.channelId) return
+      const author = message.member
+      if (!author) return
+      const authorName = message.member.displayName
+
+      const reply = await message.fetchReference().catch(e => undefined)
+      const replyAuthor = reply ? this.getAuthorName(reply) : undefined
+
+      let content = cleanContent(message.cleanContent)
+
+      const attachments = message.attachments.map((attachment) => attachment.url)?.join(" ")
+      if (attachments != null) {
+        content += ` ${attachments}`
+      }
+      const stickers = message.stickers?.map(sticker => `<${sticker.name}>`)?.join(" ")
+      if (stickers != null) {
+        content += `${stickers}`
+      }
+
+      this.bridge.onDiscordChat(authorName, content, this.isStaff(author), replyAuthor)
+    })
+  }
+
+  private isStaff(member: GuildMember) {
+    return this.staffRoles.some(id => member.roles.cache.has(id)) ?? false
+  }
+
+  async sendGuildChatEmbed(username: string, content: string, colorValue?: string, guildRank?: string) {
+    const channel = this.getTextChannel(this.guildBridgeChannelId)
+    if (!channel) return
+    const imageAttachment = content.match(imageLinkRegex)?.at(0)
+    const contentWithoutImage = content.replace(imageLinkRegex, "")
+    const { embed, skin } = await this.setMinecraftAuthor(username)
+    embed
+      .setDescription((contentWithoutImage.length > 0) ? contentWithoutImage : null)
+      .setColor(colorOf(colorValue))
+      .setFooter(guildRank ? { text: guildRank } : null)
+      .setTimestamp(Date.now())
+    if (imageAttachment) embed.setImage(imageAttachment)
+    channel.send({ embeds: [embed], files: [skin] })
+  }
+  
+  async sendSimpleEmbed(title: string, content: string, footer?: string) {
+    const channel = this.getTextChannel(this.guildBridgeChannelId)
+    if (!channel) return
+    const embed = simpleEmbed(title, content, footer)
+    channel.send({ embeds: [embed] })
+  }
+
+  private getTextChannel(channelId: string): TextChannel | undefined {
+    const channel = this.client.channels.cache.get(channelId)
+    return (channel?.type == ChannelType.GuildText) ? channel : undefined
+  }
+
+  private getAuthorName(message: Message<true>): string {
+    const messageAuthor = message.member?.displayName ?? message.author.tag
+    if (message.author.id != this.client.user?.id) return messageAuthor
+    return message.embeds.at(0)?.author?.name ?? messageAuthor
+  }
+
+  private async setMinecraftAuthor(username: string): Promise<{ embed: EmbedBuilder, skin: AttachmentBuilder }> {
+    return {
+      embed: new EmbedBuilder().setAuthor({ name: username, iconURL: "attachment://skin.png" }),
+      skin: new AttachmentBuilder(await fetchSkin(username), { name: "skin.png" })
+    }
   }
 }
 
-export async function createDiscordBot(token: string, slashCommands: SlashCommandManager) {
+export async function createDiscordBot(
+  token: string, 
+  slashCommands: SlashCommandManager,
+  staffRoles: string[],
+  guildBridgeChannelId: string,
+  bridge?: Bridge
+) {
   const client = new Client({
     intents: [
       GatewayIntentBits.Guilds,
@@ -27,5 +113,5 @@ export async function createDiscordBot(token: string, slashCommands: SlashComman
       resolve(readyClient)
     })
   })
-  return new DiscordBot(readyClient, slashCommands)
+  return new DiscordBot(readyClient, slashCommands, staffRoles, guildBridgeChannelId, bridge)
 }

@@ -24,7 +24,7 @@ export class VerifyCommand implements SlashCommand {
       const username = interaction.options.getString("username", true)
       const uuid = await fetchUuid(username)
       const player = await this.hypixelAPI.fetchPlayer(uuid)
-      if (player.discordTag == null) throw new Error("Your discord account isn't linked to your Hypixel account.")
+      if (player.discordTag == null) throw new Error("This Hypixel account isn't linked to any Discord account.")
       if (player.discordTag != interaction.user.tag) throw new Error(`${username} is linked to \`${player.discordTag}\`.`)
       await this.verification.verify(interaction.member, uuid)
       await interaction.followUp({ ephemeral: true, embeds: [statusEmbed("success", `Verified as \`${username}\`.`)] })

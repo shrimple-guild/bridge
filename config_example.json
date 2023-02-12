@@ -16,7 +16,11 @@
     "verificationRoles": {
       "unverified": "snowflake",
       "verified": "snowflake"
-    }
+    },
+    "staffRoles": [
+      "snowflake1",
+      "snowflake2"
+    ]
   },
   "bridge": {
     "prefix": "_",

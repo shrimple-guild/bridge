@@ -18,5 +18,3 @@ export function statusEmbed(status: "success" | "failure", content: string) {
     status == "success" ? "Green" : "Red"
   )
 }
-
-

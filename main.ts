@@ -11,5 +11,6 @@ const hypixelAPI = new HypixelAPI(config.bridge.apiKey)
 const verification = new Verification(db, config.discord.verificationRoles)
 const slashCommands = new SlashCommandManager(verification, hypixelAPI)
 
-const discord = await createDiscordBot(config.discord.token, slashCommands)
+const staffRoles = config.roles.filter(role => role.isStaff).map(role => role.discord)
 
+const discord = await createDiscordBot(config.discord.token, slashCommands, staffRoles, config.discord.channel)

@@ -64,7 +64,7 @@ async function runMigrations() {
   const targetVersion = Math.max(...migrations.map(migration => migration.version))
   if (currentVersion != targetVersion) {
     console.log(`Beginning migrations to version ${targetVersion}...`)
-    await db.backup(`./database/backups/members_${currentVersion}_${Date.now()}.db`)
+    await db.backup(`./database/backups/main_${currentVersion}_${Date.now()}.db`)
     await migrate(currentVersion, targetVersion)
     console.log(`Completed migrations to version ${targetVersion}.`)
   }
