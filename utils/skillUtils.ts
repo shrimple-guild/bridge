@@ -12,4 +12,8 @@ async function fetchSkillData() {
   )
 }
 
+while (leveling.dungeons.length <= 100) {
+  leveling.dungeons.push(leveling.dungeons.at(-1)! + 200e6)
+}
+
 export const skillData = { ...(await fetchSkillData()), ...leveling } as {[key: string]: number[]}
