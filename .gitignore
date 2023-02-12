@@ -3,3 +3,4 @@ database/main.db
 database/backups/*
 !database/backups/.gitkeep
 config.json
+*Config.json

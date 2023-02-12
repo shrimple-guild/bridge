@@ -4,6 +4,7 @@ import { Verification } from "../../verify/Verification.js";
 import { ManualVerifyCommand } from "../../verify/commands/ManualVerifyCommand.js";
 import { SlashCommand } from "./SlashCommand.js";
 import { VerifyCommand } from "../../verify/commands/VerifyCommand.js";
+import { UnverifyCommand } from "../../verify/commands/UnverifyCommand.js";
 
 export class SlashCommandManager {
     commands: SlashCommand[]
@@ -11,7 +12,8 @@ export class SlashCommandManager {
     constructor(verification?: Verification, hypixelAPI?: HypixelAPI) {
       this.commands = [
         new VerifyCommand(verification, hypixelAPI),
-        new ManualVerifyCommand(verification, hypixelAPI)
+        new ManualVerifyCommand(verification, hypixelAPI),
+        new UnverifyCommand(verification, hypixelAPI)
       ]
     }
 

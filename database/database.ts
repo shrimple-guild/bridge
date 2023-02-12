@@ -41,8 +41,10 @@ const migrations = [
     version: 2,
     script: `
       CREATE TABLE DiscordMembers (
-        discordId TEXT PRIMARY KEY,
-        minecraftId TEXT UNIQUE
+        guildId TEXT NOT NULL,
+        discordId TEXT NOT NULL,
+        minecraftId TEXT UNIQUE,
+        PRIMARY KEY (guildId, discordId)
       );`
   }]
 

@@ -32,7 +32,6 @@ export class VerifyCommand implements SlashCommand {
       if (e instanceof Error) {
         await interaction.followUp({ ephemeral: true, embeds: [statusEmbed("failure", `${e.message}`)] })
       }
-      console.error(e)
     }
   }
 }

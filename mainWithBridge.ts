@@ -5,7 +5,7 @@ import { db } from "./database/database.js"
 import { HypixelAPI } from "./api/HypixelAPI.js"
 import { createDiscordBot } from "./discord/DiscordBot.js"
 import { SlashCommandManager } from "./discord/commands/SlashCommandManager.js"
-import config from "./config.json" assert { type: "json" }
+import config from "./fpfConfig.json" assert { type: "json" }
 import { MinecraftBot } from "./minecraft/MinecraftBot.js"
 import { Bridge } from "./bridge/Bridge.js"
 import { BridgeCommandManager } from "./bridge/commands/BridgeCommandManager.js"
@@ -20,14 +20,14 @@ const hypixelAPI = new HypixelAPI(config.bridge.apiKey)
 const verification = new Verification(db, config.discord.verificationRoles)
 const slashCommands = new SlashCommandManager(verification, hypixelAPI)
 
-const commandManager = new BridgeCommandManager(config.bridge.prefix, config.minecraft.username, hypixelAPI)
+const bridgeCommandManager = new BridgeCommandManager(config.bridge.prefix, config.minecraft.username, hypixelAPI)
 
 const discordStaffRoles = config.roles.filter(role => role.isStaff).map(role => role.discord)
 const minecraftStaffRoles = config.roles.filter(role => role.isStaff).map(role => role.hypixelTag)
 
 const discord = await createDiscordBot(config.discord.token, slashCommands, discordStaffRoles, config.discord.channel, logger.category("Discord"))
 const minecraft = new MinecraftBot(config.minecraft.username, config.minecraft.privilegedUsers, minecraftStaffRoles, logger.category("Minecraft"))
-const bridge = new Bridge(discord, minecraft, commandManager, logger.category("Bridge"))
+const bridge = new Bridge(discord, minecraft, bridgeCommandManager, logger.category("Bridge"))
 
 const rl = readline.createInterface({
   input: process.stdin,
