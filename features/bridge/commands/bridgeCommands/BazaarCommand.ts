@@ -1,6 +1,7 @@
 import { BridgeCommand } from "./Command.js"
 import { jaroDistance } from "../../../../utils/Utils.js"
 import bazaarNames from "../../../../data/bazaar.json" assert { type: "json" }
+import { Bridge } from "../../Bridge.js"
 let cachedBazaarData: any = {}
 
 let expandedNames: {id: string, name: string, alias: string}[] = []
@@ -36,7 +37,7 @@ export class BazaarCommand implements BridgeCommand {
     return { id: bestMatch.id, name: bestMatch.name }
   }
 
-  execute(args: string[]) {
+  execute(bridge: Bridge, args: string[]) {
     let formatter = Intl.NumberFormat("en", { notation: "compact" })
     let { id: bestId, name: bestName } = this.closestBazaarProduct(args)
     let bazaarData = cachedBazaarData[bestId].quick_status

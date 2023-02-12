@@ -14,6 +14,7 @@ import { SlayerCommand } from "./bridgeCommands/SlayerCommand.js"
 import { TrophyFishCommand } from "./bridgeCommands/TrophyFishCommand.js"
 import { CataCommand } from "./bridgeCommands/CataCommand.js"
 import { HypixelAPI } from "../../../api/HypixelAPI.js"
+import { Bridge } from "../Bridge.js"
 
 export class BridgeCommandManager {
   commands: BridgeCommand[]
@@ -29,7 +30,7 @@ export class BridgeCommandManager {
       new PickCommand(),
       new PingCommand(),
       new RainTimerCommand(),
-      new RawCommand(botUsername),
+      new RawCommand(),
       new ReloadCommand(),
       new SkillsCommand(hypixelAPI),
       new SlayerCommand(hypixelAPI),
@@ -37,7 +38,7 @@ export class BridgeCommandManager {
     ]
   }
 
-  async onChatMessage(message: string, isStaff: boolean) {
+  async execute(bridge: Bridge, message: string, isStaff: boolean) {
     if (!message.startsWith(this.prefix)) return
     const commStr = message.substring(this.prefix.length)
     const args = commStr.trim().split(" ")
@@ -47,7 +48,7 @@ export class BridgeCommandManager {
 
     if (!command) return `Command ${commandName} not found, try ${this.prefix}help`
     try {
-      return await command.execute(args, isStaff)
+      return await command.execute(bridge, args, isStaff)
     } catch (e: any) {
       console.error(e)
       if (e?.message) {

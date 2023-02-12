@@ -1,5 +1,6 @@
 import { BridgeCommand } from "./Command.js"
 import { randRange } from "../../../../utils/Utils.js"
+import { Bridge } from "../../Bridge.js"
 
 export class EightballCommand implements BridgeCommand {
     aliases = ["8ball", "eightball"]
@@ -29,7 +30,7 @@ export class EightballCommand implements BridgeCommand {
         "Very doubtful."
       ]
 
-    async execute(args: string[]) {
+    async execute(bridge: Bridge, args: string[]) {
         return this.answers[randRange(0, this.answers.length - 1)]
     }   
 }

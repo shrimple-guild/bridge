@@ -1,12 +1,13 @@
 import { BridgeCommand } from "./Command.js"
 import { BridgeCommandManager } from "../BridgeCommandManager"
+import { Bridge } from "../../Bridge.js"
 
 export class HelpCommand implements BridgeCommand {
     aliases = ["help"]
 
     constructor(private commandManager: BridgeCommandManager) {}
 
-    execute(args: string[]) {
+    execute(bridge: Bridge, args: string[]) {
         let helpMessage = "Available commands: "
         this.commandManager.commands.forEach(command => {
             helpMessage += `${this.commandManager.prefix}`

@@ -3,6 +3,7 @@ import { titleCase } from "../../../../utils/Utils.js"
 import { fetchUuid } from "../../../../utils/playerUtils.js"
 import { HypixelAPI } from "../../../../api/HypixelAPI.js"
 import { trophyFishNames } from "../../../../api/TrophyFish.js"
+import { Bridge } from "../../Bridge.js"
 
 export class TrophyFishCommand implements BridgeCommand {
     aliases = ["trophy", "trophyfish", "tfish"]
@@ -10,7 +11,7 @@ export class TrophyFishCommand implements BridgeCommand {
 
     constructor(private hypixelAPI: HypixelAPI) {}
 
-    async execute(args: string[]) {
+    async execute(bridge: Bridge, args: string[]) {
       if (args.length < 2) return `Syntax: trophy ${this.usage}`
       const playerArg = args.shift()!.split(":")
       const playerName = playerArg[0]

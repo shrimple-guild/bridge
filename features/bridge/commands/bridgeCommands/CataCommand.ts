@@ -3,6 +3,7 @@ import { msToTime, formatNumber, titleCase } from "../../../../utils/Utils.js"
 import { fetchUuid } from "../../../../utils/playerUtils.js"
 import { isDungeonClass } from "../../../../api/Dungeons.js"
 import { HypixelAPI } from "../../../../api/HypixelAPI.js"
+import { Bridge } from "../../Bridge.js"
 
 const floorArgRegex = /^(f[0-7]|m[1-7])$/
 
@@ -12,7 +13,7 @@ export class CataCommand implements BridgeCommand {
 
   constructor(private hypixelAPI: HypixelAPI) {}
 
-  async execute(args: string[]) {
+  async execute(bridge: Bridge, args: string[]) {
     if (args.length < 1) return `Syntax: cata ${this.usage}`
     const playerArg = args.shift()!.split(":")
     const playerName = playerArg[0]

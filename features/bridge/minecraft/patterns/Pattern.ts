@@ -1,4 +1,4 @@
-import { MinecraftBot } from "../MCBot";
+import { MinecraftBot } from "../MinecraftBot";
 
 export interface Pattern {
   pattern: RegExp | RegExp[],

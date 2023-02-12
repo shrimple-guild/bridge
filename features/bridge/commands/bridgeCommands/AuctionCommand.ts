@@ -2,6 +2,7 @@ import { BridgeCommand } from "./Command.js"
 import { jaroWinkler as jaroDistance } from "jaro-winkler-typescript"
 import { titleCase } from "../../../../utils/Utils.js"
 import auctionAliases from "../../../../data/auctionAliases.json" assert { type: "json" }
+import { Bridge } from "../../Bridge.js"
 
 let cachedLowestBins: { [id: string]: number } = {}
 
@@ -60,7 +61,7 @@ export class AuctionCommand implements BridgeCommand {
     return { id: bestMatch.id, name: bestMatch.name }
   }
 
-  async execute(args: string[]) {
+  async execute(bridge: Bridge, args: string[]) {
     let formatter = Intl.NumberFormat("en", { notation: "compact" })
     let { id, name } = this.closestAuctionProduct(args)
     let lowestBin = cachedLowestBins[id]

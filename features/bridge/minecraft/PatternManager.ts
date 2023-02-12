@@ -1,4 +1,4 @@
-import { MinecraftBot } from "./MCBot";
+import { MinecraftBot } from "./MinecraftBot";
 import { enteredDungeon } from "./patterns/EnteredDungeon.js";
 import { guildChat } from "./patterns/GuildChat.js";
 import { guildJoin } from "./patterns/GuildJoin.js";
