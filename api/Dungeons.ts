@@ -67,10 +67,10 @@ export type FloorData = {
 
 function buildFloorData(data: any, floor: number): FloorData | undefined {
   return {
-    completions: data.tier_completions?.[floor] ?? 0,
-    pb: data.fastest_time?.[floor],
-    sPb: data.fastest_time_s?.[floor],
-    sPlusPb: data.fastest_time_s_plus?.[floor]
+    completions: data?.tier_completions?.[floor] ?? 0,
+    pb: data?.fastest_time?.[floor],
+    sPb: data?.fastest_time_s?.[floor],
+    sPlusPb: data?.fastest_time_s_plus?.[floor]
   }
 }
 

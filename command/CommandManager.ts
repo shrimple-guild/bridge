@@ -50,7 +50,7 @@ export class CommandManager {
         if (!message.startsWith(this.prefix)) return
         const commStr = message.substring(this.prefix.length)
         const args = commStr.trim().split(" ")
-        const commandName = args.shift()
+        const commandName = args.shift()?.toLowerCase()
 
         const command = this.commands.find(comm => comm.aliases.includes(commandName))
 
