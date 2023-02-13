@@ -30,7 +30,7 @@ export class Bridge {
   async handleCommand(content: string, isStaff: boolean) {
     const response = await this.bridgeCommandManager.execute(this, content, isStaff, this.logger)
     if (response) {
-      await this.chatAsBot(`/gc ${response}`)
+      await this.chatAsBot(`/gc > ${response}`)
     }
   }
 
