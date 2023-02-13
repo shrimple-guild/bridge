@@ -1,10 +1,12 @@
 import { fetchWithTimeout } from "../utils/fetchUtils.js"
 import { HypixelGuildMember } from "./HypixelGuildMember.js"
 import { HypixelPlayer } from "./HypixelPlayer.js"
+import { MojangAPI } from "./MojangAPI.js"
 import { SkyblockProfiles } from "./SkyblockProfiles.js"
 
 export class HypixelAPI {
   private apiKey: string
+  readonly mojang = new MojangAPI()
 
   constructor(apiKey: string) {
     this.apiKey = apiKey
