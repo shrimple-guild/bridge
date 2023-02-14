@@ -34,8 +34,8 @@ export class Bridge {
     }
   }
 
-  async chatAsBot(content: string) {
-    this.minecraft.chat(content)
+  async chatAsBot(content: string, priority?: number) {
+    this.minecraft.chat(content, priority)
     await this.discord.sendGuildChatEmbed(this.minecraft.username, content, "BOT")
   }
   

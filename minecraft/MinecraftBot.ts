@@ -5,6 +5,7 @@ import { nameIsInDb } from "../utils/playerUtils.js"
 import { sleep } from "../utils/utils.js"
 import { PatternManager } from "./PatternManager.js"
 import { LoggerCategory } from "../utils/Logger.js"
+import { PriorityLock } from "../utils/PriorityLock.js"
 
 export class MinecraftBot {
   bridge?: Bridge
@@ -13,7 +14,7 @@ export class MinecraftBot {
   private status: "online" | "offline" = "offline"
   private retries: number = 0
   private spamProtectionLastSent: number = 0
-  private chatLock = new AsyncLock({ maxPending: 10 })
+  private chatLock = new PriorityLock(10)
   private chatDelay = 1000
   private fragbotTimeout?: NodeJS.Timeout
 
@@ -65,21 +66,21 @@ export class MinecraftBot {
     this.spamProtectionLastSent = Date.now()
   }
 
-  chat(msg: string, onCompletion?: (status: string) => void) {
+  chat(msg: string, priority?: number) {
     const split = msg.match(/.{1,256}/g)
     if (split) {
       for (const chunk of split) {
-        this.chatRaw(chunk, onCompletion)
+        this.chatRaw(chunk, priority)
       }
     }
   }
   
-  async chatRaw(msg: string, onCompletion?: (status: string) => void) {
-    return await this.chatLock.acquire("chat", async () => {
+  async chatRaw(msg: string, priority?: number) {
+    return await this.chatLock.acquire(async () => {
       this.bot?.chat(msg)
       await sleep(this.chatDelay)
     }).catch(e => {
-      if (onCompletion) onCompletion("failed:lock")
+      this.logger?.error(e)
     })
   }
   

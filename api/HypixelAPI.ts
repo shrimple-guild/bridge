@@ -1,4 +1,5 @@
 import { fetchWithTimeout } from "../utils/fetchUtils.js"
+import { sleep } from "../utils/Utils.js"
 import { HypixelGuildMember } from "./HypixelGuildMember.js"
 import { HypixelPlayer } from "./HypixelPlayer.js"
 import { MojangAPI } from "./MojangAPI.js"
@@ -7,6 +8,10 @@ import { SkyblockProfiles } from "./SkyblockProfiles.js"
 export class HypixelAPI {
   private apiKey: string
   readonly mojang = new MojangAPI()
+
+  private rateLimit: number = 60
+  private rateLimitRemaining: number = 60
+  private rateLimitReset: number = 60
 
   constructor(apiKey: string) {
     this.apiKey = apiKey
@@ -31,7 +36,7 @@ export class HypixelAPI {
     const response = await fetchHypixel("/guild", { id: guildId, key: this.apiKey}) as any
     if (!response.guild) throw new Error(`This guild does not exist!`)
     const members = response.guild.members as any[]
-    return members.map(member => new HypixelGuildMember(member))
+    return members.map(member => new HypixelGuildMember(member, this))
   }
 }
 
@@ -46,3 +51,4 @@ async function fetchHypixel(endpoint: string, parameters: {[key: string]: string
     throw new Error(`Hypixel API returned status ${response.status} ${response.statusText}`)
   }
 }
+
