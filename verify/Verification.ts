@@ -3,6 +3,7 @@ import { Client, Events, Guild, GuildMember } from "discord.js"
 import { HypixelAPI } from "../api/HypixelAPI.js"
 import { SlashCommandManager } from "../discord/commands/SlashCommandManager.js"
 import { ManualVerifyCommand } from "./commands/ManualVerifyCommand.js"
+import { SyncCommand } from "./commands/SyncCommand.js"
 import { UnverifyCommand } from "./commands/UnverifyCommand.js"
 import { VerifyCommand } from "./commands/VerifyCommand.js"
 
@@ -30,6 +31,7 @@ export class Verification {
     slashCommandManager.register( 
       new ManualVerifyCommand(this), 
       new UnverifyCommand(this), 
+      new SyncCommand(this),
       new VerifyCommand(this, hypixelAPI) 
     )
 
@@ -49,7 +51,9 @@ export class Verification {
   }
 
   sync(member: GuildMember) {
-    if (this.isVerified(member)) {
+    if (member.user.bot) {
+      member.roles.set(this.nonVerificationRoles(member))
+    } else if (this.isVerified(member)) {
       this.setVerifiedRole(member)
     } else {
       this.setUnverifiedRole(member)

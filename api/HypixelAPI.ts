@@ -1,9 +1,9 @@
-import { fetchWithTimeout } from "../utils/fetchUtils.js"
-import { sleep } from "../utils/Utils.js"
 import { HypixelGuildMember } from "./HypixelGuildMember.js"
 import { HypixelPlayer } from "./HypixelPlayer.js"
 import { MojangAPI } from "./MojangAPI.js"
 import { SkyblockProfiles } from "./SkyblockProfiles.js"
+
+const maxRequestTime = 3
 
 export class HypixelAPI {
   private apiKey: string
@@ -52,3 +52,10 @@ async function fetchHypixel(endpoint: string, parameters: {[key: string]: string
   }
 }
 
+export async function fetchWithTimeout(url: URL) {
+  try {
+    return await fetch(url, { signal: AbortSignal.timeout(maxRequestTime * 1000) })
+  } catch (e) {
+    throw new Error(`Request timed out.`)
+  }
+}

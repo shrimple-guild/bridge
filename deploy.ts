@@ -3,13 +3,15 @@ import { REST, Routes } from "discord.js"
 import config from "./ambientConfig.json" assert { type: "json" }
 import { SlashCommand } from "./discord/commands/SlashCommand.js"
 import { ManualVerifyCommand } from "./verify/commands/ManualVerifyCommand.js"
+import { SyncCommand } from "./verify/commands/SyncCommand.js"
 import { UnverifyCommand } from "./verify/commands/UnverifyCommand.js"
 import { VerifyCommand } from "./verify/commands/VerifyCommand.js"
 
 const slashCommands = [
   new ManualVerifyCommand(),
   new VerifyCommand(),
-  new UnverifyCommand()
+  new UnverifyCommand(),
+  new SyncCommand()
 ]
 
 await loadCommands(slashCommands, config.discord.token, config.discord.client, config.discord.guild)
