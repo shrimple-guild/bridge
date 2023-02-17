@@ -7,6 +7,7 @@ import { LoggerCategory } from "../utils/Logger.js";
 import { fetchSkin } from "../utils/playerUtils.js";
 import { imageLinkRegex } from "../utils/RegularExpressions.js";
 import { colorOf, cleanContent } from "../utils/utils.js";
+import { Verification } from "../verify/Verification.js";
 
 export class DiscordBot {
   bridge?: Bridge
@@ -107,6 +108,7 @@ export async function createDiscordBot(
   const client = new Client({
     intents: [
       GatewayIntentBits.Guilds,
+      GatewayIntentBits.GuildMembers,
       GatewayIntentBits.GuildMessages,
       GatewayIntentBits.MessageContent
     ]

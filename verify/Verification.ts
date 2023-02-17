@@ -1,5 +1,10 @@
 import { Database, Statement } from "better-sqlite3"
-import { Guild, GuildMember, User } from "discord.js"
+import { Client, Events, Guild, GuildMember } from "discord.js"
+import { HypixelAPI } from "../api/HypixelAPI.js"
+import { SlashCommandManager } from "../discord/commands/SlashCommandManager.js"
+import { ManualVerifyCommand } from "./commands/ManualVerifyCommand.js"
+import { UnverifyCommand } from "./commands/UnverifyCommand.js"
+import { VerifyCommand } from "./commands/VerifyCommand.js"
 
 export class Verification {
   private insertUser: Statement
@@ -7,7 +12,13 @@ export class Verification {
   private selectDiscordId: Statement
   private selectMinecraftId: Statement  
 
-  constructor(private db: Database, private roles: { unverified: string, verified: string }) {
+  constructor(
+    client: Client<true>,
+    db: Database, 
+    private roles: { unverified: string, verified: string },
+    hypixelAPI: HypixelAPI,
+    slashCommandManager: SlashCommandManager
+  ) {
     this.insertUser = db.prepare(`
       INSERT INTO DiscordMembers (guildId, discordId, minecraftId) VALUES (:guildId, :discordId, :minecraftId)
       ON CONFLICT (guildId, discordId) DO UPDATE SET minecraftId = excluded.minecraftId
@@ -15,6 +26,14 @@ export class Verification {
     this.deleteUser = db.prepare(`DELETE FROM DiscordMembers WHERE discordId = :discordId AND guildId = :guildId`)
     this.selectDiscordId = db.prepare(`SELECT discordId FROM DiscordMembers WHERE minecraftId = :minecraftId AND guildId = :guildId`)
     this.selectMinecraftId = db.prepare(`SELECT minecraftId FROM DiscordMembers WHERE discordId = :discordId AND guildId = :guildId`)
+
+    slashCommandManager.register( 
+      new ManualVerifyCommand(this), 
+      new UnverifyCommand(this), 
+      new VerifyCommand(this, hypixelAPI) 
+    )
+
+    client.on(Events.GuildMemberAdd, member => this.sync(member))
   }
 
   getMinecraft(guild: Guild, discordId: string) {
@@ -23,6 +42,18 @@ export class Verification {
 
   getDiscord(guild: Guild, minecraftId: string) {
     return this.selectDiscordId.get({ guildId: guild.id, minecraftId: minecraftId })?.discordId as string | undefined
+  }
+
+  isVerified(member: GuildMember) {
+    return this.getMinecraft(member.guild, member.id) != null
+  }
+
+  sync(member: GuildMember) {
+    if (this.isVerified(member)) {
+      this.setVerifiedRole(member)
+    } else {
+      this.setUnverifiedRole(member)
+    }
   }
 
   async verify(member: GuildMember, uuid?: string) {
@@ -56,5 +87,7 @@ export class Verification {
     const otherRoles = this.nonVerificationRoles(guildMember)
     await guildMember.roles.set([this.roles.unverified, ...otherRoles], reason)
   }
+
+  
 }
   

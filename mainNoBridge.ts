@@ -1,5 +1,3 @@
-//import "./bridge.js"
-
 import { Verification } from "./verify/Verification.js"
 import { db } from "./database/database.js"
 import { HypixelAPI } from "./api/HypixelAPI.js"
@@ -11,11 +9,23 @@ import { Logger } from "./utils/Logger.js"
 const logger = new Logger()
 
 const hypixelAPI = new HypixelAPI(config.bridge.apiKey)
-const verification = new Verification(db, config.discord.verificationRoles)
-const slashCommands = new SlashCommandManager(verification, hypixelAPI)
-
+const slashCommands = new SlashCommandManager()
 
 const discordStaffRoles = config.roles.filter(role => role.isStaff).map(role => role.discord)
 
-const discord = await createDiscordBot(config.discord.token, slashCommands, discordStaffRoles, config.discord.channel, logger.category("Discord"))
+const discord = await createDiscordBot(
+  config.discord.token, 
+  slashCommands, 
+  discordStaffRoles,
+  config.discord.channel, 
+  logger.category("Discord")
+)
+
+const verification = new Verification(
+  discord.client, 
+  db, 
+  config.discord.verificationRoles, 
+  hypixelAPI, 
+  slashCommands
+)
 

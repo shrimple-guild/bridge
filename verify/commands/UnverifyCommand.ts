@@ -9,12 +9,12 @@ export class UnverifyCommand implements SlashCommand {
     .setName("unverify")
     .setDescription("Remove verification in this server.")
 
-  constructor(private verification?: Verification, private hypixelAPI?: HypixelAPI) {}
+  constructor(private verification?: Verification) {}
   
   async execute(interaction: ChatInputCommandInteraction<"cached">) {
     try {
       await interaction.deferReply()
-      if (!this.verification || !this.hypixelAPI) throw new Error("Improper configuration! Please report this to staff.")
+      if (!this.verification) throw new Error("Improper configuration! Please report this to staff.")
       await this.verification.unverify(interaction.guild, interaction.member)
       await interaction.followUp({ ephemeral: true, embeds: [statusEmbed("success", `Unverified.`)] })
     } catch (e) {

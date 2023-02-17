@@ -1,5 +1,4 @@
 import { ChatInputCommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
-import { HypixelAPI } from "../../api/HypixelAPI.js";
 import { statusEmbed } from "../../utils/discordUtils.js";
 import { fetchUuid } from "../../utils/playerUtils.js";
 import { Verification } from "../Verification.js";
@@ -21,12 +20,12 @@ export class ManualVerifyCommand implements SlashCommand {
       .setName("username")
       .setDescription("The Minecraft username of the user"))
 
-  constructor(private verification?: Verification, private hypixelAPI?: HypixelAPI) {}
+  constructor(private verification?: Verification) {}
   
   async execute(interaction: ChatInputCommandInteraction<"cached">) {
     try {
       await interaction.deferReply()
-      if (!this.verification || !this.hypixelAPI) throw new Error("Improper configuration! Please report this to staff.")
+      if (!this.verification) throw new Error("Improper configuration! Please report this to staff.")
       const member = interaction.options.getMember("user")
       const username = interaction.options.getString("username", true)
       if (!member) throw new Error("Couldn't find this member! Weird!")

@@ -17,15 +17,29 @@ import { sleep } from "./utils/Utils.js"
 const logger = new Logger()
 
 const hypixelAPI = new HypixelAPI(config.bridge.apiKey)
-const verification = new Verification(db, config.discord.verificationRoles)
-const slashCommands = new SlashCommandManager(verification, hypixelAPI)
-
-const bridgeCommandManager = new BridgeCommandManager(config.bridge.prefix, config.minecraft.username, hypixelAPI)
+const slashCommands = new SlashCommandManager()
 
 const discordStaffRoles = config.roles.filter(role => role.isStaff).map(role => role.discord)
 const minecraftStaffRoles = config.roles.filter(role => role.isStaff).map(role => role.hypixelTag)
 
-const discord = await createDiscordBot(config.discord.token, slashCommands, discordStaffRoles, config.discord.channel, logger.category("Discord"))
+const discord = await createDiscordBot(
+  config.discord.token, 
+  slashCommands, 
+  discordStaffRoles,
+  config.discord.channel, 
+  logger.category("Discord")
+)
+
+const verification = new Verification(
+  discord.client, 
+  db, 
+  config.discord.verificationRoles, 
+  hypixelAPI, 
+  slashCommands
+)
+
+const bridgeCommandManager = new BridgeCommandManager(config.bridge.prefix, config.minecraft.username, hypixelAPI)
+
 const minecraft = new MinecraftBot(config.minecraft.username, config.minecraft.privilegedUsers, minecraftStaffRoles, logger.category("Minecraft"))
 const bridge = new Bridge(discord, minecraft, bridgeCommandManager, logger.category("Bridge"))
 
