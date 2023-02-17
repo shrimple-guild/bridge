@@ -1,8 +1,8 @@
 import { HypixelAPI } from "../api/HypixelAPI.js";
-import { CataCommand } from "../command/commands/CataCommand.js";
-import { SkillsCommand } from "../command/commands/SkillsCommand.js";
-import { SlayerCommand } from "../command/commands/SlayerCommand.js";
-import { TrophyFishCommand } from "../command/commands/TrophyFishCommand.js";
+import { CataCommand } from "../bridge/commands/bridgeCommands/CataCommand.js";
+import { SkillsCommand } from "../bridge/commands/bridgeCommands/SkillsCommand.js";
+import { SlayerCommand } from "../bridge/commands/bridgeCommands/SlayerCommand.js";
+import { TrophyFishCommand } from "../bridge/commands/bridgeCommands/TrophyFishCommand.js";
 
 import config from "../config.json" assert { type: "json" }
 const { apiKey } = config.bridge

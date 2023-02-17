@@ -1,105 +1,125 @@
-import discord, {
-  ChannelType,
-  GatewayIntentBits,
-  TextChannel,
-  Message,
-  EmbedBuilder,
-} from "discord.js"
-import { bridge } from "../bridge.js"
-import { imageLinkRegex as imageLinkPattern } from "../utils/RegularExpressions.js"
-import { cleanContent, colorOf } from "../utils/Utils.js"
-import { MinecraftEmbed } from "./MinecraftEmbed.js"
-import log4js from "log4js"
+import { EmbedBuilder } from "@discordjs/builders";
+import { AttachmentBuilder, ChannelType, Client, Events, GatewayIntentBits, GuildMember, Message, TextChannel } from "discord.js";
+import { SlashCommandManager } from "./commands/SlashCommandManager.js";
+import { Bridge } from "../bridge/Bridge.js";
+import { simpleEmbed } from "../utils/discordUtils.js";
+import { LoggerCategory } from "../utils/Logger.js";
+import { fetchSkin } from "../utils/playerUtils.js";
+import { imageLinkRegex } from "../utils/RegularExpressions.js";
+import { colorOf, cleanContent } from "../utils/utils.js";
+import { Verification } from "../verify/Verification.js";
 
-// config importing
-import config from "../config.json" assert { type: "json" }
-const { token: botToken, channel: guildChannelId } = config.discord
-const guildStaffIds = config.roles.filter(role => role.isStaff).map(role => role.discord)
+export class DiscordBot {
+  bridge?: Bridge
 
+  constructor(
+    readonly client: Client<true>, 
+    private slashCommands: SlashCommandManager,
+    private staffRoles: string[],
+    private guildBridgeChannelId: string,
+    private logger?: LoggerCategory
+  ) {
+    logger?.info(`Discord bot online.`)
 
-const logger = log4js.getLogger("discord")
+    this.client.on(Events.InteractionCreate, async (interaction) => {
+      if (!interaction.isChatInputCommand() || !interaction.inCachedGuild()) return
+      logger?.info(`Slash command used: ${interaction.commandName}`)
+      await this.slashCommands.onSlashCommandInteraction(interaction)
+    })
 
-const client = new discord.Client({
-  intents: [
-  GatewayIntentBits.Guilds,
-  GatewayIntentBits.GuildMessages,
-  GatewayIntentBits.MessageContent
-  ]
-})
+    this.client.on(Events.MessageCreate, async (message) => {
+      if (!this.bridge || !message.inGuild() || message.author.bot) return
+      if (this.guildBridgeChannelId != message.channelId) return
+      const author = message.member
+      if (!author) return
+      const authorName = message.member.displayName
 
-client.login(botToken)
+      const reply = await message.fetchReference().catch(e => undefined)
+      const replyAuthor = reply ? this.getAuthorName(reply) : undefined
 
-function getTextChannel(channelId: string): TextChannel | undefined {
-  const channel = client.channels.cache.get(channelId)
-  return (channel?.type == ChannelType.GuildText) ? channel : undefined
-}
+      let content = cleanContent(message.cleanContent)
 
-function getMessage(channelId: string, messageId: string | undefined) {
-  if (!messageId) return
-  const channel = getTextChannel(channelId)
-  return channel ? channel.messages.cache.get(messageId) : undefined
-}
-
-function getBridgeAuthorName(message: Message): string {
-  const authorName = message.member?.displayName ?? message.author.tag
-  if (message?.author.id != client.user?.id) return authorName
-  return message.embeds.at(0)?.author?.name ?? authorName
-}
-
-async function sendGuildChatEmbed(username: string, content: string, colorValue?: string, guildRank?: string) {
-  const channel = getTextChannel(guildChannelId)
-  if (!channel) return
-  const imageAttachment = content.match(imageLinkPattern)?.at(0)
-  const contentWithoutImage = content.replace(imageLinkPattern, "")
-  const embed = (await new MinecraftEmbed().setMinecraftAuthor(username))
-    .setDescription((contentWithoutImage.length > 0) ? contentWithoutImage : null)
-    .setColor(colorOf(colorValue))
-    .setFooter(guildRank ? { text: guildRank } : null)
-    .setTimestamp(Date.now())
-  if (imageAttachment) embed.setImage(imageAttachment)
-  embed.send(channel)
-}
-
-async function sendSimpleEmbed(title: string, content: string, footer?: string) {
-  const channel = getTextChannel(guildChannelId)
-  if (!channel) return
-
-  const embed = new EmbedBuilder()
-    .setColor(colorOf("BOT"))
-    .setTitle(title)
-    .setDescription(content)
-    .setFooter(footer ? { text: footer } : null)
-    .setTimestamp(Date.now())
-
-  channel.send({ embeds: [embed] })
-}
-
-client.once("ready", () => {
-  logger.info(`Connected.`)
-})
-
-client.on("messageCreate", async (message) => {
-  if (message.author.bot) return
-  if (guildChannelId != message.channelId) return
-  const author = getBridgeAuthorName(message)
-  const isStaff = guildStaffIds.some(id => message.member?.roles.cache.has(id)) ?? false
-  const reply = getMessage(guildChannelId, message.reference?.messageId)
-  const replyAuthor = reply ? getBridgeAuthorName(reply) : undefined
-
-  let content = cleanContent(message.cleanContent)
-
-  const attachments = message.attachments.map((attachment) => attachment.url)?.join(" ")
-  if (attachments != null) {
-    content += ` ${attachments}`
+      const attachments = message.attachments.map((attachment) => attachment.url)?.join(" ")
+      if (attachments != null) {
+        content += ` ${attachments}`
+      }
+      const stickers = message.stickers?.map(sticker => `<${sticker.name}>`)?.join(" ")
+      if (stickers != null) {
+        content += `${stickers}`
+      }
+      
+      logger?.info(`Discord chat: ${authorName} to ${replyAuthor}: ${content}`)
+      this.bridge.onDiscordChat(authorName, content, this.isStaff(author), replyAuthor)
+    })
   }
-  const stickers = message.stickers?.map(sticker => `<${sticker.name}>`)?.join(" ")
-  if (stickers != null) {
-    content += `${stickers}`
-  }
-  bridge.onDiscordChat(author, content, isStaff, replyAuthor)
-})
 
-export const discordBot = {
-  sendGuildChatEmbed,
-  sendSimpleEmbed
+  private isStaff(member: GuildMember) {
+    return this.staffRoles.some(id => member.roles.cache.has(id)) ?? false
+  }
+
+  async sendGuildChatEmbed(username: string, content: string, colorValue?: string, guildRank?: string) {
+    const channel = this.getTextChannel(this.guildBridgeChannelId)
+    if (!channel) return
+    const imageAttachment = content.match(imageLinkRegex)?.at(0)
+    const contentWithoutImage = content.replace(imageLinkRegex, "")
+    const { embed, skin } = await this.setMinecraftAuthor(username)
+    embed
+      .setDescription((contentWithoutImage.length > 0) ? contentWithoutImage : null)
+      .setColor(colorOf(colorValue))
+      .setFooter(guildRank ? { text: guildRank } : null)
+      .setTimestamp(Date.now())
+    if (imageAttachment) embed.setImage(imageAttachment)
+    channel.send({ embeds: [embed], files: [skin] })
+  }
+  
+  async sendSimpleEmbed(title: string, content: string, footer?: string) {
+    const channel = this.getTextChannel(this.guildBridgeChannelId)
+    if (!channel) return
+    const embed = simpleEmbed(title, content, footer)
+    channel.send({ embeds: [embed] })
+  }
+
+  private getTextChannel(channelId: string): TextChannel | undefined {
+    const channel = this.client.channels.cache.get(channelId)
+    return (channel?.type == ChannelType.GuildText) ? channel : undefined
+  }
+
+  private getAuthorName(message: Message<true>): string {
+    const messageAuthor = message.member?.displayName ?? message.author.tag
+    if (message.author.id != this.client.user?.id) return messageAuthor
+    return message.embeds.at(0)?.author?.name ?? messageAuthor
+  }
+
+  private async setMinecraftAuthor(username: string): Promise<{ embed: EmbedBuilder, skin: AttachmentBuilder }> {
+    return {
+      embed: new EmbedBuilder().setAuthor({ name: username, iconURL: "attachment://skin.png" }),
+      skin: new AttachmentBuilder(await fetchSkin(username), { name: "skin.png" })
+    }
+  }
+}
+
+export async function createDiscordBot(
+  token: string, 
+  slashCommands: SlashCommandManager,
+  staffRoles: string[],
+  guildBridgeChannelId: string,
+  logger?: LoggerCategory
+) {
+  const client = new Client({
+    intents: [
+      GatewayIntentBits.Guilds,
+      GatewayIntentBits.GuildMembers,
+      GatewayIntentBits.GuildMessages,
+      GatewayIntentBits.MessageContent
+    ]
+  })
+  client.login(token)
+  const readyClient: Client<true> = await new Promise((resolve, reject) => {
+    client.once(Events.Error, reject),
+    client.once(Events.ClientReady, (readyClient) => {
+      client.off(Events.Error, reject)
+      resolve(readyClient)
+    })
+  })
+  return new DiscordBot(readyClient, slashCommands, staffRoles, guildBridgeChannelId, logger)
 }
