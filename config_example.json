@@ -1,8 +1,6 @@
 {
   "minecraft": {
-    "email": "example@gmail.com",
     "username": "ExampleIGN",
-    "password": "hunter2",
     "privilegedUsers": [
       "TrustedMCUser1",
       "TrustedMCUser2"
