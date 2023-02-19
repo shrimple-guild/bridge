@@ -32,17 +32,17 @@ export class Dungeons {
 
   constructor(member: any) {
     const dungeons = member.dungeons
-    this.level = new Level("dungeons", dungeons.dungeon_types.catacombs.experience)
+    this.level = new Level("dungeons", dungeons?.dungeon_types?.catacombs?.experience ?? 0)
     this.classes = {
-      healer: new Level("dungeons", dungeons.player_classes.healer?.experience ?? 0),
-      archer: new Level("dungeons", dungeons.player_classes.archer?.experience ?? 0),
-      tank: new Level("dungeons", dungeons.player_classes.tank?.experience ?? 0),
-      mage: new Level("dungeons", dungeons.player_classes.mage?.experience ?? 0),
-      berserk: new Level("dungeons", dungeons.player_classes.berserk?.experience ?? 0)
+      healer: new Level("dungeons", dungeons?.player_classes?.healer?.experience ?? 0),
+      archer: new Level("dungeons", dungeons?.player_classes?.archer?.experience ?? 0),
+      tank: new Level("dungeons", dungeons?.player_classes?.tank?.experience ?? 0),
+      mage: new Level("dungeons", dungeons?.player_classes?.mage?.experience ?? 0),
+      berserk: new Level("dungeons", dungeons?.player_classes?.berserk?.experience ?? 0)
     }
     this.catacombs = {
-      normal: floors.map(floor => buildFloorData(dungeons.dungeon_types.catacombs, floor)),
-      master: floors.map(floor => buildFloorData(dungeons.dungeon_types.master_catacombs, floor))
+      normal: floors.map(floor => buildFloorData(dungeons?.dungeon_types?.catacombs, floor)),
+      master: floors.map(floor => buildFloorData(dungeons?.dungeon_types?.master_catacombs, floor))
     }
   }
 
