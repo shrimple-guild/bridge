@@ -16,10 +16,10 @@ export class SyncCommand implements SlashCommand {
       await interaction.reply({ ephemeral: true, content: "Synchronization started."})
       const members = await interaction.guild.members.fetch()
       members.forEach(member => this.verification?.sync(member))
-      await interaction.followUp({ ephemeral: true, embeds: [statusEmbed("success", `Synchronized \`${members.size}\` members.`)] })
+      await interaction.followUp({ embeds: [statusEmbed("success", `Synchronized \`${members.size}\` members.`)] })
     } catch (e) {
       if (e instanceof Error) {
-        await interaction.followUp({ ephemeral: true, embeds: [statusEmbed("failure", `${e.message}`)] })
+        await interaction.followUp({ embeds: [statusEmbed("failure", `${e.message}`)] })
       }
       console.error(e)
     }

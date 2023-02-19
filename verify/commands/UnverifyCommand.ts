@@ -13,13 +13,13 @@ export class UnverifyCommand implements SlashCommand {
   
   async execute(interaction: ChatInputCommandInteraction<"cached">) {
     try {
-      await interaction.deferReply()
+      await interaction.deferReply({ ephemeral: true })
       if (!this.verification) throw new Error("Improper configuration! Please report this to staff.")
       await this.verification.unverify(interaction.guild, interaction.member)
-      await interaction.followUp({ ephemeral: true, embeds: [statusEmbed("success", `Unverified.`)] })
+      await interaction.followUp({ embeds: [statusEmbed("success", `Unverified.`)] })
     } catch (e) {
       if (e instanceof Error) {
-        await interaction.followUp({ ephemeral: true, embeds: [statusEmbed("failure", `${e.message}`)] })
+        await interaction.followUp({ embeds: [statusEmbed("failure", `${e.message}`)] })
       }
     }
   }

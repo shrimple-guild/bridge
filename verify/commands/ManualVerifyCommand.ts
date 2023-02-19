@@ -24,7 +24,7 @@ export class ManualVerifyCommand implements SlashCommand {
   
   async execute(interaction: ChatInputCommandInteraction<"cached">) {
     try {
-      await interaction.deferReply()
+      await interaction.deferReply({ ephemeral: true })
       if (!this.verification) throw new Error("Improper configuration! Please report this to staff.")
       const member = interaction.options.getMember("user")
       const username = interaction.options.getString("username", true)
@@ -39,10 +39,10 @@ export class ManualVerifyCommand implements SlashCommand {
       }
       
       await this.verification.verify(member, uuid)
-      await interaction.followUp({ ephemeral: true, embeds: [statusEmbed("success", `Verified \`${member.user.tag}\` as \`${username}\`.`)] })
+      await interaction.followUp({ embeds: [statusEmbed("success", `Verified \`${member.user.tag}\` as \`${username}\`.`)] })
     } catch (e) {
       if (e instanceof Error) {
-        await interaction.followUp({ ephemeral: true, embeds: [statusEmbed("failure", `${e.message}`)] })
+        await interaction.followUp({ embeds: [statusEmbed("failure", `${e.message}`)] })
       }
       console.error(e)
     }

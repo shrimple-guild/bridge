@@ -19,7 +19,7 @@ export class VerifyCommand implements SlashCommand {
   
   async execute(interaction: ChatInputCommandInteraction<"cached">) {
     try {
-      await interaction.deferReply()
+      await interaction.deferReply({ ephemeral: true })
       if (!this.verification || !this.hypixelAPI) throw new Error("Improper configuration! Please report this to staff.")
       const username = interaction.options.getString("username", true)
       const uuid = await fetchUuid(username)
@@ -27,10 +27,10 @@ export class VerifyCommand implements SlashCommand {
       if (player.discordTag == null) throw new Error("This Hypixel account isn't linked to any Discord account.")
       if (player.discordTag != interaction.user.tag) throw new Error(`${username} is linked to \`${player.discordTag}\`.`)
       await this.verification.verify(interaction.member, uuid)
-      await interaction.followUp({ ephemeral: true, embeds: [statusEmbed("success", `Verified as \`${username}\`.`)] })
+      await interaction.followUp({ embeds: [statusEmbed("success", `Verified as \`${username}\`.`)] })
     } catch (e) {
       if (e instanceof Error) {
-        await interaction.followUp({ ephemeral: true, embeds: [statusEmbed("failure", `${e.message}`)] })
+        await interaction.followUp({ embeds: [statusEmbed("failure", `${e.message}`)] })
       }
     }
   }
