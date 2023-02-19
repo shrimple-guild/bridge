@@ -27,10 +27,15 @@ export class ManualVerifyCommand implements SlashCommand {
       await interaction.deferReply({ ephemeral: true })
       if (!this.verification) throw new Error("Improper configuration! Please report this to staff.")
       const member = interaction.options.getMember("user")
-      const username = interaction.options.getString("username", true)
+      const username = interaction.options.getString("username", false)
       if (!member) throw new Error("Couldn't find this member! Weird!")
+      if (username == null) {
+        await this.verification.verify(member, undefined)
+        await interaction.followUp({ embeds: [statusEmbed("success", `Verified \`${member.user.tag}\` without a Minecraft account.`)] })
+        return
+      }
       const uuid = await fetchUuid(username)
-
+      
       // Check for previous verification on a different account and remove if it exists
       const previousDiscordId = this.verification.getDiscord(interaction.guild, uuid)
       if (previousDiscordId != null) {
