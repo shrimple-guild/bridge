@@ -63,13 +63,13 @@ export class Verification {
     return this.getMinecraft(member.guild, member.id) != null
   }
 
-  sync(member: GuildMember) {
+  async sync(member: GuildMember) {
     if (member.user.bot) {
-      member.roles.set(this.nonVerificationRoles(member))
+      await member.roles.set(this.nonVerificationRoles(member))
     } else if (this.isVerified(member)) {
-      this.setVerifiedRole(member)
+      await this.setVerifiedRole(member)
     } else {
-      this.setUnverifiedRole(member)
+      await this.setUnverifiedRole(member)
     }
   }
 

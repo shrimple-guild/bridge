@@ -2,6 +2,7 @@ import { ChatInputCommandInteraction, PermissionsBitField, SlashCommandBuilder }
 import { statusEmbed } from "../../utils/discordUtils.js";
 import { Verification } from "../Verification.js";
 import { SlashCommand } from "../../discord/commands/SlashCommand.js";
+import { sleep } from "../../utils/Utils.js";
 
 export class SyncCommand implements SlashCommand {
   data = new SlashCommandBuilder()
@@ -15,7 +16,9 @@ export class SyncCommand implements SlashCommand {
     try {
       await interaction.reply({ ephemeral: true, content: "Synchronization started."})
       const members = await interaction.guild.members.fetch()
-      members.forEach(member => this.verification?.sync(member))
+      for (const [_, member] of members) {
+        await this.verification?.sync(member)
+      }
       await interaction.followUp({ embeds: [statusEmbed("success", `Synchronized \`${members.size}\` members.`)] })
     } catch (e) {
       if (e instanceof Error) {
