@@ -11,9 +11,10 @@
     "client": "snowflake",
     "guild": "snowflake",
     "channel": "snowflake",
-    "verificationRoles": {
-      "unverified": "snowflake",
-      "verified": "snowflake"
+    "verification": {
+      "channelId": "snowflake",
+      "unverifiedRole": "snowflake",
+      "verifiedRole": "snowflake"
     },
     "staffRoles": [
       "snowflake1",

@@ -24,7 +24,7 @@ const discord = await createDiscordBot(
 const verification = new Verification(
   discord.client, 
   db, 
-  config.discord.verificationRoles, 
+  config.discord.verification, 
   hypixelAPI, 
   slashCommands
 )

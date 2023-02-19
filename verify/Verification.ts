@@ -1,11 +1,17 @@
 import { Database, Statement } from "better-sqlite3"
-import { Client, Events, Guild, GuildMember } from "discord.js"
+import { Client, Events, Guild, GuildMember, PermissionFlagsBits } from "discord.js"
 import { HypixelAPI } from "../api/HypixelAPI.js"
 import { SlashCommandManager } from "../discord/commands/SlashCommandManager.js"
 import { ManualVerifyCommand } from "./commands/ManualVerifyCommand.js"
 import { SyncCommand } from "./commands/SyncCommand.js"
 import { UnverifyCommand } from "./commands/UnverifyCommand.js"
 import { VerifyCommand } from "./commands/VerifyCommand.js"
+
+type VerificationConfig = {
+  unverifiedRole: string,
+  verifiedRole: string,
+  channelId: string
+}
 
 export class Verification {
   private insertUser: Statement
@@ -16,7 +22,7 @@ export class Verification {
   constructor(
     client: Client<true>,
     db: Database, 
-    private roles: { unverified: string, verified: string },
+    private config: VerificationConfig,
     hypixelAPI: HypixelAPI,
     slashCommandManager: SlashCommandManager
   ) {
@@ -36,6 +42,11 @@ export class Verification {
     )
 
     client.on(Events.GuildMemberAdd, member => this.sync(member))
+    client.on(Events.MessageCreate, message => {
+      if (message.channelId != this.config.channelId) return
+      if (message.member?.permissions?.has(PermissionFlagsBits.Administrator)) return
+      message.delete()
+    })
   }
 
   getMinecraft(guild: Guild, discordId: string) {
@@ -79,17 +90,17 @@ export class Verification {
 
   private nonVerificationRoles(guildMember: GuildMember) {
     const roles = guildMember.roles.cache.map(role => role.id)
-    return roles.filter(role => ![this.roles.unverified, this.roles.verified].includes(role))
+    return roles.filter(role => ![this.config.unverifiedRole, this.config.verifiedRole].includes(role))
   }
 
   private async setVerifiedRole(guildMember: GuildMember, reason?: string) {
     const otherRoles = this.nonVerificationRoles(guildMember)
-    await guildMember.roles.set([this.roles.verified, ...otherRoles], reason)
+    await guildMember.roles.set([this.config.verifiedRole, ...otherRoles], reason)
   }
   
   private async setUnverifiedRole(guildMember: GuildMember, reason?: string) {
     const otherRoles = this.nonVerificationRoles(guildMember)
-    await guildMember.roles.set([this.roles.unverified, ...otherRoles], reason)
+    await guildMember.roles.set([this.config.unverifiedRole, ...otherRoles], reason)
   }
 
   
