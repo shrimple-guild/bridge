@@ -6,12 +6,14 @@ import { ManualVerifyCommand } from "./verify/commands/ManualVerifyCommand.js"
 import { SyncCommand } from "./verify/commands/SyncCommand.js"
 import { UnverifyCommand } from "./verify/commands/UnverifyCommand.js"
 import { VerifyCommand } from "./verify/commands/VerifyCommand.js"
+import { VerifyEmbedCommand } from "./verify/commands/VerifyEmbedCommand.js"
 
 const slashCommands = [
   new ManualVerifyCommand(),
   new VerifyCommand(),
   new UnverifyCommand(),
-  new SyncCommand()
+  new SyncCommand(),
+  new VerifyEmbedCommand()
 ]
 
 await loadCommands(slashCommands, config.discord.token, config.discord.client, config.discord.guild)

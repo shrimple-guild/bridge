@@ -6,6 +6,7 @@ import { ManualVerifyCommand } from "./commands/ManualVerifyCommand.js"
 import { SyncCommand } from "./commands/SyncCommand.js"
 import { UnverifyCommand } from "./commands/UnverifyCommand.js"
 import { VerifyCommand } from "./commands/VerifyCommand.js"
+import { VerifyEmbedCommand } from "./commands/VerifyEmbedCommand.js"
 
 type VerificationConfig = {
   unverifiedRole: string,
@@ -38,7 +39,8 @@ export class Verification {
       new ManualVerifyCommand(this), 
       new UnverifyCommand(this), 
       new SyncCommand(this),
-      new VerifyCommand(this, hypixelAPI) 
+      new VerifyCommand(this, hypixelAPI),
+      new VerifyEmbedCommand(this)
     )
 
     client.on(Events.GuildMemberAdd, member => this.sync(member))
