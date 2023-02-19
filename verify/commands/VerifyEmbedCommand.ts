@@ -13,7 +13,7 @@ export class VerifyEmbedCommand implements SlashCommand {
   
   async execute(interaction: ChatInputCommandInteraction<"cached">) {
     try {
-      await interaction.deferReply()
+      await interaction.deferReply({ ephemeral: true })
       if (!this.verification) throw new Error("Improper configuration! Please report this to staff.")
       const file = new AttachmentBuilder("./assets/verificationTutorial.mp4", { name: "attachment.mp4" })
       const embed = new EmbedBuilder()
@@ -36,6 +36,7 @@ If you are having issues with **/verify [IGN]** and have attempted to link your 
 `)
         .setColor("DarkBlue")
         interaction.channel?.send({ embeds: [embed] })
+        interaction.followUp({ embeds: [statusEmbed("success", "Sent embed!")]})
     } catch (e) {
       if (e instanceof Error) {
         await interaction.followUp({ embeds: [statusEmbed("failure", `${e.message}`)] })
