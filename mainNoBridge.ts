@@ -3,7 +3,7 @@ import { db } from "./database/database.js"
 import { HypixelAPI } from "./api/HypixelAPI.js"
 import { createDiscordBot } from "./discord/DiscordBot.js"
 import { SlashCommandManager } from "./discord/commands/SlashCommandManager.js"
-import config from "./ambientConfig.json" assert { type: "json" }
+import config from "./config.json" assert { type: "json" }
 import { Logger } from "./utils/Logger.js"
 
 const logger = new Logger()

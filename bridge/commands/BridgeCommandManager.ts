@@ -63,6 +63,6 @@ export class BridgeCommandManager {
       }
     }
     logger?.info(`Response: ${response}`)
-
+    return response
   }
 }

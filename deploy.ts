@@ -1,6 +1,6 @@
 
 import { REST, Routes } from "discord.js"
-import config from "./ambientConfig.json" assert { type: "json" }
+import config from "./config.json" assert { type: "json" }
 import { SlashCommand } from "./discord/commands/SlashCommand.js"
 import { ManualVerifyCommand } from "./verify/commands/ManualVerifyCommand.js"
 import { SyncCommand } from "./verify/commands/SyncCommand.js"

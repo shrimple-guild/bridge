@@ -5,7 +5,7 @@ import { db } from "./database/database.js"
 import { HypixelAPI } from "./api/HypixelAPI.js"
 import { createDiscordBot } from "./discord/DiscordBot.js"
 import { SlashCommandManager } from "./discord/commands/SlashCommandManager.js"
-import config from "./fpfConfig.json" assert { type: "json" }
+import config from "./config.json" assert { type: "json" }
 import { MinecraftBot } from "./minecraft/MinecraftBot.js"
 import { Bridge } from "./bridge/Bridge.js"
 import { BridgeCommandManager } from "./bridge/commands/BridgeCommandManager.js"
@@ -50,7 +50,7 @@ const rl = readline.createInterface({
 
 rl.on("line", (input) => {
   if (input != "quit") {
-    bridge.chatAsBot(`Console: ${input}`)
+    bridge.chatAsBot(input)
   } else {
     bridge.quit()
   }
