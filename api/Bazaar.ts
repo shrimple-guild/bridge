@@ -40,7 +40,7 @@ export class Bazaar {
     } catch (e) {
       this.logger.error("Error while updating bazaar!", e)
     }
-    setTimeout(this.update, 60000)
+    setTimeout(() => this.update(), 60000)
   }
 
   getProduct(name: string) {
