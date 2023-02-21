@@ -4,10 +4,9 @@ import { SlashCommandManager } from "./commands/SlashCommandManager.js";
 import { Bridge } from "../bridge/Bridge.js";
 import { simpleEmbed } from "../utils/discordUtils.js";
 import { LoggerCategory } from "../utils/Logger.js";
-import { fetchSkin } from "../utils/playerUtils.js";
 import { imageLinkRegex } from "../utils/RegularExpressions.js";
 import { colorOf, cleanContent } from "../utils/utils.js";
-import { Verification } from "../verify/Verification.js";
+import { HypixelAPI } from "../api/HypixelAPI.js";
 
 export class DiscordBot {
   bridge?: Bridge
@@ -17,6 +16,7 @@ export class DiscordBot {
     private slashCommands: SlashCommandManager,
     private staffRoles: string[],
     private guildBridgeChannelId: string,
+    private hypixelAPI: HypixelAPI,
     private logger?: LoggerCategory
   ) {
     logger?.info(`Discord bot online.`)
@@ -93,7 +93,7 @@ export class DiscordBot {
   private async setMinecraftAuthor(username: string): Promise<{ embed: EmbedBuilder, skin: AttachmentBuilder }> {
     return {
       embed: new EmbedBuilder().setAuthor({ name: username, iconURL: "attachment://skin.png" }),
-      skin: new AttachmentBuilder(await fetchSkin(username), { name: "skin.png" })
+      skin: new AttachmentBuilder(await this.hypixelAPI.mojang.fetchSkin(username), { name: "skin.png" })
     }
   }
 }
@@ -103,6 +103,7 @@ export async function createDiscordBot(
   slashCommands: SlashCommandManager,
   staffRoles: string[],
   guildBridgeChannelId: string,
+  hypixelAPI: HypixelAPI,
   logger?: LoggerCategory
 ) {
   const client = new Client({
@@ -121,5 +122,5 @@ export async function createDiscordBot(
       resolve(readyClient)
     })
   })
-  return new DiscordBot(readyClient, slashCommands, staffRoles, guildBridgeChannelId, logger)
+  return new DiscordBot(readyClient, slashCommands, staffRoles, guildBridgeChannelId, hypixelAPI, logger)
 }

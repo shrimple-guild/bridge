@@ -1,6 +1,5 @@
 import { SimpleCommand } from "./Command.js"
 import { formatNumber, titleCase } from "../../../utils/Utils.js"
-import { fetchUuid } from "../../../utils/playerUtils.js"
 import { HypixelAPI } from "../../../api/HypixelAPI.js"
 import { isSlayer } from "../../../api/Slayers.js"
 import { Bridge } from "../../Bridge.js"
@@ -19,7 +18,7 @@ export class SlayerCommand implements SimpleCommand {
     const slayerName = args.shift()?.toLowerCase()
     let message
     if (!slayerName) return "A slayer name must be specified!"
-    const uuid = await fetchUuid(playerName)
+    const uuid = await this.hypixelAPI.mojang.fetchUuid(playerName)
     const profiles = await this.hypixelAPI.fetchProfiles(uuid)
     const profile = profiles.getByQuery(profileArg)
     if (!isSlayer(slayerName)) return `${titleCase(slayerName)} is not a valid slayer name!`

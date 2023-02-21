@@ -1,6 +1,5 @@
 import { SimpleCommand } from "./Command.js"
 import { msToTime, formatNumber, titleCase } from "../../../utils/Utils.js"
-import { fetchUuid } from "../../../utils/playerUtils.js"
 import { isDungeonClass } from "../../../api/Dungeons.js"
 import { HypixelAPI } from "../../../api/HypixelAPI.js"
 import { Bridge } from "../../Bridge.js"
@@ -20,7 +19,7 @@ export class CataCommand implements SimpleCommand {
     const profileArg = playerArg[1]?.toLowerCase()
     const commandArg = args[0]?.toLowerCase()
     let message
-    const uuid = await fetchUuid(playerName)
+    const uuid = await this.hypixelAPI.mojang.fetchUuid(playerName)
     const profiles = await this.hypixelAPI.fetchProfiles(uuid)
     const profile = profiles.getByQuery(profileArg)
     const floorMatch = commandArg?.match(floorArgRegex)

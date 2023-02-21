@@ -1,8 +1,8 @@
 import { ChatInputCommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { statusEmbed } from "../../utils/discordUtils.js";
-import { fetchUuid } from "../../utils/playerUtils.js";
 import { Verification } from "../Verification.js";
 import { SlashCommand } from "../../discord/commands/SlashCommand.js";
+import { HypixelAPI } from "../../api/HypixelAPI.js";
 
 export class ManualVerifyCommand implements SlashCommand {
   data = new SlashCommandBuilder()
@@ -20,12 +20,12 @@ export class ManualVerifyCommand implements SlashCommand {
       .setName("username")
       .setDescription("The Minecraft username of the user"))
 
-  constructor(private verification?: Verification) {}
+  constructor(private verification?: Verification, private hypixelAPI?: HypixelAPI) {}
   
   async execute(interaction: ChatInputCommandInteraction<"cached">) {
     try {
       await interaction.deferReply({ ephemeral: true })
-      if (!this.verification) throw new Error("Improper configuration! Please report this to staff.")
+      if (!this.verification || !this.hypixelAPI) throw new Error("Improper configuration! Please report this to staff.")
       const member = interaction.options.getMember("user")
       const username = interaction.options.getString("username", false)
       if (!member) throw new Error("Couldn't find this member! Weird!")
@@ -34,7 +34,7 @@ export class ManualVerifyCommand implements SlashCommand {
         await interaction.followUp({ embeds: [statusEmbed("success", `Verified \`${member.user.tag}\` without a Minecraft account.`)] })
         return
       }
-      const uuid = await fetchUuid(username)
+      const uuid = await this.hypixelAPI.mojang.fetchUuid(username)
       
       // Check for previous verification on a different account and remove if it exists
       const previousDiscordId = this.verification.getDiscord(interaction.guild, uuid)

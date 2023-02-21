@@ -1,6 +1,7 @@
-import { Database, Statement } from "better-sqlite3"
+import { Statement } from "better-sqlite3"
 import { Client, Events, Guild, GuildMember, PermissionFlagsBits } from "discord.js"
 import { HypixelAPI } from "../api/HypixelAPI.js"
+import { Database } from "../database/database.js"
 import { SlashCommandManager } from "../discord/commands/SlashCommandManager.js"
 import { ManualVerifyCommand } from "./commands/ManualVerifyCommand.js"
 import { SyncCommand } from "./commands/SyncCommand.js"
@@ -104,7 +105,6 @@ export class Verification {
     const otherRoles = this.nonVerificationRoles(guildMember)
     await guildMember.roles.set([this.config.unverifiedRole, ...otherRoles], reason)
   }
-
-  
 }
+
   

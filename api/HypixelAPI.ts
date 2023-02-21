@@ -1,3 +1,4 @@
+import { Database } from "../database/database.js"
 import { HypixelGuildMember } from "./HypixelGuildMember.js"
 import { HypixelPlayer } from "./HypixelPlayer.js"
 import { MojangAPI } from "./MojangAPI.js"
@@ -6,13 +7,15 @@ import { SkyblockProfiles } from "./SkyblockProfiles.js"
 const maxRequestTime = 3
 
 export class HypixelAPI {
-  readonly mojang = new MojangAPI()
+  readonly mojang: MojangAPI
 
   private rateLimit: number = 60
   private rateLimitRemaining: number = 60
   private rateLimitReset: number = 60
 
-  constructor(private apiKey: string) {}
+  constructor(private apiKey: string, private database: Database) {
+    this.mojang = new MojangAPI(database)
+  }
 
   async fetchPlayer(uuid: string): Promise<HypixelPlayer> {
     const response = await this.fetchHypixel("/player", { uuid: uuid, key: this.apiKey}) as any

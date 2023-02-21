@@ -1,6 +1,5 @@
 import { SimpleCommand } from "./Command.js"
 import { titleCase } from "../../../utils/Utils.js"
-import { fetchUuid } from "../../../utils/playerUtils.js"
 import { HypixelAPI } from "../../../api/HypixelAPI.js"
 import { trophyFishNames } from "../../../api/TrophyFish.js"
 import { Bridge } from "../../Bridge.js"
@@ -20,7 +19,7 @@ export class TrophyFishCommand implements SimpleCommand {
       let fish = args?.join(" ")
       if (arg !== "total" && arg !== "tiers") fish = [arg, fish].join(" ")
       let message
-      const uuid = await fetchUuid(playerName)
+      const uuid = await this.hypixelAPI.mojang.fetchUuid(playerName)
       const profiles = await this.hypixelAPI.fetchProfiles(uuid)
       const profile = profiles.getByQuery(profileArg)
       const cuteName = profile.cuteName

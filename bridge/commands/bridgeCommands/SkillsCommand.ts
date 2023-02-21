@@ -1,6 +1,5 @@
 import { SimpleCommand } from "./Command.js"
 import { formatNumber, titleCase } from "../../../utils/Utils.js"
-import { fetchUuid } from "../../../utils/playerUtils.js"
 import { HypixelAPI } from "../../../api/HypixelAPI.js"
 import { isSkill } from "../../../api/Skills.js"
 import { Bridge } from "../../Bridge.js"
@@ -19,7 +18,7 @@ export class SkillsCommand implements SimpleCommand {
     const skillName = args.shift()?.toLowerCase()
     let message
     if (skillName == null) return "A skill must be specified!"
-    const uuid = await fetchUuid(playerName)
+    const uuid = await this.hypixelAPI.mojang.fetchUuid(playerName)
     const profiles = await this.hypixelAPI.fetchProfiles(uuid)
     const profile = profiles.getByQuery(profileArg)
     const cuteName = profile.cuteName
