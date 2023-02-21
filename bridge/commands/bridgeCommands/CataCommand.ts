@@ -1,4 +1,4 @@
-import { BridgeCommand } from "./Command.js"
+import { SimpleCommand } from "./Command.js"
 import { msToTime, formatNumber, titleCase } from "../../../utils/Utils.js"
 import { fetchUuid } from "../../../utils/playerUtils.js"
 import { isDungeonClass } from "../../../api/Dungeons.js"
@@ -7,13 +7,13 @@ import { Bridge } from "../../Bridge.js"
 
 const floorArgRegex = /^(f[0-7]|m[1-7])$/
 
-export class CataCommand implements BridgeCommand {
+export class CataCommand implements SimpleCommand {
   aliases = ["cata"]
   usage = "<player:[profile|bingo|main]> [class|f[0-7]|m[1-7]]"
 
   constructor(private hypixelAPI: HypixelAPI) {}
 
-  async execute(bridge: Bridge, args: string[]) {
+  async execute(args: string[]) {
     if (args.length < 1) return `Syntax: cata ${this.usage}`
     const playerArg = args.shift()!.split(":")
     const playerName = playerArg[0]

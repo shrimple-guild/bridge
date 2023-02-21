@@ -1,10 +1,10 @@
 import { Bridge } from "../../Bridge.js"
-import { BridgeCommand } from "./Command.js"
+import { SimpleCommand } from "./Command.js"
 
-export class PingCommand implements BridgeCommand {
+export class PingCommand implements SimpleCommand {
     aliases = ["ping"]
     
-    execute(bridge: Bridge, args: string[]) {
+    async execute(args: string[]) {
         return "Pong!"
     }
 }

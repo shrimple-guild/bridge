@@ -1,19 +1,21 @@
+import { Bazaar } from "../api/Bazaar.js";
 import { HypixelAPI } from "../api/HypixelAPI.js";
-import { CataCommand } from "../bridge/commands/bridgeCommands/CataCommand.js";
-import { SkillsCommand } from "../bridge/commands/bridgeCommands/SkillsCommand.js";
-import { SlayerCommand } from "../bridge/commands/bridgeCommands/SlayerCommand.js";
-import { TrophyFishCommand } from "../bridge/commands/bridgeCommands/TrophyFishCommand.js";
+import { SkyblockItems } from "../api/SkyblockItems.js";
+import { SimpleCommandManager } from "../bridge/commands/SimpleCommandManager.js";
+import { Logger } from "../utils/Logger.js";
 
 import config from "../config.json" assert { type: "json" }
-const { apiKey } = config.bridge
+import itemNames from "../data/itemNames.json" assert { type: "json" }
+const { apiKey, prefix } = config.bridge
+
+const logger = new Logger()
 
 const testAPI = new HypixelAPI(apiKey)
-const skillsCommand = new SkillsCommand(testAPI)
-const slayerCommand = new SlayerCommand(testAPI)
-const cataCommand = new CataCommand(testAPI)
-const trophyFishCommand = new TrophyFishCommand(testAPI)
 
-console.log(await skillsCommand.execute(["appable:blueberry", "foraging"]))
-console.log(await slayerCommand.execute(["appable:orange", "blaze"]))
-console.log(await cataCommand.execute(["appable", "m7"]))
-console.log(await trophyFishCommand.execute(["appable", "obfuscated", "1"]))
+const skyblockItems = await SkyblockItems.create(testAPI, itemNames)
+const bazaar = await Bazaar.create(testAPI, skyblockItems, logger.category("Bazaar"))
+
+const commandManager = new SimpleCommandManager(prefix, "Baltics", testAPI, bazaar)
+
+const response = await commandManager.execute("_bz sunder 5", false)
+console.log(response)

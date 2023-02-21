@@ -6,13 +6,16 @@ import { HypixelAPI } from "./api/HypixelAPI.js"
 import { createDiscordBot } from "./discord/DiscordBot.js"
 import { SlashCommandManager } from "./discord/commands/SlashCommandManager.js"
 import config from "./config.json" assert { type: "json" }
+import itemNames from "./data/itemNames.json" assert { type: "json" }
 import { MinecraftBot } from "./minecraft/MinecraftBot.js"
 import { Bridge } from "./bridge/Bridge.js"
-import { BridgeCommandManager } from "./bridge/commands/BridgeCommandManager.js"
+import { SimpleCommandManager } from "./bridge/commands/SimpleCommandManager.js"
 import { Logger } from "./utils/Logger.js"
 import readline from "readline"
 import exitHook from "async-exit-hook"
 import { sleep } from "./utils/Utils.js"
+import { SkyblockItems } from "./api/SkyblockItems.js"
+import { Bazaar } from "./api/Bazaar.js"
 
 const logger = new Logger()
 
@@ -38,7 +41,10 @@ const verification = new Verification(
   slashCommands
 )
 
-const bridgeCommandManager = new BridgeCommandManager(config.bridge.prefix, config.minecraft.username, hypixelAPI)
+const skyblockItems = await SkyblockItems.create(hypixelAPI, itemNames)
+const bazaar = await Bazaar.create(hypixelAPI, skyblockItems, logger.category("Bazaar"))
+
+const bridgeCommandManager = new SimpleCommandManager(config.bridge.prefix, config.minecraft.username, hypixelAPI, bazaar, logger.category("Commands"))
 
 const minecraft = new MinecraftBot(config.minecraft.username, config.minecraft.privilegedUsers, minecraftStaffRoles, logger.category("Minecraft"))
 const bridge = new Bridge(discord, minecraft, bridgeCommandManager, logger.category("Bridge"))

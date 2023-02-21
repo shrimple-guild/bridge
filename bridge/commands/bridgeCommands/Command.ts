@@ -1,8 +1,8 @@
 import { Bridge } from "../../Bridge"
 
-export interface BridgeCommand {
+export interface SimpleCommand {
     usage?: string
     
     aliases: (string | undefined)[]
-    execute(bridge: Bridge, args: string[], isStaff?: boolean): any
+    execute(args: string[], isStaff?: boolean): Promise<string | void>
 }

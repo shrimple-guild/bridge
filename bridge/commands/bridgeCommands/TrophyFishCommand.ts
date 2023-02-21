@@ -1,17 +1,17 @@
-import { BridgeCommand } from "./Command.js"
+import { SimpleCommand } from "./Command.js"
 import { titleCase } from "../../../utils/Utils.js"
 import { fetchUuid } from "../../../utils/playerUtils.js"
 import { HypixelAPI } from "../../../api/HypixelAPI.js"
 import { trophyFishNames } from "../../../api/TrophyFish.js"
 import { Bridge } from "../../Bridge.js"
 
-export class TrophyFishCommand implements BridgeCommand {
+export class TrophyFishCommand implements SimpleCommand {
     aliases = ["trophy", "trophyfish", "tfish"]
     usage = "<player:[profile|bingo|main]> <total | tiers | [fish]>"
 
     constructor(private hypixelAPI: HypixelAPI) {}
 
-    async execute(bridge: Bridge, args: string[]) {
+    async execute(args: string[]) {
       if (args.length < 2) return `Syntax: trophy ${this.usage}`
       const playerArg = args.shift()!.split(":")
       const playerName = playerArg[0]

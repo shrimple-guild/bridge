@@ -1,11 +1,11 @@
-import { BridgeCommand } from "./Command.js"
+import { SimpleCommand } from "./Command.js"
 import { secsToTime } from "../../../utils/Utils.js"
 import { Bridge } from "../../Bridge.js";
 
-export class RainTimerCommand implements BridgeCommand {
+export class RainTimerCommand implements SimpleCommand {
     aliases = ["rain", "rt"]
 
-    execute(bridge: Bridge, args: string[]) {
+    async execute(args: string[]) {
         const UTCPrevThunderstorm = 1668474356000;
         const base = Math.floor((Date.now() - UTCPrevThunderstorm) / 1000);
         const thunderstorm = base % 19400;

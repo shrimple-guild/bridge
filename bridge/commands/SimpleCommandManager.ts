@@ -1,4 +1,4 @@
-import { BridgeCommand } from "./bridgeCommands/Command.js"
+import { SimpleCommand } from "./bridgeCommands/Command.js"
 import { AuctionCommand } from "./bridgeCommands/AuctionCommand.js"
 import { BazaarCommand } from "./bridgeCommands/BazaarCommand.js"
 import { EightballCommand } from "./bridgeCommands/EightBallCommand.js"
@@ -16,14 +16,15 @@ import { CataCommand } from "./bridgeCommands/CataCommand.js"
 import { HypixelAPI } from "../../api/HypixelAPI.js"
 import { Bridge } from "../Bridge.js"
 import { LoggerCategory } from "../../utils/Logger.js"
+import { Bazaar } from "../../api/Bazaar.js"
 
-export class BridgeCommandManager {
-  commands: BridgeCommand[]
+export class SimpleCommandManager {
+  commands: SimpleCommand[]
 
-  constructor(public prefix: string, public botUsername: string, hypixelAPI: HypixelAPI) {
+  constructor(public prefix: string, public botUsername: string, hypixelAPI: HypixelAPI, bazaar: Bazaar, private logger?: LoggerCategory) {
     this.commands = [
       new AuctionCommand(),
-      new BazaarCommand(),
+      new BazaarCommand(bazaar),
       new CataCommand(hypixelAPI),
       new EightballCommand(),
       new ElectionCommand(),
@@ -31,15 +32,17 @@ export class BridgeCommandManager {
       new PickCommand(),
       new PingCommand(),
       new RainTimerCommand(),
-      new RawCommand(),
-      new ReloadCommand(),
       new SkillsCommand(hypixelAPI),
       new SlayerCommand(hypixelAPI),
       new TrophyFishCommand(hypixelAPI)
     ]
   }
 
-  async execute(bridge: Bridge, message: string, isStaff: boolean, logger?: LoggerCategory) {
+  addBridgeCommands(bridge: Bridge) {
+    this.commands.push(new RawCommand(bridge), new ReloadCommand(bridge))
+  }
+
+  async execute(message: string, isStaff: boolean) {
     if (!message.startsWith(this.prefix)) return
     const commStr = message.substring(this.prefix.length)
     const args = commStr.trim().split(" ")
@@ -49,20 +52,14 @@ export class BridgeCommandManager {
 
     if (!command) return `Command ${commandName} not found, try ${this.prefix}help`
 
-    logger?.info(`Command processing (staff: ${isStaff}): ${message}`)
+    this.logger?.info(`Command processing (staff: ${isStaff}): ${message}`)
     let response
     try {
-      response = await command.execute(bridge, args, isStaff)
+      response = await command.execute(args, isStaff)
     } catch (e: any) {
-      if (e instanceof Error) {
-        logger?.error(`Command error: ${e.stack}`)
-        response = e.message
-      } else {
-        logger?.error(`Unknown command error.`)
-        response = `Something went wrong, API might be down?`
-      }
+      this.logger?.error("Command error!", e)
     }
-    logger?.info(`Response: ${response}`)
+    this.logger?.info(`Response: ${response}`)
     return response
   }
 }

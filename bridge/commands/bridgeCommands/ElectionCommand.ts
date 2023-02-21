@@ -1,10 +1,10 @@
-import { BridgeCommand } from "./Command.js"
+import { SimpleCommand } from "./Command.js"
 import { HumanizeDurationLanguage, HumanizeDuration } from "humanize-duration-ts"
 import { titleCase } from "../../../utils/Utils.js"
 import { jaroWinkler as jaroDistance} from "jaro-winkler-typescript"
 import { Bridge } from "../../Bridge.js"
 
-export class ElectionCommand implements BridgeCommand {
+export class ElectionCommand implements SimpleCommand {
   aliases = ["election", "mayor"]
 
   usage = "(mayor)"
@@ -20,7 +20,7 @@ export class ElectionCommand implements BridgeCommand {
     return interval - (Date.now() - (epoch + offset)) % interval
   }
 
-  async execute(bridge: Bridge, args: string[]) {
+  async execute(args: string[]) {
     const response = await fetch("https://api.hypixel.net/resources/skyblock/election")
     if (response.status != 200) return "API fetch error! Try again later."
     const electionData = await response.json() as any

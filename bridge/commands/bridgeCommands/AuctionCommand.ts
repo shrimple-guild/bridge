@@ -1,4 +1,4 @@
-import { BridgeCommand } from "./Command.js"
+import { SimpleCommand } from "./Command.js"
 import { jaroWinkler as jaroDistance } from "jaro-winkler-typescript"
 import { titleCase } from "../../../utils/Utils.js"
 import auctionAliases from "../../../data/auctionAliases.json" assert { type: "json" }
@@ -35,7 +35,7 @@ remapped.forEach(product => {
 // names that are actually in lbin, rather than items that can't actually be sold
 let expandedNames = fullExpandedNames
 
-export class AuctionCommand implements BridgeCommand {
+export class AuctionCommand implements SimpleCommand {
   aliases = ["ah", "lowestbin", "lbin", "lb"]
 
   usage = "<item name>"
@@ -61,7 +61,7 @@ export class AuctionCommand implements BridgeCommand {
     return { id: bestMatch.id, name: bestMatch.name }
   }
 
-  async execute(bridge: Bridge, args: string[]) {
+  async execute(args: string[]) {
     let formatter = Intl.NumberFormat("en", { notation: "compact" })
     let { id, name } = this.closestAuctionProduct(args)
     let lowestBin = cachedLowestBins[id]

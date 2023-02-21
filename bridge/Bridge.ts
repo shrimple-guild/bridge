@@ -1,4 +1,4 @@
-import { BridgeCommandManager } from "./commands/BridgeCommandManager.js";
+import { SimpleCommandManager } from "./commands/SimpleCommandManager.js";
 import { DiscordBot } from "../discord/DiscordBot.js";
 import { MinecraftBot } from "../minecraft/MinecraftBot.js";
 import { sleep } from "../utils/utils.js";
@@ -8,11 +8,12 @@ export class Bridge {
   constructor(
     private discord: DiscordBot,
     private minecraft: MinecraftBot,
-    private bridgeCommandManager: BridgeCommandManager,
+    private commandManager: SimpleCommandManager,
     private logger: LoggerCategory
   ) {
     minecraft.bridge = this
     discord.bridge = this
+    commandManager.addBridgeCommands(this)
   }
 
   async onMinecraftChat(username: string, content: string, isStaff: boolean, colorAlias?: string, guildRank?: string) {
@@ -28,7 +29,7 @@ export class Bridge {
   }
 
   async handleCommand(content: string, isStaff: boolean) {
-    const response = await this.bridgeCommandManager.execute(this, content, isStaff, this.logger)
+    const response = await this.commandManager.execute(content, isStaff)
     if (response) {
       await this.chatAsBot(response)
     }
