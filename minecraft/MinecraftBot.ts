@@ -1,7 +1,6 @@
 import AsyncLock from "async-lock"
 import mineflayer from "mineflayer"
 import { Bridge } from "../bridge/Bridge.js"
-import { nameIsInDb } from "../utils/playerUtils.js"
 import { sleep } from "../utils/utils.js"
 import { PatternManager } from "./PatternManager.js"
 import { LoggerCategory } from "../utils/Logger.js"
@@ -115,9 +114,9 @@ export class MinecraftBot {
     this.bot.quit()
   }
 
+  // TODO: Fix name checking (previously checked for anyone in database, which is anyone who has ever been queried)
   fragbot(username: string) {
     this.logger?.info(`${username} used the fragbot feature.`)
-    if (!nameIsInDb(username)) return
     this.chat(`/p join ${username}`)
     this.fragbotTimeout = setTimeout(() => {
       this.chat("/pc Leaving because 10s passed")
