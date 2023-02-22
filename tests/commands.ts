@@ -7,6 +7,8 @@ import readline from "readline"
 
 import config from "../config.json" assert { type: "json" }
 import itemNames from "../data/itemNames.json" assert { type: "json" }
+import { Database } from "../database/database.js";
+import { migrations } from "../database/migrations.js";
 const { apiKey, prefix } = config.bridge
 
 
@@ -16,13 +18,12 @@ const rl = readline.createInterface({
 })
 
 const logger = new Logger()
+const database = await Database.create("./database", migrations)
 
-const testAPI = new HypixelAPI(apiKey)
+const testAPI = new HypixelAPI(apiKey, database, logger.category("HypixelAPI"))
+await testAPI.init(itemNames)
 
-const skyblockItems = await SkyblockItems.create(testAPI, itemNames)
-const bazaar = await Bazaar.create(testAPI, skyblockItems, logger.category("Bazaar"))
-
-const commandManager = new SimpleCommandManager(prefix, "Baltics", testAPI, bazaar)
+const commandManager = new SimpleCommandManager(prefix, "Baltics", testAPI)
 
 
 rl.on("line", async (input) => {

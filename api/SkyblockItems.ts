@@ -1,7 +1,7 @@
 import { titleCase } from "../utils/Utils.js"
 import { HypixelAPI } from "./HypixelAPI.js"
 
-type SpecifiedNames = {
+export type SpecifiedNames = {
   [key: string]: {
     name: string,
     aliases?: string[]

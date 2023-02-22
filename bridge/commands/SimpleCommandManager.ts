@@ -17,14 +17,15 @@ import { HypixelAPI } from "../../api/HypixelAPI.js"
 import { Bridge } from "../Bridge.js"
 import { LoggerCategory } from "../../utils/Logger.js"
 import { Bazaar } from "../../api/Bazaar.js"
+import { ContestCommand } from "./bridgeCommands/ContestCommand.js"
 
 export class SimpleCommandManager {
   commands: SimpleCommand[]
 
-  constructor(public prefix: string, public botUsername: string, hypixelAPI: HypixelAPI, bazaar: Bazaar, private logger?: LoggerCategory) {
+  constructor(public prefix: string, public botUsername: string, hypixelAPI: HypixelAPI, private logger?: LoggerCategory) {
     this.commands = [
       new AuctionCommand(),
-      new BazaarCommand(bazaar),
+      new BazaarCommand(hypixelAPI),
       new CataCommand(hypixelAPI),
       new EightballCommand(),
       new ElectionCommand(),
@@ -34,7 +35,8 @@ export class SimpleCommandManager {
       new RainTimerCommand(),
       new SkillsCommand(hypixelAPI),
       new SlayerCommand(hypixelAPI),
-      new TrophyFishCommand(hypixelAPI)
+      new TrophyFishCommand(hypixelAPI),
+      new ContestCommand(hypixelAPI)
     ]
   }
 

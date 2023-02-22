@@ -1,18 +1,19 @@
 import { SimpleCommand } from "./Command.js"
-import { Bridge } from "../../Bridge.js"
-import { Bazaar } from "../../../api/Bazaar.js"
+import { HypixelAPI } from "../../../api/HypixelAPI.js"
 
 
 export class BazaarCommand implements SimpleCommand {
   aliases = ["bazaar", "bz"]
 
-  constructor(private bazaar: Bazaar) {}
+  constructor(private hypixelAPI: HypixelAPI) {}
 
   usage = "<item name>"
 
   async execute(args: string[]) {
     let formatter = Intl.NumberFormat("en", { notation: "compact" })
-    let product = this.bazaar.getClosestProduct(args.join(" "))
+    const bazaar = this.hypixelAPI.bazaar
+    if (bazaar == null) return `Bazaar isn't instantiated! Please report this!`
+    let product = bazaar.getClosestProduct(args.join(" "))
     if (product == null) return `No product found!`
     return `Bazaar data for ${product.name}: insta-buy: ${formatter.format(product.instabuy ?? NaN)}, insta-sell: ${formatter.format(product.instasell ?? NaN)}`
   }

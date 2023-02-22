@@ -1,14 +1,16 @@
 import { Verification } from "../verify/Verification.js"
-import { db } from "../database/database.js"
+import { Database } from "../database/database.js"
 import { HypixelAPI } from "../api/HypixelAPI.js"
 import { createDiscordBot } from "../discord/DiscordBot.js"
 import { SlashCommandManager } from "../discord/commands/SlashCommandManager.js"
 import config from "../config.json" assert { type: "json" }
 import { Logger } from "../utils/Logger.js"
+import { migrations } from "../database/migrations.js"
 
 const logger = new Logger()
+const database = await Database.create("./database", migrations)
 
-const hypixelAPI = new HypixelAPI(config.bridge.apiKey)
+const hypixelAPI = new HypixelAPI(config.bridge.apiKey, database, logger.category("HypixelAPI"))
 const slashCommands = new SlashCommandManager()
 
 const discordStaffRoles = config.roles.filter(role => role.isStaff).map(role => role.discord)
@@ -18,12 +20,13 @@ const discord = await createDiscordBot(
   slashCommands, 
   discordStaffRoles,
   config.discord.channel, 
+  hypixelAPI,
   logger.category("Discord")
 )
 
 const verification = new Verification(
   discord.client, 
-  db, 
+  database, 
   config.discord.verification, 
   hypixelAPI, 
   slashCommands

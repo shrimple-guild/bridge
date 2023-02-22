@@ -1,20 +1,37 @@
 import { Database } from "../database/database.js"
+import { LoggerCategory } from "../utils/Logger.js"
+import { Bazaar } from "./Bazaar.js"
+import { FarmingContests } from "./FarmingContests.js"
 import { HypixelGuildMember } from "./HypixelGuildMember.js"
 import { HypixelPlayer } from "./HypixelPlayer.js"
 import { MojangAPI } from "./MojangAPI.js"
+import { SkyblockItems, SpecifiedNames } from "./SkyblockItems.js"
 import { SkyblockProfiles } from "./SkyblockProfiles.js"
 
 const maxRequestTime = 3
 
 export class HypixelAPI {
+
   readonly mojang: MojangAPI
+  contests?: FarmingContests
+  bazaar?: Bazaar
 
   private rateLimit: number = 60
   private rateLimitRemaining: number = 60
   private rateLimitReset: number = 60
 
-  constructor(private apiKey: string, private database: Database) {
+  constructor(
+    private apiKey: string,
+    private database: Database,
+    private logger: LoggerCategory
+  ) {
     this.mojang = new MojangAPI(database)
+  }
+
+  async init(specifiedNames?: SpecifiedNames) {
+    const items = await SkyblockItems.create(this, specifiedNames)
+    this.bazaar = await Bazaar.create(this, items, this.logger)
+    this.contests = await FarmingContests.create(this.logger)
   }
 
   async fetchPlayer(uuid: string): Promise<HypixelPlayer> {

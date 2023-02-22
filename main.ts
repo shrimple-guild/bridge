@@ -21,7 +21,7 @@ import { migrations } from "./database/migrations.js"
 const logger = new Logger()
 const database = await Database.create("./database", migrations)
 
-const hypixelAPI = new HypixelAPI(config.bridge.apiKey, database)
+const hypixelAPI = new HypixelAPI(config.bridge.apiKey, database, logger.category("HypixelAPI"))
 const slashCommands = new SlashCommandManager()
 
 const discordStaffRoles = config.roles.filter(role => role.isStaff).map(role => role.discord)
@@ -44,10 +44,7 @@ const verification = new Verification(
   slashCommands
 )
 
-const skyblockItems = await SkyblockItems.create(hypixelAPI, itemNames)
-const bazaar = await Bazaar.create(hypixelAPI, skyblockItems, logger.category("Bazaar"))
-
-const bridgeCommandManager = new SimpleCommandManager(config.bridge.prefix, config.minecraft.username, hypixelAPI, bazaar, logger.category("Commands"))
+const bridgeCommandManager = new SimpleCommandManager(config.bridge.prefix, config.minecraft.username, hypixelAPI, logger.category("Commands"))
 
 const minecraft = new MinecraftBot(config.minecraft.username, config.minecraft.privilegedUsers, minecraftStaffRoles, logger.category("Minecraft"))
 const bridge = new Bridge(discord, minecraft, bridgeCommandManager, logger.category("Bridge"))
