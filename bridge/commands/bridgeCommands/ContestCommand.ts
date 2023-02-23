@@ -17,8 +17,12 @@ export class ContestCommand implements SimpleCommand {
     let message = currentContest ? `Active contest (${currentContest.crops.join(", ")}) ending in ${msToTime((currentContest.time + 1200000) - Date.now())}! ` : ""
     if (crop) {
       const bestCrop = contests.closestCrop(crop)
-      const nextContest = contests.nextCrop(bestCrop)
-      message += nextContest ? `Next ${bestCrop} contest in ${msToTime(nextContest.time - Date.now())}.` : `No ${bestCrop} contest found.`
+      if (!bestCrop) {
+        message = `"${crop}" is not a known crop!`
+      } else {
+        const nextContest = contests.nextCrop(bestCrop)
+        message += nextContest ? `Next ${bestCrop} contest in ${msToTime(nextContest.time - Date.now())}.` : `No ${bestCrop} contest found.`
+      }
     } else {
       const nextContest = contests.next
       message += nextContest ? `Next contest (${nextContest.crops.join(", ")}) in ${msToTime(nextContest.time - Date.now())}.` : `No contest found.`

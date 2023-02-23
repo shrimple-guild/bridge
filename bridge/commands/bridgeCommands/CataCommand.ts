@@ -2,7 +2,6 @@ import { SimpleCommand } from "./Command.js"
 import { msToTime, formatNumber, titleCase } from "../../../utils/Utils.js"
 import { isDungeonClass } from "../../../api/Dungeons.js"
 import { HypixelAPI } from "../../../api/HypixelAPI.js"
-import { Bridge } from "../../Bridge.js"
 
 const floorArgRegex = /^(f[0-7]|m[1-7])$/
 
@@ -41,10 +40,12 @@ export class CataCommand implements SimpleCommand {
       let level
       if (isDungeonClass(commandArg)) {
         level = profile.dungeons.classes[commandArg]
+        message = `${titleCase(commandArg)} `
       } else {
+        message = "Catacombs "
         level = profile.dungeons.level
       }
-      message = `${titleCase(commandArg != null ? commandArg! : "Catacombs")} level for ${playerName} (${profile.cuteName}): `
+      message += `level for ${playerName} (${profile.cuteName}): `
       message += `${formatNumber(level.fractionalLevel, 2, false)} | `
       message += `Total XP: ${formatNumber(level.xp, 2, true)} | `
       if (level.level == level.maxLevel) {
