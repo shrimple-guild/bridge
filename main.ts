@@ -22,6 +22,7 @@ const logger = new Logger()
 const database = await Database.create("./database", migrations)
 
 const hypixelAPI = new HypixelAPI(config.bridge.apiKey, database, logger.category("HypixelAPI"))
+await hypixelAPI.init(itemNames)
 const slashCommands = new SlashCommandManager()
 
 const discordStaffRoles = config.roles.filter(role => role.isStaff).map(role => role.discord)
