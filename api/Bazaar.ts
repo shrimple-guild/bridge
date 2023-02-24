@@ -2,7 +2,7 @@ import { HypixelAPI } from "./HypixelAPI.js"
 import { SkyblockItems } from "./SkyblockItems.js"
 import fuzzy from "fuzzysort"
 import { LoggerCategory } from "../utils/Logger.js"
-
+import { deromanize } from "../utils/Utils.js"
 
 type BazaarProduct = {
   id: string,
@@ -48,7 +48,9 @@ export class Bazaar {
   }
 
   getClosestProduct(name: string): BazaarProduct | undefined {
-    return fuzzy.go(name, this.products, { key: "name", limit: 1 })[0]?.obj
+    const split = name.lastIndexOf(" ")
+    const query = `${name.slice(0, split)} ${deromanize(name.slice(split + 1))}`
+    return fuzzy.go(query, this.products, { key: "name", limit: 1 })[0]?.obj
   }
 }
 

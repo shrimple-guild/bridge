@@ -1,6 +1,8 @@
 import emojiRegex from "emoji-regex"
 import { emojiToName } from "gemoji"
 import { jaro } from "jaro-winkler-typescript"
+import { deromanize as deromanization } from "romans"
+
 let emojiPattern = emojiRegex()
 
 export function formatNumber(num: number, decimals: number, abbreviate: boolean) {
@@ -74,5 +76,13 @@ export function titleCase(string: string) {
 
 export function jaroDistance(string1: string, string2: string) {
   return jaro(string1, string2, { caseSensitive: false })
+}
+
+export function deromanize(roman: string) {
+  try {
+    return deromanization(roman.toUpperCase())
+  } catch (e) {
+    return roman
+  }
 }
 
