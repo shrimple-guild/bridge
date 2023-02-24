@@ -1,10 +1,12 @@
 export const migrations = {
   init: {
-    script: `CREATE TABLE Members (
-      username TEXT PRIMARY KEY,
-      skin TEXT NOT NULL,
-      lastUpdated INTEGER NOT NULL
-    );`
+    script: `
+      CREATE TABLE Members (
+        username TEXT PRIMARY KEY,
+        skin TEXT NOT NULL,
+        lastUpdated INTEGER NOT NULL
+      );
+    `
   },
   migrations: [
     {
@@ -24,7 +26,8 @@ export const migrations = {
         SELECT username, skin, lastUpdated
         FROM MembersOld;
   
-        DROP TABLE MembersOld;`
+        DROP TABLE MembersOld;
+      `
     },
     {
       version: 2,
@@ -34,7 +37,8 @@ export const migrations = {
           discordId TEXT NOT NULL,
           minecraftId TEXT UNIQUE,
           PRIMARY KEY (guildId, discordId)
-        );`
+        );
+      `
     }
   ]
 }

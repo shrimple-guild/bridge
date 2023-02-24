@@ -3,9 +3,11 @@ export class PriorityLock {
   private active: boolean = false
   private maxLength: number
 
-  constructor(maxLength: number) {
-    if (maxLength < 0) throw new Error("Maximum queue length must be non-negative!")
-    this.maxLength = maxLength
+  constructor(maxLength?: number) {
+    if ((maxLength != null) && (maxLength < 0)) {
+      throw new Error("Maximum queue length must be non-negative!")
+    }
+    this.maxLength = maxLength ?? Infinity
   }
 
   get length() {

@@ -21,8 +21,8 @@ export class SkyblockItems {
   }
 
   async update() {
-    const itemData = await this.hypixelAPI.fetchHypixel("/resources/skyblock/items")
-    const itemList = itemData.items as any[]
+    const { data } = await this.hypixelAPI.fetchHypixel("/resources/skyblock/items")
+    const itemList = data.items as any[]
     this.idToName = Object.fromEntries(itemList.map(item => ([item.id, item.name])))
   }
 

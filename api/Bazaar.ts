@@ -13,44 +13,49 @@ type BazaarProduct = {
 
 export class Bazaar {
 
-  private products: BazaarProduct[] = []
-
-  private constructor(
+  fetchProducts: () => Promise<BazaarProduct[]>
+  
+  constructor(
     private hypixelAPI: HypixelAPI, 
     private skyblockItems: SkyblockItems, 
     private logger: LoggerCategory
-  ) {}
-
-  static async create(hypixelAPI: HypixelAPI, skyblockItems: SkyblockItems, logger: LoggerCategory) {
-    const bazaar = new Bazaar(hypixelAPI, skyblockItems, logger)
-    await bazaar.update()
-    return bazaar
+  ) {
+    this.fetchProducts = (() => {
+      let products: BazaarProduct[] = []
+      let lastUpdated: number = 0
+      return async () => {
+        try {
+          if ((Date.now() - lastUpdated) > 20000) {
+            this.logger.debug("Updating bazaar products because cache expired.")
+            const { data } = await this.hypixelAPI.fetchHypixel("/skyblock/bazaar")
+            const productList = Object.values(data.products) as any[]
+            products = productList.map(productData => ({
+              id: productData.product_id,
+              name: this.skyblockItems.itemName(productData.product_id),
+              instasell: productData.sell_summary[0]?.pricePerUnit,
+              instabuy: productData.buy_summary[0]?.pricePerUnit
+            }))
+            lastUpdated = data.lastUpdated
+            return products
+          }
+        } catch(e) {
+          this.logger.warn("Failed to update Bazaar products.")
+        }
+        return products
+      }
+    })()
   }
 
-  async update() {
-    try {
-      const productResponse = await this.hypixelAPI.fetchHypixel("/skyblock/bazaar")
-      const productList = Object.values(productResponse.products) as any[]
-      this.products = productList.map(productData => ({
-        id: productData.product_id,
-        name: this.skyblockItems.itemName(productData.product_id),
-        instasell: productData.sell_summary[0]?.pricePerUnit,
-        instabuy: productData.buy_summary[0]?.pricePerUnit
-      }))
-    } catch (e) {
-      this.logger.error("Error while updating bazaar!", e)
-    }
-    setTimeout(() => this.update(), 60000)
+  async getProduct(name: string): Promise<BazaarProduct | undefined> {
+    const products = await this.fetchProducts()
+    return products.find(product => product.name == name)
   }
 
-  getProduct(name: string) {
-    return this.products.find(product => product.name == name)
-  }
-
-  getClosestProduct(name: string): BazaarProduct | undefined {
+  async getClosestProduct(name: string): Promise<BazaarProduct | undefined> {
+    const products = await this.fetchProducts()
     const split = name.lastIndexOf(" ")
     const query = `${name.slice(0, split)} ${deromanize(name.slice(split + 1))}`
-    return fuzzy.go(query, this.products, { key: "name", limit: 1 })[0]?.obj
+    return fuzzy.go(query, products, { key: "name", limit: 1 })[0]?.obj
   }
 }
 

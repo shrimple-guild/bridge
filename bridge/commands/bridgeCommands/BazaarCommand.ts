@@ -13,7 +13,7 @@ export class BazaarCommand implements SimpleCommand {
     let formatter = Intl.NumberFormat("en", { notation: "compact" })
     const bazaar = this.hypixelAPI.bazaar
     if (bazaar == null) return `Bazaar isn't instantiated! Please report this!`
-    let product = bazaar.getClosestProduct(args.join(" "))
+    let product = await bazaar.getClosestProduct(args.join(" "))
     if (product == null) return `No product found!`
     return `Bazaar data for ${product.name}: insta-buy: ${formatter.format(product.instabuy ?? NaN)}, insta-sell: ${formatter.format(product.instasell ?? NaN)}`
   }
