@@ -37,7 +37,7 @@ export class Verification {
     this.selectMinecraftId = db.prepare(`SELECT minecraftId FROM DiscordMembers WHERE discordId = :discordId AND guildId = :guildId`)
 
     slashCommandManager.register( 
-      new ManualVerifyCommand(this), 
+      new ManualVerifyCommand(this, hypixelAPI), 
       new UnverifyCommand(this), 
       new SyncCommand(this),
       new VerifyCommand(this, hypixelAPI),
