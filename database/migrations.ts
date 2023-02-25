@@ -39,6 +39,38 @@ export const migrations = {
           PRIMARY KEY (guildId, discordId)
         );
       `
+    },
+    {
+      version: 3,
+      script: `
+        CREATE TABLE Players (
+          id TEXT PRIMARY KEY,
+          guildId TEXT,
+          skin TEXT,
+          skinLastUpdated INTEGER NOT NULL DEFAULT 0,
+          name TEXT UNIQUE,
+          nameLastUpdated INTEGER NOT NULL DEFAULT 0
+        );
+        DROP TABLE Members;
+        CREATE TABLE Profiles (
+          id INTEGER PRIMARY KEY,
+          playerId TEXT NOT NULL,
+          hypixelId TEXT NOT NULL,
+          name TEXT NOT NULL,
+          selected INTEGER NOT NULL,
+          UNIQUE (playerId, hypixelId)
+          FOREIGN KEY (playerId) REFERENCES Players(id)
+        );
+        CREATE TABLE Metrics (
+          id INTEGER PRIMARY KEY,
+          profileId INTEGER NOT NULL,
+          timestamp INTEGER NOT NULL,
+          metric TEXT NOT NULL,
+          value REAL,
+          UNIQUE (profileId, timestamp),
+          FOREIGN KEY (profileId) REFERENCES Profiles(id)
+        );
+      `
     }
   ]
 }

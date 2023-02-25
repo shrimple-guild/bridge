@@ -10,44 +10,49 @@ export class MojangAPI {
 
   private selectSkin: Statement
   private selectUuid: Statement
-  private upsertUuid: Statement
+  private deleteName: Statement
+  private upsertName: Statement
   private upsertSkin: Statement
-  private selectUser: Statement
 
   constructor(private db: Database) {
-    this.selectSkin = db.prepare(`SELECT skin, skinLastUpdated AS lastUpdated FROM Members WHERE username = ?`)
-    this.selectUuid = db.prepare(`SELECT uuid, uuidLastUpdated AS lastUpdated FROM Members WHERE username = ?`)
-    this.upsertUuid = db.prepare(`
-      INSERT INTO Members (username, uuid, uuidLastUpdated)
-      VALUES (:username, :uuid, :lastUpdated)
-      ON CONFLICT (username) DO UPDATE SET
-      uuid = excluded.uuid,
-      uuidLastUpdated = excluded.uuidLastUpdated
+    this.selectSkin = db.prepare(`SELECT skin, skinLastUpdated AS lastUpdated FROM Players WHERE name = ?`)
+    this.selectUuid = db.prepare(`SELECT id, nameLastUpdated AS lastUpdated FROM Players WHERE name = ?`)
+    this.upsertName = db.prepare(`
+      INSERT INTO Players (id, name, nameLastUpdated)
+      VALUES (:id, :name, :lastUpdated)
+      ON CONFLICT (id) DO UPDATE SET
+      name = excluded.name,
+      namelastUpdated = excluded.nameLastUpdated
+    `)
+    this.deleteName = db.prepare(`
+      DELETE FROM Players
+      WHERE name = ?
     `)
     this.upsertSkin = db.prepare(`
-      INSERT INTO Members (username, skin, skinLastUpdated)
-      VALUES (:username, :skin, :lastUpdated)
-      ON CONFLICT (username) DO UPDATE SET
+      INSERT INTO Players (id, skin, skinLastUpdated)
+      VALUES (:id, :skin, :lastUpdated)
+      ON CONFLICT (id) DO UPDATE SET
       skin = excluded.skin,
       skinLastUpdated = excluded.skinLastUpdated
     `)
-    this.selectUser = db.prepare(`
-      SELECT username
-      FROM Members
-      WHERE username = ?
-    `)
-  }
-
-  isPlayerTracked(username: string): boolean {
-    return this.selectUser.get(username) != null
   }
 
   async fetchUuid(username: string) {
-    const { uuid: cachedUuid, lastUpdated } = this.getCachedUuid(username)
+    const data = this.selectUuid.all(username) 
+    let cachedUuid: string | undefined
+    let lastUpdated = 0
+    if (data.length > 1) {
+      this.deleteName.run()
+      cachedUuid = undefined
+      lastUpdated = 0
+    } else {
+      cachedUuid = data[0]?.uuid ?? undefined
+      lastUpdated = data[0]?.lastUpdated ?? 0 
+    } 
     try {
       if (cachedUuid == null || (Date.now() - lastUpdated) > this.uuidTimeout) {
         const uuid = await this.fetchUuidFromAPI(username)
-        this.upsertUuid.run({ username: username, uuid: uuid, lastUpdated: Date.now() })
+        this.upsertName.run({ id: uuid, name: username, lastUpdated: Date.now() })
         return uuid
       }
     } catch (e) {}
@@ -64,7 +69,7 @@ export class MojangAPI {
         const uuid = await this.fetchUuid(username)
         if (uuid == null) throw new Error(`Failed to get uuid for ${username}`)
         const skin = await this.fetchSkinFromAPI(uuid)
-        this.upsertSkin.run({ username: username, skin: skin, lastUpdated: Date.now() })
+        this.upsertSkin.run({ id: uuid, skin: skin, lastUpdated: Date.now() })
         return MojangAPI.getSkinPng(skin)
       }
     } catch (e) {
@@ -81,13 +86,6 @@ export class MojangAPI {
     }
   }
 
-  private getCachedUuid(username: string) {
-    const data = this.selectUuid.get(username) 
-    return {
-      uuid: (data?.uuid ?? undefined) as string | undefined,
-      lastUpdated: (data?.lastUpdated ?? 0) as number
-    }
-  }
 
   private async fetchSkinFromAPI(uuid: string): Promise<string> {
     const profileResponse = await fetch(`https://sessionserver.mojang.com/session/minecraft/profile/${uuid}`)
