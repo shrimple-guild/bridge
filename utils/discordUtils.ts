@@ -1,4 +1,5 @@
-import { ColorResolvable, EmbedBuilder } from "discord.js";
+import { ColorResolvable, DiscordAPIError, EmbedBuilder, WebhookClient } from "discord.js";
+import config from "../config.json" assert { type: "json" };
 import { colorOf } from "./utils.js";
 
 export function simpleEmbed(title: string, content: string, footer?: string, color?: ColorResolvable) {
@@ -17,4 +18,11 @@ export function statusEmbed(status: "success" | "failure", content: string) {
     undefined,
     status == "success" ? "Green" : "Red"
   )
+}
+
+export async function postDisconnectEmbed() {
+  const client = new WebhookClient({ url: config.discord.shutdownWebhook })
+  await client.send({
+    embeds: [simpleEmbed("Shutdown", "❌ Bot offline.").toJSON()]
+  })
 }

@@ -11,6 +11,7 @@
     "client": "snowflake",
     "guild": "snowflake",
     "channel": "snowflake",
+    "shutdownWebhook": "snowflake",
     "verification": {
       "channelId": "snowflake",
       "unverifiedRole": "snowflake",

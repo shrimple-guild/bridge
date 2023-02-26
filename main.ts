@@ -1,5 +1,3 @@
-//import "./bridge.js"
-
 import { Verification } from "./verify/Verification.js"
 import { HypixelAPI } from "./api/HypixelAPI.js"
 import { createDiscordBot } from "./discord/DiscordBot.js"
@@ -12,11 +10,10 @@ import { SimpleCommandManager } from "./bridge/commands/SimpleCommandManager.js"
 import { Logger } from "./utils/Logger.js"
 import readline from "readline"
 import exitHook from "async-exit-hook"
-import { sleep } from "./utils/Utils.js"
-import { SkyblockItems } from "./api/SkyblockItems.js"
-import { Bazaar } from "./api/Bazaar.js"
 import { Database } from "./database/database.js"
 import { migrations } from "./database/migrations.js"
+import { postDisconnectEmbed, simpleEmbed } from "./utils/discordUtils.js"
+import { sleep } from "./utils/utils.js"
 
 const logger = new Logger()
 const database = await Database.create("./database", migrations)
@@ -29,19 +26,19 @@ const discordStaffRoles = config.roles.filter(role => role.isStaff).map(role => 
 const minecraftStaffRoles = config.roles.filter(role => role.isStaff).map(role => role.hypixelTag)
 
 const discord = await createDiscordBot(
-  config.discord.token, 
-  slashCommands, 
+  config.discord.token,
+  slashCommands,
   discordStaffRoles,
-  config.discord.channel, 
+  config.discord.channel,
   hypixelAPI,
   logger.category("Discord")
 )
 
 const verification = new Verification(
-  discord.client, 
-  database, 
-  config.discord.verification, 
-  hypixelAPI, 
+  discord.client,
+  database,
+  config.discord.verification,
+  hypixelAPI,
   slashCommands
 )
 
@@ -64,7 +61,8 @@ rl.on("line", (input) => {
 })
 
 exitHook(async (cb) => {
-  bridge.chatAsBot("Process ended.")
+  postDisconnectEmbed()
+  bridge.chatAsBot("Process ended...")
   await sleep(1000)
   bridge.quit()
   await sleep(1000)
