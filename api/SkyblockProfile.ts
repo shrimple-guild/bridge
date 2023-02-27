@@ -1,4 +1,6 @@
 import { Dungeons } from "./Dungeons.js"
+import { Kuudra } from "./Kuudra.js"
+import { Mobs } from "./Mobs.js"
 import { Skills } from "./Skills.js"
 import { Slayers } from "./Slayers.js"
 import { TrophyFish } from "./TrophyFish.js"
@@ -15,6 +17,8 @@ export class SkyblockProfile {
   readonly dungeons: Dungeons
   readonly slayers: Slayers
   readonly trophyFish: TrophyFish
+  readonly kuudra: Kuudra
+  readonly mobs: Mobs
 
 
 
@@ -31,6 +35,8 @@ export class SkyblockProfile {
     this.dungeons = new Dungeons(member)
     this.slayers = new Slayers(member)
     this.trophyFish = new TrophyFish(member)
+    this.kuudra = new Kuudra(member)
+    this.mobs = new Mobs(member)
   }
 }
 

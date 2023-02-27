@@ -86,3 +86,11 @@ export function deromanize(roman: string) {
   }
 }
 
+export function isInteger(num: any): num is number {
+  return Number.isInteger(num)
+}
+
+export function toCamelCase(str: string) {
+  return str.toLowerCase().replace(/[-_][a-z0-9]/g, (group) => group.slice(-1).toUpperCase())
+}
+
