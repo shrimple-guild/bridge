@@ -1,8 +1,5 @@
 import bestiary from "../data/bestiary.json" assert { type: "json" }
 
-const bestiaryMobs = bestiary.mobs.map(mob => mob.id)
-
-
 export class Bestiary {
   private data: Record<string, {  name: string, tier: number, maxTier: number, kills: number }>
 
@@ -24,12 +21,4 @@ export class Bestiary {
   get level() {
     return Object.values(this.data).reduce((prev, cur) => prev + cur.tier, 0) / 10
   }
-
-
-  /*
-  get(mob: string) {
-    return this.data[mob] ?? { kills: 0, deaths: 0 }
-  }
-  */
-  
 }
