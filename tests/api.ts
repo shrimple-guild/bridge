@@ -18,4 +18,4 @@ await testAPI.init(itemNames)
 const uuid = await testAPI.mojang.fetchUuid("appable")
 const profiles = await testAPI.fetchProfiles(uuid)
 
-console.log(profiles.main.mobs.get("seaWalker"))
+console.log(profiles.main.bestiary.level)

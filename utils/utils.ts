@@ -1,3 +1,4 @@
+import { Collection } from "discord.js"
 import emojiRegex from "emoji-regex"
 import { emojiToName } from "gemoji"
 import { jaro } from "jaro-winkler-typescript"
@@ -94,3 +95,6 @@ export function toCamelCase(str: string) {
   return str.toLowerCase().replace(/[-_][a-z0-9]/g, (group) => group.slice(-1).toUpperCase())
 }
 
+export function collectionFrom<T>(data: Record<string, T>): Collection<string, T>  {
+  return new Collection(Object.entries(data))
+}

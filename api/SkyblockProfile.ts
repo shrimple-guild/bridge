@@ -1,3 +1,4 @@
+import { Bestiary } from "./Bestiary.js"
 import { Dungeons } from "./Dungeons.js"
 import { Kuudra } from "./Kuudra.js"
 import { Mobs } from "./Mobs.js"
@@ -19,6 +20,7 @@ export class SkyblockProfile {
   readonly trophyFish: TrophyFish
   readonly kuudra: Kuudra
   readonly mobs: Mobs
+  readonly bestiary: Bestiary
 
 
 
@@ -37,6 +39,8 @@ export class SkyblockProfile {
     this.trophyFish = new TrophyFish(member)
     this.kuudra = new Kuudra(member)
     this.mobs = new Mobs(member)
+    this.bestiary = new Bestiary(member)
+
   }
 }
 

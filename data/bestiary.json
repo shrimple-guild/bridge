@@ -1,0 +1,773 @@
+{
+  "mobs": [
+    {
+      "id": "kills_family_zombie",
+      "name": "Zombie",
+      "maxTier": 5,
+      "type": "normal",
+      "category": "island"
+    },
+    {
+      "id": "kills_family_skeleton",
+      "name": "Skeleton",
+      "maxTier": 5,
+      "type": "normal",
+      "category": "island"
+    },
+    {
+      "id": "kills_family_spider",
+      "name": "Spider",
+      "maxTier": 5,
+      "type": "normal",
+      "category": "island"
+    },
+    {
+      "id": "kills_family_cave_spider",
+      "name": "Cave Spider",
+      "maxTier": 5,
+      "type": "normal",
+      "category": "island"
+    },
+    {
+      "id": "kills_family_enderman_private",
+      "name": "Enderman",
+      "maxTier": 5,
+      "type": "normal",
+      "category": "island"
+    },
+    {
+      "id": "kills_family_slime",
+      "name": "Slime",
+      "maxTier": 5,
+      "type": "normal",
+      "category": "island"
+    },
+    {
+      "id": "kills_family_witch",
+      "name": "Witch",
+      "maxTier": 5,
+      "type": "normal",
+      "category": "island"
+    },
+    {
+      "id": "kills_family_zombie_villager",
+      "name": "Zombie Villager",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "hub"
+    },
+    {
+      "id": "kills_family_unburried_zombie",
+      "name": "Crypt Ghoul",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "hub"
+    },
+    {
+      "id": "kills_family_ruin_wolf",
+      "name": "Wolf",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "hub"
+    },
+    {
+      "id": "kills_family_old_wolf",
+      "name": "Old Wolf",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "hub"
+    },
+    {
+      "id": "kills_family_dasher_spider",
+      "name": "Dasher Spider",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "spiders"
+    },
+    {
+      "id": "kills_family_spider_jockey",
+      "name": "Spider Jockey",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "spiders"
+    },
+    {
+      "id": "kills_family_weaver_spider",
+      "name": "Weaver Spider",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "spiders"
+    },
+    {
+      "id": "kills_family_voracious_spider",
+      "name": "Voracious Spider",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "spiders"
+    },
+    {
+      "id": "kills_family_splitter_spider",
+      "name": "Splitter Spider",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "spiders"
+    },
+    {
+      "id": "kills_family_brood_mother_spider",
+      "name": "Brood Mother",
+      "maxTier": 41,
+      "type": "boss",
+      "category": "spiders"
+    },
+    {
+      "id": "kills_family_respawning_skeleton",
+      "name": "Gravel Skeleton",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "spiders"
+    },
+    {
+      "id": "kills_family_random_slime",
+      "name": "Rain Slime",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "spiders"
+    },
+    {
+      "id": "kills_family_arachne_keeper",
+      "name": "Arachne's Keeper",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "spiders"
+    },
+    {
+      "id": "kills_family_arachne_brood",
+      "name": "Arachne's Brood",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "spiders"
+    },
+    {
+      "id": "kills_family_arachne",
+      "name": "Arachne",
+      "maxTier": 41,
+      "type": "boss",
+      "category": "spiders"
+    },
+    {
+      "id": "kills_family_ashfang",
+      "name": "Ashfang",
+      "maxTier": 41,
+      "type": "boss",
+      "category": "crimson"
+    },
+    {
+      "id": "kills_family_barbarian_duke_x",
+      "name": "Barbarian Duke X",
+      "maxTier": 41,
+      "type": "boss",
+      "category": "crimson"
+    },
+    {
+      "id": "kills_family_bladesoul",
+      "name": "Bladesoul",
+      "maxTier": 41,
+      "type": "boss",
+      "category": "crimson"
+    },
+    {
+      "id": "kills_family_blaze",
+      "name": "Blaze",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "crimson"
+    },
+    {
+      "id": "kills_family_flaming_spider",
+      "name": "Flaming Spider",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "crimson"
+    },
+    {
+      "id": "kills_family_ghast",
+      "name": "Ghast",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "crimson"
+    },
+    {
+      "id": "kills_family_mage_outlaw",
+      "name": "Mage Outlaw",
+      "maxTier": 41,
+      "type": "boss",
+      "category": "crimson"
+    },
+    {
+      "id": "kills_family_magma_cube",
+      "name": "Magma Cube",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "crimson"
+    },
+    {
+      "id": "kills_family_magma_boss",
+      "name": "Magma Cube Boss",
+      "maxTier": 41,
+      "type": "boss",
+      "category": "crimson"
+    },
+    {
+      "id": "kills_family_matcho",
+      "name": "Matcho",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "crimson"
+    },
+    {
+      "id": "kills_family_charging_mushroom_cow",
+      "name": "Mushroom Bull",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "crimson"
+    },
+    {
+      "id": "kills_family_pigman",
+      "name": "Pigman",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "crimson"
+    },
+    {
+      "id": "kills_family_wither_skeleton",
+      "name": "Wither Skeleton",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "crimson"
+    },
+    {
+      "id": "kills_family_wither_spectre",
+      "name": "Wither Spectre",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "crimson"
+    },
+    {
+      "id": "kills_family_enderman",
+      "name": "Enderman",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "end"
+    },
+    {
+      "id": "kills_family_obsidian_wither",
+      "name": "Obsidian Defender",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "end"
+    },
+    {
+      "id": "kills_family_watcher",
+      "name": "Watcher",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "end"
+    },
+    {
+      "id": "kills_family_zealot_enderman",
+      "name": "Zealot",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "end"
+    },
+    {
+      "id": "kills_family_endermite",
+      "name": "Endermite",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "end"
+    },
+    {
+      "id": "kills_family_dragon",
+      "name": "Dragon",
+      "maxTier": 41,
+      "type": "boss",
+      "category": "end"
+    },
+    {
+      "id": "kills_family_corrupted_protector",
+      "name": "Endstone Protector",
+      "maxTier": 41,
+      "type": "boss",
+      "category": "end"
+    },
+    {
+      "id": "kills_family_voidling_fanatic",
+      "name": "Voidling Fanatic",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "end"
+    },
+    {
+      "id": "kills_family_voidling_extremist",
+      "name": "Voidling Extremist",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "end"
+    },
+    {
+      "id": "kills_family_invisible_creeper",
+      "name": "Sneaky Creeper",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "mining"
+    },
+    {
+      "id": "kills_family_lapis_zombie",
+      "name": "Lapis Zombie",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "mining"
+    },
+    {
+      "id": "kills_family_redstone_pigman",
+      "name": "Redstone Pigman",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "mining"
+    },
+    {
+      "id": "kills_family_emerald_slime",
+      "name": "Emerald Slime",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "mining"
+    },
+    {
+      "id": "kills_family_diamond_zombie",
+      "name": "Miner Zombie",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "mining"
+    },
+    {
+      "id": "kills_family_diamond_skeleton",
+      "name": "Miner Skeleton",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "mining"
+    },
+    {
+      "id": "kills_family_caverns_ghost",
+      "name": "Ghost",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "mining"
+    },
+    {
+      "id": "kills_family_goblin",
+      "name": "Goblin",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "mining"
+    },
+    {
+      "id": "kills_family_treasure_hoarder",
+      "name": "Treasure Hoarder",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "mining"
+    },
+    {
+      "id": "kills_family_ice_walker",
+      "name": "Ice Walker",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "mining"
+    },
+    {
+      "id": "kills_family_automaton",
+      "name": "Automaton",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "mining"
+    },
+    {
+      "id": "kills_family_butterfly",
+      "name": "Butterfly",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "mining"
+    },
+    {
+      "id": "kills_family_team_treasurite",
+      "name": "Grunt",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "mining"
+    },
+    {
+      "id": "kills_family_sludge",
+      "name": "Sludge",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "mining"
+    },
+    {
+      "id": "kills_family_thyst",
+      "name": "Thyst",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "mining"
+    },
+    {
+      "id": "kills_family_worms",
+      "name": "Worm",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "mining"
+    },
+    {
+      "id": "kills_family_yog",
+      "name": "Yog",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "mining"
+    },
+    {
+      "id": "kills_family_pack_spirit",
+      "name": "Pack Spirit",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "park"
+    },
+    {
+      "id": "kills_family_howling_spirit",
+      "name": "Howling Spirit",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "park"
+    },
+    {
+      "id": "kills_family_soul_of_the_alpha",
+      "name": "Soul of the Alpha",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "park"
+    },
+    {
+      "id": "kills_family_trick_or_treater",
+      "name": "Trick or Treater",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "spooky"
+    },
+    {
+      "id": "kills_family_wither_gourd",
+      "name": "Wither Gourd",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "spooky"
+    },
+    {
+      "id": "kills_family_phantom_spirit",
+      "name": "Phantom Spirit",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "spooky"
+    },
+    {
+      "id": "kills_family_scary_jerry",
+      "name": "Scary Jerry",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "spooky"
+    },
+    {
+      "id": "kills_family_wraith",
+      "name": "Wraith",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "spooky"
+    },
+    {
+      "id": "kills_family_batty_witch",
+      "name": "Crazy Witch",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "spooky"
+    },
+    {
+      "id": "kills_family_headless_horseman",
+      "name": "Headless Horseman",
+      "maxTier": 41,
+      "type": "boss",
+      "category": "spooky"
+    },
+    {
+      "id": "kills_family_lost_adventurer",
+      "name": "Lost Adventurer",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_zombie_grunt",
+      "name": "Zombie Grunt",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_zombie_soldier",
+      "name": "Zombie Soldier",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_zombie_knight",
+      "name": "Zombie Soldier",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_skeleton_grunt",
+      "name": "Skeleton Grunt",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_skeleton_soldier",
+      "name": "Skeleton Soldier",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_skeleton_master",
+      "name": "Skeleton Master",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_scared_skeleton",
+      "name": "Scared Skeleton",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_diamond_guy",
+      "name": "Angry Archeologist",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_dungeon_respawning_skeleton",
+      "name": "Undead Skeleton",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_skeletor",
+      "name": "Skeletor",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_sniper_skeleton",
+      "name": "Sniper",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_crypt_souleater",
+      "name": "Crypt Souleater",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_crypt_dreadlord",
+      "name": "Crypt Dreadlord",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_crypt_tank_zombie",
+      "name": "Tank Zombie",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_super_tank_zombie",
+      "name": "Super Tank Zombie",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_crypt_lurker",
+      "name": "Crypt Lurker",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_cellar_spider",
+      "name": "Cellar Spider",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_watcher_summon_undead",
+      "name": "Undead",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_lonely_spider",
+      "name": "Lonely Spider",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_shadow_assassin",
+      "name": "Shadow Assassin",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_king_midas",
+      "name": "King Midas",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_super_archer",
+      "name": "Super Archer",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_crypt_witherskeleton",
+      "name": "Withermancer",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    },
+    {
+      "id": "kills_family_zombie_commander",
+      "name": "Zombie Commander",
+      "maxTier": 41,
+      "type": "normal",
+      "category": "catacombs"
+    }
+  ],
+  "leveling": {
+    "normal": [
+      0,
+      10,
+      25,
+      100,
+      250,
+      500,
+      1000,
+      2500,
+      5000,
+      10000,
+      25000,
+      50000,
+      100000,
+      200000,
+      300000,
+      400000,
+      500000,
+      600000,
+      700000,
+      800000,
+      900000,
+      1000000,
+      1100000,
+      1200000,
+      1300000,
+      1400000,
+      1500000,
+      1600000,
+      1700000,
+      1800000,
+      1900000,
+      2000000,
+      2100000,
+      2200000,
+      2300000,
+      2400000,
+      2500000,
+      2600000,
+      2700000,
+      2800000,
+      2900000,
+      3000000
+    ],
+    "boss": [
+      0,
+      2,
+      5,
+      10,
+      20,
+      30,
+      40,
+      50,
+      75,
+      100,
+      150,
+      200,
+      300,
+      400,
+      500,
+      600,
+      700,
+      800,
+      900,
+      1000,
+      1100,
+      1200,
+      1300,
+      1400,
+      1500,
+      1600,
+      1700,
+      1800,
+      1900,
+      2000,
+      2100,
+      2200,
+      2300,
+      2400,
+      2500,
+      2600,
+      2700,
+      2800,
+      2900,
+      3000,
+      3100,
+      3200
+    ]
+  }
+}
