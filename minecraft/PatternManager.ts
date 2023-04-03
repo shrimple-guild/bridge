@@ -5,6 +5,7 @@ import { guildChat } from "./patterns/GuildChat.js";
 import { guildJoin } from "./patterns/GuildJoin.js";
 import { guildKick } from "./patterns/GuildKick.js";
 import { guildLeave } from "./patterns/GuildLeave.js";
+import { guildPromoteDemote } from "./patterns/GuildPromoteDemote";
 import { limbo } from "./patterns/Limbo.js";
 import { minecraftJoinLeave } from "./patterns/MinecraftJoinLeave.js";
 import { partyInvite } from "./patterns/PartyInvite.js";
@@ -22,7 +23,8 @@ export const PatternManager = {
     minecraftJoinLeave,
     partyInvite,
     privateMessage,
-    spamProtection
+    spamProtection,
+    guildPromoteDemote
   ],
 
   execute: (bot: MinecraftBot, message: string, logger?: LoggerCategory) => {
