@@ -5,7 +5,7 @@ import { guildChat } from "./patterns/GuildChat.js";
 import { guildJoin } from "./patterns/GuildJoin.js";
 import { guildKick } from "./patterns/GuildKick.js";
 import { guildLeave } from "./patterns/GuildLeave.js";
-import { guildPromoteDemote } from "./patterns/GuildPromoteDemote";
+import { guildPromoteDemote } from "./patterns/GuildPromoteDemote.js";
 import { limbo } from "./patterns/Limbo.js";
 import { minecraftJoinLeave } from "./patterns/MinecraftJoinLeave.js";
 import { partyInvite } from "./patterns/PartyInvite.js";
