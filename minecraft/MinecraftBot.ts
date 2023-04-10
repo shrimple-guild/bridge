@@ -91,6 +91,7 @@ export class MinecraftBot {
       const waitTime = Math.min(1000 * Math.pow(2, this.retries), 60 * 10 * 1000)
       await sleep(waitTime)
       this.connect(this.username)
+      this.retries++
     } 
   }
   
