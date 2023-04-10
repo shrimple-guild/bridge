@@ -88,7 +88,7 @@ export class MinecraftBot {
     this.status = "offline"
     this.bridge?.onBotLeave(reason)
     if (reason != "disconnect.quitting") {
-      const waitTime = Math.max(1000 * Math.pow(2, this.retries), 60 * 10 * 1000)
+      const waitTime = Math.min(1000 * Math.pow(2, this.retries), 60 * 10 * 1000)
       await sleep(waitTime)
       this.connect(this.username)
     } 
