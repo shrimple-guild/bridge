@@ -10,11 +10,16 @@ export class BazaarCommand implements SimpleCommand {
   usage = "<item name>"
 
   async execute(args: string[]) {
-    let formatter = Intl.NumberFormat("en", { notation: "compact" })
     const bazaar = this.hypixelAPI.bazaar
     if (bazaar == null) return `Bazaar isn't instantiated! Please report this!`
     let product = await bazaar.getClosestProduct(args.join(" "))
     if (product == null) return `No product found!`
-    return `Bazaar data for ${product.name}: insta-buy: ${formatter.format(product.instabuy ?? NaN)}, insta-sell: ${formatter.format(product.instasell ?? NaN)}`
+    return `Bazaar data for ${product.name}: insta-buy: ${this.format(product.instabuy)}, insta-sell: ${this.format(product.instasell)}`
+  }
+
+  format(num?: number) {
+    if (!num) return "Not available"
+    let formatter = Intl.NumberFormat("en", { notation: "compact" })
+    return formatter.format(num)
   }
 }
