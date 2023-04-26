@@ -1,5 +1,5 @@
 import { SimpleCommand } from "./Command.js"
-import { randRange } from "../../../utils/Utils.js"
+import { randRange } from "../../../utils/utils.js"
 import { Bridge } from "../../Bridge.js"
 
 export class EightballCommand implements SimpleCommand {

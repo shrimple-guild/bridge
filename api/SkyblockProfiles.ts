@@ -1,4 +1,3 @@
-import { ThreadMemberFlagsBitField } from "discord.js"
 import { SkyblockProfile } from "./SkyblockProfile.js"
 
 export class SkyblockProfiles {

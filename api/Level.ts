@@ -1,5 +1,5 @@
 import { skillData } from "../utils/skillUtils.js"
-import { formatNumber } from "../utils/Utils.js"
+import { formatNumber } from "../utils/utils.js"
 
 export class Level {
   readonly xp: number

@@ -1,5 +1,5 @@
 import { SimpleCommand } from "./Command.js"
-import { msToTime, formatNumber, titleCase } from "../../../utils/Utils.js"
+import { msToTime, formatNumber, titleCase } from "../../../utils/utils.js"
 import { isDungeonClass } from "../../../api/Dungeons.js"
 import { HypixelAPI } from "../../../api/HypixelAPI.js"
 

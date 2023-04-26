@@ -18,6 +18,7 @@ import { Bridge } from "../Bridge.js"
 import { LoggerCategory } from "../../utils/Logger.js"
 import { Bazaar } from "../../api/Bazaar.js"
 import { ContestCommand } from "./bridgeCommands/ContestCommand.js"
+import { FarmingWeightCommand } from "./bridgeCommands/FarmingWeightCommand.js"
 
 export class SimpleCommandManager {
   commands: SimpleCommand[]
@@ -36,7 +37,8 @@ export class SimpleCommandManager {
       new SkillsCommand(hypixelAPI),
       new SlayerCommand(hypixelAPI),
       new TrophyFishCommand(hypixelAPI),
-      new ContestCommand(hypixelAPI)
+      new ContestCommand(hypixelAPI),
+      new FarmingWeightCommand(hypixelAPI)
     ]
   }
 

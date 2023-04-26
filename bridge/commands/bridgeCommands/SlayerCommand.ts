@@ -1,5 +1,5 @@
 import { SimpleCommand } from "./Command.js"
-import { formatNumber, titleCase } from "../../../utils/Utils.js"
+import { formatNumber, titleCase } from "../../../utils/utils.js"
 import { HypixelAPI } from "../../../api/HypixelAPI.js"
 import { isSlayer } from "../../../api/Slayers.js"
 import { Bridge } from "../../Bridge.js"

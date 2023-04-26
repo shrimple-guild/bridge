@@ -1,5 +1,5 @@
 import { SimpleCommand } from "./Command.js"
-import { secsToTime } from "../../../utils/Utils.js"
+import { secsToTime } from "../../../utils/utils.js"
 import { Bridge } from "../../Bridge.js";
 
 export class RainTimerCommand implements SimpleCommand {

@@ -1,5 +1,5 @@
 import { HypixelAPI } from "../../../api/HypixelAPI.js"
-import { msToTime } from "../../../utils/Utils.js"
+import { msToTime } from "../../../utils/utils.js"
 import { SimpleCommand } from "./Command.js"
 
 

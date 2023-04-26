@@ -2,7 +2,7 @@ import { HypixelAPI } from "./HypixelAPI.js"
 import { SkyblockItems } from "./SkyblockItems.js"
 import fuzzy from "fuzzysort"
 import { LoggerCategory } from "../utils/Logger.js"
-import { deromanize } from "../utils/Utils.js"
+import { deromanize } from "../utils/utils.js"
 
 type BazaarProduct = {
   id: string,

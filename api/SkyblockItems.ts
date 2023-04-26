@@ -1,4 +1,4 @@
-import { titleCase } from "../utils/Utils.js"
+import { titleCase } from "../utils/utils.js"
 import { HypixelAPI } from "./HypixelAPI.js"
 
 export type SpecifiedNames = {

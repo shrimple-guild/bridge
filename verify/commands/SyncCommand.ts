@@ -2,7 +2,7 @@ import { ChatInputCommandInteraction, PermissionsBitField, SlashCommandBuilder }
 import { statusEmbed } from "../../utils/discordUtils.js";
 import { Verification } from "../Verification.js";
 import { SlashCommand } from "../../discord/commands/SlashCommand.js";
-import { sleep } from "../../utils/Utils.js";
+import { sleep } from "../../utils/utils.js";
 
 export class SyncCommand implements SlashCommand {
   data = new SlashCommandBuilder()

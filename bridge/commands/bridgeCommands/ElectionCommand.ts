@@ -1,6 +1,6 @@
 import { SimpleCommand } from "./Command.js"
 import { HumanizeDurationLanguage, HumanizeDuration } from "humanize-duration-ts"
-import { titleCase } from "../../../utils/Utils.js"
+import { titleCase } from "../../../utils/utils.js"
 import { jaroWinkler as jaroDistance} from "jaro-winkler-typescript"
 import { Bridge } from "../../Bridge.js"
 

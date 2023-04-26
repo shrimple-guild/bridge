@@ -1,5 +1,6 @@
 import { Bestiary } from "./Bestiary.js"
 import { Dungeons } from "./Dungeons.js"
+import { FarmingWeight, farmingWeight } from "./FarmingWeight.js"
 import { Kuudra } from "./Kuudra.js"
 import { Mobs } from "./Mobs.js"
 import { Skills } from "./Skills.js"
@@ -21,6 +22,7 @@ export class SkyblockProfile {
   readonly kuudra: Kuudra
   readonly mobs: Mobs
   readonly bestiary: Bestiary
+  readonly farmingWeight?: FarmingWeight
 
 
 
@@ -40,7 +42,7 @@ export class SkyblockProfile {
     this.kuudra = new Kuudra(member)
     this.mobs = new Mobs(member)
     this.bestiary = new Bestiary(member)
-
+    this.farmingWeight = farmingWeight(raw, uuid)
   }
 }
 
