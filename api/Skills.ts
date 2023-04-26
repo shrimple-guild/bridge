@@ -9,7 +9,8 @@ const skills = [
   "fishing",
   "enchanting",
   "alchemy",
-  "runecrafting"
+  "runecrafting",
+  "carpentry"
 ] as const
 
 type Skill = typeof skills[number]
