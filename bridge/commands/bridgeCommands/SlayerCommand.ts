@@ -1,8 +1,7 @@
 import { SimpleCommand } from "./Command.js"
 import { formatNumber, titleCase } from "../../../utils/utils.js"
 import { HypixelAPI } from "../../../api/HypixelAPI.js"
-import { isSlayer } from "../../../api/Slayers.js"
-import { Bridge } from "../../Bridge.js"
+import { resolveSlayer } from "../../../api/Slayers.js"
 
 export class SlayerCommand implements SimpleCommand {
   aliases = ["slayer"]
@@ -21,9 +20,10 @@ export class SlayerCommand implements SimpleCommand {
     const uuid = await this.hypixelAPI.mojang.fetchUuid(playerName)
     const profiles = await this.hypixelAPI.fetchProfiles(uuid)
     const profile = profiles.getByQuery(profileArg)
-    if (!isSlayer(slayerName)) return `${titleCase(slayerName)} is not a valid slayer name!`
-    const slayer = profile.slayers[slayerName]
-    message = `${titleCase(slayerName)} slayer data for ${playerName} (${profile.cuteName}): `
+    const resolvedSlayer = resolveSlayer(slayerName)
+    if (!resolvedSlayer) return `${titleCase(slayerName)} is not a valid slayer name!`
+    const slayer = profile.slayers[resolvedSlayer]
+    message = `${titleCase(resolvedSlayer)} slayer data for ${playerName} (${profile.cuteName}): `
     message += `Total XP: ${formatNumber(slayer.level.xp, 2, true)} | Tier kills: `
     message += `(${slayer.kills.join(" | ")})`
     return message

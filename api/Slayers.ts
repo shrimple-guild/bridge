@@ -1,4 +1,5 @@
 import { Level } from "./Level.js"
+import fuzzy from "fuzzysort"
 
 const slayers = [
   "zombie",
@@ -9,6 +10,24 @@ const slayers = [
 ] as const
 
 type SlayerName = typeof slayers[number]
+
+const slayerMapping: { name: string, slayer: SlayerName }[] = [
+  { name: "revenant horror", slayer: "zombie" },
+  { name: "tarantula broodfather", slayer: "spider" },
+  { name: "sven packmaster", slayer: "wolf" },
+  { name: "voidgloom seraph", slayer: "enderman" },
+  { name: "inferno demonlord", slayer: "blaze" },
+  { name: "zombie", slayer: "zombie" },
+  { name: "spider", slayer: "spider" },
+  { name: "wolf", slayer: "wolf" },
+  { name: "enderman", slayer: "enderman" },
+  { name: "blaze", slayer: "blaze" }
+]
+
+export function resolveSlayer(str: string): SlayerName | undefined {
+  const result = fuzzy.go(str, slayerMapping, { key: "name", limit: 1 })[0]?.obj
+  return result?.slayer
+}
 
 export function isSlayer(str: string): str is SlayerName {
   return slayers.includes(str as SlayerName)
