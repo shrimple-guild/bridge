@@ -75,7 +75,7 @@ export class MinecraftBot {
   }
   
   async chatRaw(msg: string, priority?: number) {
-    return await this.chatLock.acquire(async () => {
+    return this.chatLock.acquire(async () => {
       this.bot?.chat(msg)
       await sleep(this.chatDelay)
     }).catch(e => {
