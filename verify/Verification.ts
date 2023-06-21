@@ -53,11 +53,11 @@ export class Verification {
   }
 
   getMinecraft(guild: Guild, discordId: string) {
-    return this.selectMinecraftId.get({ guildId: guild.id, discordId: discordId })?.minecraftId as string | undefined
+    return (this.selectMinecraftId.get({ guildId: guild.id, discordId: discordId }) as any)?.minecraftId as string | undefined
   }
 
   getDiscord(guild: Guild, minecraftId: string) {
-    return this.selectDiscordId.get({ guildId: guild.id, minecraftId: minecraftId })?.discordId as string | undefined
+    return (this.selectDiscordId.get({ guildId: guild.id, minecraftId: minecraftId }) as any)?.discordId as string | undefined
   }
 
   isVerified(member: GuildMember) {

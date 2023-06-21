@@ -10,7 +10,7 @@ export class Level {
 
   constructor(skill: string, xp: number, maxLevel?: number) {
     const levelXps = skillData[skill]
-    if (!levelXps) throw new Error("Not a known skill!")
+    if (!levelXps) throw new Error("Not a known metric!")
     this.levelXps = levelXps
     const m = this.levelXps.length + 1
     this.level = ((this.levelXps.findIndex(levelXp => levelXp > xp) % m) + m) % m - 1

@@ -42,7 +42,7 @@ export class Database {
   }
 
   get version() {
-    return this.prepare("PRAGMA user_version").get().user_version
+    return (this.prepare("PRAGMA user_version").get() as any).user_version
   }
 
   set version(version: number) {

@@ -38,7 +38,7 @@ export class MojangAPI {
   }
 
   async fetchUuid(username: string) {
-    const data = this.selectUuid.all(username) 
+    const data = this.selectUuid.all(username) as any[]
     let cachedUuid: string | undefined
     let lastUpdated = 0
     if (data.length > 1) {
@@ -79,7 +79,7 @@ export class MojangAPI {
   }
 
   private getCachedSkin(uuid: string) {
-    const data = this.selectSkin.get(uuid) 
+    const data = this.selectSkin.get(uuid) as any
     return {
       skin: (data?.skin ?? undefined) as string | undefined,
       lastUpdated: (data?.lastUpdated ?? 0) as number

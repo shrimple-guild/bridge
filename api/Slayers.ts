@@ -6,7 +6,8 @@ const slayers = [
   "spider",
   "wolf",
   "enderman",
-  "blaze"
+  "blaze",
+  "vampire"
 ] as const
 
 type SlayerName = typeof slayers[number]
@@ -17,11 +18,13 @@ const slayerMapping: { name: string, slayer: SlayerName }[] = [
   { name: "sven packmaster", slayer: "wolf" },
   { name: "voidgloom seraph", slayer: "enderman" },
   { name: "inferno demonlord", slayer: "blaze" },
+  { name: "riftstalker bloodfiend", slayer: "vampire"},
   { name: "zombie", slayer: "zombie" },
   { name: "spider", slayer: "spider" },
   { name: "wolf", slayer: "wolf" },
   { name: "enderman", slayer: "enderman" },
-  { name: "blaze", slayer: "blaze" }
+  { name: "blaze", slayer: "blaze" },
+  { name: "vampire", slayer: "vampire"}
 ]
 
 export function resolveSlayer(str: string): SlayerName | undefined {
@@ -39,6 +42,7 @@ export class Slayers {
   readonly wolf: Slayer
   readonly enderman: Slayer
   readonly blaze: Slayer
+  readonly vampire: Slayer
 
   constructor(member: any) {
     const bosses = member.slayer_bosses
@@ -47,6 +51,7 @@ export class Slayers {
     this.wolf = new Slayer("wolf", bosses)
     this.enderman = new Slayer("enderman", bosses)
     this.blaze = new Slayer("blaze", bosses)
+    this.vampire = new Slayer("vampire", bosses)
   }
 }
 
