@@ -1,6 +1,6 @@
 import { Verification } from "./verify/Verification.js"
 import { HypixelAPI } from "./api/HypixelAPI.js"
-import { createDiscordBot } from "./discord/DiscordBot.js"
+import { createDiscordBot } from "./discord/discordBot.js"
 import { SlashCommandManager } from "./discord/commands/SlashCommandManager.js"
 import config from "./config.json" assert { type: "json" }
 import itemNames from "./data/itemNames.json" assert { type: "json" }
@@ -12,11 +12,11 @@ import readline from "readline"
 import exitHook from "async-exit-hook"
 import { Database } from "./database/database.js"
 import { migrations } from "./database/migrations.js"
-import { postDisconnectEmbed, simpleEmbed } from "./utils/discordUtils.js"
+import { postDisconnectEmbed } from "./utils/discordUtils.js"
 import { sleep } from "./utils/utils.js"
 
 const logger = new Logger()
-const database = await Database.create("./database", migrations)
+const database = await Database.create("./src/database", migrations)
 
 const hypixelAPI = new HypixelAPI(config.bridge.apiKey, database, logger.category("HypixelAPI"))
 await hypixelAPI.init(itemNames)

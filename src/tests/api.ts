@@ -9,7 +9,7 @@ const { apiKey, prefix } = config.bridge
 
 
 const logger = new Logger()
-const database = await Database.create("./database", migrations)
+const database = await Database.create("./src/database", migrations)
 
 const testAPI = new HypixelAPI(apiKey, database, logger.category("HypixelAPI"))
 await testAPI.init(itemNames)
