@@ -6,7 +6,7 @@ import { Bridge } from "../../Bridge.js"
 
 export class TrophyFishCommand implements SimpleCommand {
     aliases = ["trophy", "trophyfish", "tfish"]
-    usage = "<player:[profile|bingo|main]> <total | tiers | [fish]>"
+    usage = "<player:[profile|bingo|main]> [fish]"
 
     constructor(private hypixelAPI: HypixelAPI) {}
 
@@ -15,32 +15,24 @@ export class TrophyFishCommand implements SimpleCommand {
       const playerArg = args.shift()!.split(":")
       const playerName = playerArg[0]
       const profileArg = playerArg[1]?.toLowerCase()
-      const arg = args.shift()!
       let fish = args?.join(" ")
-      if (arg !== "total" && arg !== "tiers") fish = [arg, fish].join(" ")
       let message
       const uuid = await this.hypixelAPI.mojang.fetchUuid(playerName)
       const profiles = await this.hypixelAPI.fetchProfiles(uuid)
       const profile = profiles.getByQuery(profileArg)
       const cuteName = profile.cuteName
       const trophyFish = profile.trophyFish
-      message = `${titleCase(arg)} data for ${playerName} (${cuteName}): `
-      switch (arg) {
-        case "total":
-          message += `Total trophy fish caught: ${trophyFish.total}`
-          break
-        case "tiers":
-          message = `Trophy fish tiers unlocked for ${playerName} (${cuteName}): `
-          message += `Bronze: ${trophyFish.unlocked("bronze")}/18 | Silver: ${trophyFish.unlocked("silver")}/18 | Gold: ${trophyFish.unlocked("gold")}/18 | Diamond: ${trophyFish.unlocked("diamond")}/18`
-          break
-        default:
-          const fishMatch = this.guessFish(fish)
-          if (!fishMatch) return "Invalid fish."
-          const name = fishMatch
-          const fishData = trophyFish.get(name)
-          message = `${name} caught for ${playerName} (${cuteName}): `
-          message += `Total ${titleCase(name)}: ${fishData.total} | Bronze: ${fishData.bronze} | Silver: ${fishData.silver} | Gold: ${fishData.gold} | Diamond: ${fishData.diamond}`
-          break
+      if (fish) {
+        const fishMatch = this.guessFish(fish)
+        if (!fishMatch) return "Invalid fish."
+        const name = fishMatch
+        const fishData = trophyFish.get(name)
+        message = `${name} caught for ${playerName} (${cuteName}): `
+        message += `Total ${titleCase(name)}: ${fishData.total} | Bronze: ${fishData.bronze} | Silver: ${fishData.silver} | Gold: ${fishData.gold} | Diamond: ${fishData.diamond}`
+      } else {
+        message = `Trophy fish for ${playerName} (${cuteName}): `
+        message += `Total: ${trophyFish.total} | `
+        message += `Bronze: ${trophyFish.unlocked("bronze")}/18 | Silver: ${trophyFish.unlocked("silver")}/18 | Gold: ${trophyFish.unlocked("gold")}/18 | Diamond: ${trophyFish.unlocked("diamond")}/18`
       }
       return message
     }
