@@ -26,7 +26,7 @@ export class FarmingWeightCommand implements SimpleCommand {
     const bestCollections = Object.entries(weight.collections).sort(([crop1, collection1], [crop2, collection2]) => (
       collection2 - collection1)
     ).slice(0, 2).map(([crop, weight]) => `${crop} (${formatNumber(weight, 2, false)})`).join(", ")
-    return `Farming weight for ${playerName} (${profile.cuteName}): ${totalWeight}. Colllections (${collectionWeight}): ${bestCollections}.`
+    return `Farming weight for ${playerName} (${profile.cuteName}): ${totalWeight}. Collections (${collectionWeight}): ${bestCollections}.`
   }
 } 
 
