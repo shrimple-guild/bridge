@@ -11,7 +11,7 @@ export class TrophyFishCommand implements SimpleCommand {
     constructor(private hypixelAPI: HypixelAPI) {}
 
     async execute(args: string[]) {
-      if (args.length < 2) return `Syntax: trophy ${this.usage}`
+      if (args.length < 1) return `Syntax: trophy ${this.usage}`
       const playerArg = args.shift()!.split(":")
       const playerName = playerArg[0]
       const profileArg = playerArg[1]?.toLowerCase()
