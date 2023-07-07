@@ -53,7 +53,6 @@ function medalWeight(profileMember: any): number {
   const golds = (Object.values(contests) as any[]).reduce((golds, contest) => (
     golds + (contestIsGold(contest) ? 1 : 0)
   ), 0)
-  console.log(golds)
   return Math.min(Math.floor(golds / 50) * 25, 500)
 }
 
