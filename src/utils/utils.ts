@@ -9,7 +9,7 @@ let emojiPattern = emojiRegex()
 export function formatNumber(num: number, decimals: number, abbreviate: boolean) {
   const formatter = Intl.NumberFormat("us-EN", {
     maximumFractionDigits: decimals,
-    notation: abbreviate ? "compact" : "standard" 
+    notation: abbreviate ? "compact" : "standard"
   })
   return formatter.format(num)
 }
@@ -21,7 +21,7 @@ export function sleep<T>(ms: number, onCompletion?: T): Promise<T> {
   })
 }
 
-const colorMap: {[color: string]: [red: number, green: number, blue: number]} = {
+const colorMap: { [color: string]: [red: number, green: number, blue: number] } = {
   "VIP": [85, 255, 85],
   "VIP+": [85, 255, 85],
   "MVP": [85, 255, 255],
@@ -51,6 +51,10 @@ export function randRange(min: number, max: number) {
   min = Math.ceil(min);
   max = Math.max(max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export function randItem<T>(array: T[]) {
+  return array[randRange(0, array.length - 1)]
 }
 
 export function msToTime(ms: number | undefined) {
@@ -95,6 +99,6 @@ export function toCamelCase(str: string) {
   return str.toLowerCase().replace(/[-_][a-z0-9]/g, (group) => group.slice(-1).toUpperCase())
 }
 
-export function collectionFrom<T>(data: Record<string, T>): Collection<string, T>  {
+export function collectionFrom<T>(data: Record<string, T>): Collection<string, T> {
   return new Collection(Object.entries(data))
 }

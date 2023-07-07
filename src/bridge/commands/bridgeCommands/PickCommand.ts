@@ -1,6 +1,5 @@
 import { SimpleCommand } from "./Command.js"
-import { randRange } from "../../../utils/utils.js"
-import { Bridge } from "../../Bridge.js"
+import { randItem, randRange } from "../../../utils/utils.js"
 
 export class PickCommand implements SimpleCommand {
     aliases = ["pick", "choose"]
@@ -8,6 +7,6 @@ export class PickCommand implements SimpleCommand {
 
     async execute(args: string[]) {
         if (args.length == 0) return "You need to give me some options to choose from."
-        return `I choose ${args[randRange(0, args.length - 1)]}`
+        return `I choose ${randItem(args)}`
     }
 }

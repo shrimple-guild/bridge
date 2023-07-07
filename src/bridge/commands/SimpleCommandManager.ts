@@ -16,9 +16,9 @@ import { CataCommand } from "./bridgeCommands/CataCommand.js"
 import { HypixelAPI } from "../../api/HypixelAPI.js"
 import { Bridge } from "../Bridge.js"
 import { LoggerCategory } from "../../utils/Logger.js"
-import { Bazaar } from "../../api/Bazaar.js"
 import { ContestCommand } from "./bridgeCommands/ContestCommand.js"
 import { FarmingWeightCommand } from "./bridgeCommands/FarmingWeightCommand.js"
+import { FortuneCookieCommand } from "./bridgeCommands/FortuneCookieCommand.js"
 
 export class SimpleCommandManager {
   commands: SimpleCommand[]
@@ -38,7 +38,8 @@ export class SimpleCommandManager {
       new SlayerCommand(hypixelAPI),
       new TrophyFishCommand(hypixelAPI),
       new ContestCommand(hypixelAPI),
-      new FarmingWeightCommand(hypixelAPI)
+      new FarmingWeightCommand(hypixelAPI),
+      new FortuneCookieCommand()
     ]
   }
 
