@@ -4,12 +4,20 @@ import { MinecraftBot } from "../minecraft/MinecraftBot.js";
 import { sleep } from "../utils/utils.js";
 import { LoggerCategory } from "../utils/Logger.js";
 
+type GuildRole = {
+  name: string,
+  sbLevel: number,
+  fishingXp: number,
+  priority: number
+}
+
 export class Bridge {
   constructor(
     private discord: DiscordBot,
     private minecraft: MinecraftBot,
     private commandManager: SimpleCommandManager,
-    private logger: LoggerCategory
+    private logger: LoggerCategory,
+    public roles: GuildRole[]
   ) {
     minecraft.bridge = this
     discord.bridge = this
@@ -33,6 +41,10 @@ export class Bridge {
     if (response) {
       await this.chatAsBot(response)
     }
+  }
+
+  async chatMinecraftRaw(content: string, priority?: number) {
+    this.minecraft.chatRaw(content, priority)
   }
 
   async chatAsBot(content: string, priority?: number) {

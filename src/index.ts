@@ -2,7 +2,7 @@ import { Verification } from "./verify/Verification.js"
 import { HypixelAPI } from "./api/HypixelAPI.js"
 import { createDiscordBot } from "./discord/discordBot.js"
 import { SlashCommandManager } from "./discord/commands/SlashCommandManager.js"
-import config from "./config.json" assert { type: "json" }
+import config from "../config.json" assert { type: "json" }
 import itemNames from "./data/itemNames.json" assert { type: "json" }
 import { MinecraftBot } from "./minecraft/MinecraftBot.js"
 import { Bridge } from "./bridge/Bridge.js"
@@ -25,6 +25,8 @@ const slashCommands = new SlashCommandManager()
 const discordStaffRoles = config.roles.filter(role => role.isStaff).map(role => role.discord)
 const minecraftStaffRoles = config.roles.filter(role => role.isStaff).map(role => role.hypixelTag)
 
+const guildRoles = config.guildRoles
+
 const discord = await createDiscordBot(
   config.discord.token,
   slashCommands,
@@ -45,7 +47,7 @@ const verification = new Verification(
 const bridgeCommandManager = new SimpleCommandManager(config.bridge.prefix, config.minecraft.username, hypixelAPI, logger.category("Commands"))
 
 const minecraft = new MinecraftBot(config.minecraft.username, config.minecraft.privilegedUsers, minecraftStaffRoles, logger.category("Minecraft"))
-const bridge = new Bridge(discord, minecraft, bridgeCommandManager, logger.category("Bridge"))
+const bridge = new Bridge(discord, minecraft, bridgeCommandManager, logger.category("Bridge"), guildRoles)
 
 const rl = readline.createInterface({
   input: process.stdin,

@@ -19,11 +19,12 @@ import { LoggerCategory } from "../../utils/Logger.js"
 import { ContestCommand } from "./bridgeCommands/ContestCommand.js"
 import { FarmingWeightCommand } from "./bridgeCommands/FarmingWeightCommand.js"
 import { FortuneCookieCommand } from "./bridgeCommands/FortuneCookieCommand.js"
+import { UpdateRoleCommand } from "./bridgeCommands/UpdateRoleCommand.js"
 
 export class SimpleCommandManager {
   commands: SimpleCommand[]
 
-  constructor(public prefix: string, public botUsername: string, hypixelAPI: HypixelAPI, private logger?: LoggerCategory) {
+  constructor(public prefix: string, public botUsername: string, private hypixelAPI: HypixelAPI, private logger?: LoggerCategory) {
     this.commands = [
       new AuctionCommand(),
       new BazaarCommand(hypixelAPI),
@@ -44,10 +45,13 @@ export class SimpleCommandManager {
   }
 
   addBridgeCommands(bridge: Bridge) {
-    this.commands.push(new RawCommand(bridge), new ReloadCommand(bridge))
+    this.commands.push(
+      new RawCommand(bridge), 
+      new ReloadCommand(bridge)),
+      new UpdateRoleCommand(bridge, this.hypixelAPI)
   }
 
-  async execute(message: string, isStaff: boolean) {
+  async execute(message: string, isStaff: boolean, username?: string) {
     if (!message.startsWith(this.prefix)) return
     const commStr = message.substring(this.prefix.length)
     const args = commStr.trim().split(" ")
@@ -60,7 +64,7 @@ export class SimpleCommandManager {
     this.logger?.info(`Command processing (staff: ${isStaff}): ${message}`)
     let response
     try {
-      response = await command.execute(args, isStaff)
+      response = await command.execute(args, isStaff, username)
     } catch (e: any) {
       this.logger?.error("Command error!", e)
     }
