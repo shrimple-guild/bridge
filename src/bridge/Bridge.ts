@@ -26,7 +26,7 @@ export class Bridge {
 
   async onMinecraftChat(username: string, content: string, isStaff: boolean, colorAlias?: string, guildRank?: string) {
     await this.discord.sendGuildChatEmbed(username, content, colorAlias, guildRank)
-    await this.handleCommand(content, isStaff)
+    await this.handleCommand(content, isStaff, username)
   }
 
   async onDiscordChat(author: string, content: string, isStaff: boolean, replyAuthor: string | undefined) {
@@ -36,8 +36,8 @@ export class Bridge {
     await this.handleCommand(content, isStaff)
   }
 
-  async handleCommand(content: string, isStaff: boolean) {
-    const response = await this.commandManager.execute(content, isStaff)
+  async handleCommand(content: string, isStaff: boolean, username?: string) {
+    const response = await this.commandManager.execute(content, isStaff, username)
     if (response) {
       await this.chatAsBot(response)
     }
