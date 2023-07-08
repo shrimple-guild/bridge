@@ -4,11 +4,13 @@ import { HypixelAPI } from "../../../api/HypixelAPI.js"
 
 export class UpdateRoleCommand implements SimpleCommand {
     aliases = ["update"]
+    usage?: "[username]"
 
     constructor(private bridge?: Bridge, private hypixelAPI?: HypixelAPI) {}
 
     async execute(args: string[], isStaff?: boolean, username?: string) {
-      if (!this.bridge) return "Bridge not configured properly; cannot use command!"
+      if (!this.bridge) return "Bridge not configured; cannot use command!"
+      if (!this.bridge.roles) return "Roles are not configured for this guild."
       const specifiedUsername = args.shift()
       const specifiedNameIsUsername = specifiedUsername?.toLocaleLowerCase() == username?.toLocaleLowerCase()      
       if (specifiedUsername) {

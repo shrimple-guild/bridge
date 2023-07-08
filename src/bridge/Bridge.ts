@@ -17,7 +17,7 @@ export class Bridge {
     private minecraft: MinecraftBot,
     private commandManager: SimpleCommandManager,
     private logger: LoggerCategory,
-    public roles: GuildRole[]
+    public roles: GuildRole[] | undefined
   ) {
     minecraft.bridge = this
     discord.bridge = this

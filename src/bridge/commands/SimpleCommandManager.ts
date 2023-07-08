@@ -47,8 +47,11 @@ export class SimpleCommandManager {
   addBridgeCommands(bridge: Bridge) {
     this.commands.push(
       new RawCommand(bridge), 
-      new ReloadCommand(bridge)),
-      new UpdateRoleCommand(bridge, this.hypixelAPI)
+      new ReloadCommand(bridge),
+    )
+    if (bridge.roles && bridge.roles.length > 0) {
+      this.commands.push(new UpdateRoleCommand(bridge, this.hypixelAPI))
+    }
   }
 
   async execute(message: string, isStaff: boolean, username?: string) {
