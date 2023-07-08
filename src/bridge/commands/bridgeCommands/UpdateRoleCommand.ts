@@ -26,10 +26,10 @@ export class UpdateRoleCommand implements SimpleCommand {
         const role = await this.getRole(username)
         console.log(`Updating role for ${username} to ${role}.`)
         this.bridge.chatMinecraftRaw(`/g setrank ${username} ${role}`)
+        return "Role updated!"
       } else {
         return "No username provided. This command only works in-game (for non-staff members)."
-      }
-      return "A username must be provided."
+      } 
     }
 
     private async getRole(username: string): Promise<string | undefined> {
