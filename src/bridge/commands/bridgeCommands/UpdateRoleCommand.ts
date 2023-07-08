@@ -10,22 +10,24 @@ export class UpdateRoleCommand implements SimpleCommand {
 
     async execute(args: string[], isStaff?: boolean, username?: string) {
       if (!this.bridge) return "Bridge not configured; cannot use command!"
-      if (!this.bridge.roles) return "Roles are not configured for this guild."
       const specifiedUsername = args.shift()
       const specifiedNameIsUsername = specifiedUsername?.toLocaleLowerCase() == username?.toLocaleLowerCase()      
       if (specifiedUsername) {
         if (isStaff || specifiedNameIsUsername) {
           const role = await this.getRole(specifiedUsername)
+          console.log(`Updating role for ${specifiedUsername} to ${role}.`)
           this.bridge.chatMinecraftRaw(`/setrank ${username} ${role}`)
         } else {
           return "You must be staff to update the role of another member!"
         }
       } else if (username) {
         const role = await this.getRole(username)
+        console.log(`Updating role for ${username} to ${role}.`)
         this.bridge.chatMinecraftRaw(`/setrank ${username} ${role}`)
       } else {
         return "No username provided. This command only works in-game (for non-staff members)."
       }
+      return "A username must be provided."
     }
 
     private async getRole(username: string): Promise<string | undefined> {
