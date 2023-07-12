@@ -15,7 +15,7 @@ const testAPI = new HypixelAPI(apiKey, database, logger.category("HypixelAPI"))
 await testAPI.init(itemNames)
 
 
-const uuid = await testAPI.mojang.fetchUuid("appable")
+const uuid = await testAPI.mojang.fetchUuid("YouAreRexist")
 const profiles = await testAPI.fetchProfiles(uuid)
 
 console.log(profiles.main.bestiary.level)

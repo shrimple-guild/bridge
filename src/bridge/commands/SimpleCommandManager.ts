@@ -70,6 +70,7 @@ export class SimpleCommandManager {
       response = await command.execute(args, isStaff, username)
     } catch (e: any) {
       this.logger?.error("Command error!", e)
+      response = e.toString()
     }
     this.logger?.info(`Response: ${response}`)
     return response
