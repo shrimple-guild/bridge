@@ -33,7 +33,6 @@ export class DiscordBot {
       const author = message.member
       if (!author) return
       const authorName = message.member.displayName
-
       const reply = await message.fetchReference().catch(e => undefined)
       const replyAuthor = reply ? this.getAuthorName(reply) : undefined
 

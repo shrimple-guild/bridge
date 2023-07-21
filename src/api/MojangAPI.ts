@@ -78,8 +78,8 @@ export class MojangAPI {
     return MojangAPI.getSkinPng(cachedSkin ?? this.defaultSkin)
   }
 
-  private getCachedSkin(uuid: string) {
-    const data = this.selectSkin.get(uuid) as any
+  private getCachedSkin(username: string) {
+    const data = this.selectSkin.get(username) as any
     return {
       skin: (data?.skin ?? undefined) as string | undefined,
       lastUpdated: (data?.lastUpdated ?? 0) as number
