@@ -33,9 +33,9 @@ export class UpdateRoleCommand implements SimpleCommand {
     }
 
     private async getRole(username: string): Promise<string | undefined> {
-      const uuid = await this.hypixelAPI?.mojang.fetchUuid(username)
+      const uuid = await this.hypixelAPI?.mojang.fetchUserData(username)
       if (!uuid) return undefined
-      const profiles = await this.hypixelAPI?.fetchProfiles(uuid)
+      const profiles = await this.hypixelAPI?.fetchProfiles(uuid.id)
       if (!profiles) return undefined
       const roles = this.bridge?.roles
       if (!roles) return undefined

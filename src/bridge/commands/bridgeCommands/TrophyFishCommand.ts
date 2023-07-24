@@ -17,8 +17,8 @@ export class TrophyFishCommand implements SimpleCommand {
       const profileArg = playerArg[1]?.toLowerCase()
       let fish = args?.join(" ")
       let message
-      const uuid = await this.hypixelAPI.mojang.fetchUuid(playerName)
-      const profiles = await this.hypixelAPI.fetchProfiles(uuid)
+      const uuid = await this.hypixelAPI.mojang.fetchUserData(playerName)
+      const profiles = await this.hypixelAPI.fetchProfiles(uuid.id)
       const profile = profiles.getByQuery(profileArg)
       const cuteName = profile.cuteName
       const trophyFish = profile.trophyFish

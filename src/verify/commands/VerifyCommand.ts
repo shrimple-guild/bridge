@@ -21,7 +21,7 @@ export class VerifyCommand implements SlashCommand {
       await interaction.deferReply({ ephemeral: true })
       if (!this.verification || !this.hypixelAPI) throw new Error("Improper configuration! Please report this to staff.")
       const username = interaction.options.getString("username", true)
-      const uuid = await this.hypixelAPI.mojang.fetchUuid(username)
+      const uuid = await this.hypixelAPI.mojang.fetchUserData(username)
       const player = await this.hypixelAPI.fetchPlayer(uuid)
       const discordTag = interaction.user.discriminator == "0" ? interaction.user.username : interaction.user.tag
       if (player.discordTag == null) throw new Error("This Hypixel account isn't linked to any Discord account.")

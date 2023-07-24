@@ -1,4 +1,4 @@
-import { Database } from "../database/database.js"
+import Pool from "../database/Pool.js"
 import { LoggerCategory } from "../utils/Logger.js"
 import { PriorityLock } from "../utils/PriorityLock.js"
 import { Bazaar } from "./Bazaar.js"
@@ -6,7 +6,7 @@ import { FarmingContests } from "./FarmingContests.js"
 import { HypixelAPIError } from "./HypixelAPIError.js"
 import { HypixelGuildMember } from "./HypixelGuildMember.js"
 import { HypixelPlayer } from "./HypixelPlayer.js"
-import { MojangAPI } from "./MojangAPI.js"
+import { MojangService } from "../services/MojangService.js"
 import { SkyblockItems, SpecifiedNames } from "./SkyblockItems.js"
 import { SkyblockProfiles } from "./SkyblockProfiles.js"
 
@@ -14,7 +14,7 @@ const maxRequestTime = 3
 
 export class HypixelAPI {
 
-  readonly mojang: MojangAPI
+  readonly mojang: MojangService
   contests?: FarmingContests
   bazaar?: Bazaar
 
@@ -26,10 +26,10 @@ export class HypixelAPI {
 
   constructor(
     private apiKey: string,
-    private database: Database,
+    private pool: Pool,
     private logger: LoggerCategory
   ) {
-    this.mojang = new MojangAPI(database)
+    this.mojang = new MojangService(pool)
   }
 
   async init(specifiedNames?: SpecifiedNames) {

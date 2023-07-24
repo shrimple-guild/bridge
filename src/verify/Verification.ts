@@ -1,7 +1,7 @@
 import { Statement } from "better-sqlite3"
 import { Client, Events, Guild, GuildMember, PermissionFlagsBits } from "discord.js"
 import { HypixelAPI } from "../api/HypixelAPI.js"
-import { Database } from "../database/database.js"
+import { Database } from "../database/Pool.js"
 import { SlashCommandManager } from "../discord/commands/SlashCommandManager.js"
 import { ManualVerifyCommand } from "./commands/ManualVerifyCommand.js"
 import { SyncCommand } from "./commands/SyncCommand.js"

@@ -17,8 +17,8 @@ export class SlayerCommand implements SimpleCommand {
     const slayerName = args.shift()?.toLowerCase()
     let message
     if (!slayerName) return "A slayer name must be specified!"
-    const uuid = await this.hypixelAPI.mojang.fetchUuid(playerName)
-    const profiles = await this.hypixelAPI.fetchProfiles(uuid)
+    const uuid = await this.hypixelAPI.mojang.fetchUserData(playerName)
+    const profiles = await this.hypixelAPI.fetchProfiles(uuid.id)
     const profile = profiles.getByQuery(profileArg)
     const resolvedSlayer = resolveSlayer(slayerName)
     if (!resolvedSlayer) return `${titleCase(slayerName)} is not a valid slayer name!`

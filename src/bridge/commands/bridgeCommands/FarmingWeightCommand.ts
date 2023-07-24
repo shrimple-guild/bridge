@@ -14,8 +14,8 @@ export class FarmingWeightCommand implements SimpleCommand {
     const playerName = playerArg[0]
     const profileArg = playerArg[1]?.toLowerCase()
     
-    const uuid = await this.hypixelAPI.mojang.fetchUuid(playerName)
-    const profiles = await this.hypixelAPI.fetchProfiles(uuid)
+    const uuid = await this.hypixelAPI.mojang.fetchUserData(playerName)
+    const profiles = await this.hypixelAPI.fetchProfiles(uuid.id)
     const profile = profiles.getByQuery(profileArg)
     const weight = profile.farmingWeight
     if (weight == undefined) {

@@ -18,8 +18,8 @@ export class CataCommand implements SimpleCommand {
     const profileArg = playerArg[1]?.toLowerCase()
     const commandArg = args[0]?.toLowerCase()
     let message
-    const uuid = await this.hypixelAPI.mojang.fetchUuid(playerName)
-    const profiles = await this.hypixelAPI.fetchProfiles(uuid)
+    const uuid = await this.hypixelAPI.mojang.fetchUserData(playerName)
+    const profiles = await this.hypixelAPI.fetchProfiles(uuid.id)
     const profile = profiles.getByQuery(profileArg)
     const floorMatch = commandArg?.match(floorArgRegex)
     if (floorMatch != null) {

@@ -1,5 +1,5 @@
 import { Verification } from "../verify/Verification.js"
-import { Database } from "../database/database.js"
+import { Database } from "../database/Pool.js"
 import { HypixelAPI } from "../api/HypixelAPI.js"
 import { createDiscordBot } from "../discord/discordBot.js"
 import { SlashCommandManager } from "../discord/commands/SlashCommandManager.js"

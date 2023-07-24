@@ -34,7 +34,7 @@ export class ManualVerifyCommand implements SlashCommand {
         await interaction.followUp({ embeds: [statusEmbed("success", `Verified \`${member.user.tag}\` without a Minecraft account.`)] })
         return
       }
-      const uuid = await this.hypixelAPI.mojang.fetchUuid(username)
+      const uuid = (await this.hypixelAPI.mojang.fetchUserData(username)).id
       
       // Check for previous verification on a different account and remove if it exists
       const previousDiscordId = this.verification.getDiscord(interaction.guild, uuid)

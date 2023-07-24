@@ -18,8 +18,8 @@ export class SkillsCommand implements SimpleCommand {
     const skillName = args.shift()?.toLowerCase()
     let message
     if (skillName == null) return "A skill must be specified!"
-    const uuid = await this.hypixelAPI.mojang.fetchUuid(playerName)
-    const profiles = await this.hypixelAPI.fetchProfiles(uuid)
+    const uuid = await this.hypixelAPI.mojang.fetchUserData(playerName)
+    const profiles = await this.hypixelAPI.fetchProfiles(uuid.id)
     const profile = profiles.getByQuery(profileArg)
     const cuteName = profile.cuteName
     if (!isSkill(skillName)) return `"${titleCase(skillName)}" is not a skill!`

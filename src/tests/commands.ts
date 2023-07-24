@@ -7,7 +7,7 @@ import readline from "readline"
 
 import config from "../config.json" assert { type: "json" }
 import itemNames from "../data/itemNames.json" assert { type: "json" }
-import { Database } from "../database/database.js";
+import { Database } from "../database/Pool.js";
 import { migrations } from "../database/migrations.js";
 const { apiKey, prefix } = config.bridge
 

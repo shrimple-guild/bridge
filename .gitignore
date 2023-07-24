@@ -109,5 +109,5 @@ dist
 database/main.db
 database/backups/*
 !database/backups/.gitkeep
-config.json
-*Config.json
+config*.json
+!config_example.json
