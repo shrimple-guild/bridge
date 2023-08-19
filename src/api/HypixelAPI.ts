@@ -9,8 +9,12 @@ import { HypixelPlayer } from "./HypixelPlayer.js"
 import { MojangService } from "../services/MojangService.js"
 import { SkyblockItems, SpecifiedNames } from "./SkyblockItems.js"
 import { SkyblockProfiles } from "./SkyblockProfiles.js"
+import { NonexistentGuildError } from "./errors/NonexistentGuildError.js"
+import { HypixelGuild } from "./structures/HypixelGuild.js"
 
 const maxRequestTime = 3
+
+export type GuildQueryParam = "name" | "id" | "player"
 
 export class HypixelAPI {
 
@@ -53,11 +57,11 @@ export class HypixelAPI {
     return new SkyblockProfiles(data.profiles, uuidTrimmed)
   }
   
-  async fetchGuildMembers(guildId: string): Promise<HypixelGuildMember[]> {
-    const { data } = await this.fetchHypixel("/guild", { id: guildId, key: this.apiKey }) 
-    if (!data.guild) throw new Error(`This guild does not exist!`)
-    const members = data.guild.members as any[]
-    return members.map(member => new HypixelGuildMember(member, this))
+  async fetchGuild(type: GuildQueryParam, query: string): Promise<HypixelGuild> {
+    const { data: response } = await this.fetchHypixel("/guild", { [type]: query, key: this.apiKey }) 
+    const guild = await HypixelGuild.create(response) 
+    if (!guild) throw new NonexistentGuildError(type, query)
+    return guild
   }
 
   async fetchHypixel(endpoint: string, parameters: {[key: string]: string} = {}): Promise<HypixelResponse> {

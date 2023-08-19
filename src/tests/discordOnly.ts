@@ -1,4 +1,4 @@
-import { Verification } from "../verify/Verification.js"
+import { LinkService } from "../services/LinkService.js"
 import { Database } from "../database/Pool.js"
 import { HypixelAPI } from "../api/HypixelAPI.js"
 import { createDiscordBot } from "../discord/discordBot.js"
@@ -24,7 +24,7 @@ const discord = await createDiscordBot(
   logger.category("Discord")
 )
 
-const verification = new Verification(
+const verification = new LinkService(
   discord.client, 
   database, 
   config.discord.verification, 

@@ -1,6 +1,6 @@
 import { AttachmentBuilder, ChatInputCommandInteraction, ColorResolvable, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { statusEmbed } from "../../utils/discordUtils.js";
-import { Verification } from "../Verification.js";
+import { LinkService } from "../../services/LinkService.js";
 import { SlashCommand } from "../../discord/commands/SlashCommand.js";
 
 export class VerifyEmbedCommand implements SlashCommand {
@@ -9,7 +9,7 @@ export class VerifyEmbedCommand implements SlashCommand {
     .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
     .setDescription("Create an informational embed for a verification channel.")
 
-  constructor(private verification?: Verification) {}
+  constructor(private verification?: LinkService) {}
   
   async execute(interaction: ChatInputCommandInteraction<"cached">) {
     try {

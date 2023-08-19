@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { statusEmbed } from "../../utils/discordUtils.js";
-import { Verification } from "../Verification.js";
+import { LinkService } from "../../services/LinkService.js";
 import { SlashCommand } from "../../discord/commands/SlashCommand.js";
 import { sleep } from "../../utils/utils.js";
 
@@ -10,7 +10,7 @@ export class SyncCommand implements SlashCommand {
   .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
   .setDescription("Synchronize verifications in the server.")
 
-  constructor(private verification?: Verification) {}
+  constructor(private verification?: LinkService) {}
   
   async execute(interaction: ChatInputCommandInteraction<"cached">) {
     try {

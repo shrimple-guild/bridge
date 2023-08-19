@@ -102,3 +102,8 @@ export function toCamelCase(str: string) {
 export function collectionFrom<T>(data: Record<string, T>): Collection<string, T> {
   return new Collection(Object.entries(data))
 }
+
+type RecordKey = string | symbol | number
+export function mapKeys<T extends RecordKey, K, V>(data: Record<T, V>): Map<K, V> {
+  return new Map(Object.entries(data));
+}

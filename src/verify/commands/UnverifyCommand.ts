@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { HypixelAPI } from "../../api/HypixelAPI.js";
 import { statusEmbed } from "../../utils/discordUtils.js";
-import { Verification } from "../Verification.js";
+import { LinkService } from "../../services/LinkService.js";
 import { SlashCommand } from "../../discord/commands/SlashCommand.js";
 
 export class UnverifyCommand implements SlashCommand {
@@ -9,7 +9,7 @@ export class UnverifyCommand implements SlashCommand {
     .setName("unverify")
     .setDescription("Remove verification in this server.")
 
-  constructor(private verification?: Verification) {}
+  constructor(private verification?: LinkService) {}
   
   async execute(interaction: ChatInputCommandInteraction<"cached">) {
     try {

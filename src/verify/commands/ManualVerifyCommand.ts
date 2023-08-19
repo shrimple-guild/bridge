@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { statusEmbed } from "../../utils/discordUtils.js";
-import { Verification } from "../Verification.js";
+import { LinkService } from "../../services/LinkService.js";
 import { SlashCommand } from "../../discord/commands/SlashCommand.js";
 import { HypixelAPI } from "../../api/HypixelAPI.js";
 
@@ -20,7 +20,7 @@ export class ManualVerifyCommand implements SlashCommand {
       .setName("username")
       .setDescription("The Minecraft username of the user"))
 
-  constructor(private verification?: Verification, private hypixelAPI?: HypixelAPI) {}
+  constructor(private verification?: LinkService, private hypixelAPI?: HypixelAPI) {}
   
   async execute(interaction: ChatInputCommandInteraction<"cached">) {
     try {

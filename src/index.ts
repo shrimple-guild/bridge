@@ -1,4 +1,4 @@
-import { Verification } from "./verify/Verification.js"
+import { LinkService } from "./services/LinkService.js"
 import { HypixelAPI } from "./api/HypixelAPI.js"
 import { createDiscordBot } from "./discord/discordBot.js"
 import { SlashCommandManager } from "./discord/commands/SlashCommandManager.js"
@@ -11,7 +11,6 @@ import { Logger } from "./utils/Logger.js"
 import readline from "readline"
 import exitHook from "async-exit-hook"
 import { Database } from "./database/Pool.js"
-import { migrations } from "./database/migrations.js"
 import { postDisconnectEmbed } from "./utils/discordUtils.js"
 import { sleep } from "./utils/utils.js"
 
@@ -36,7 +35,7 @@ const discord = await createDiscordBot(
   logger.category("Discord")
 )
 
-const verification = new Verification(
+const verification = new LinkService(
   discord.client,
   database,
   config.discord.verification,

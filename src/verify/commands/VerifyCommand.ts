@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { HypixelAPI } from "../../api/HypixelAPI.js";
 import { statusEmbed } from "../../utils/discordUtils.js";
-import { Verification } from "../Verification.js";
+import { LinkService } from "../../services/LinkService.js";
 import { SlashCommand } from "../../discord/commands/SlashCommand.js";
 
 export class VerifyCommand implements SlashCommand {
@@ -14,7 +14,7 @@ export class VerifyCommand implements SlashCommand {
         .setName("username")
         .setDescription("Your Minecraft username")) 
 
-  constructor(private verification?: Verification, private hypixelAPI?: HypixelAPI) {}
+  constructor(private verification?: LinkService, private hypixelAPI?: HypixelAPI) {}
   
   async execute(interaction: ChatInputCommandInteraction<"cached">) {
     try {
