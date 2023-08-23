@@ -15,7 +15,6 @@ export class MinecraftBot {
   private spamProtectionLastSent: number = 0
   private chatLock = new PriorityLock(10)
   private chatDelay = 1000
-  private fragbotTimeout?: NodeJS.Timeout
 
   constructor(
     readonly username: string, 
@@ -110,24 +109,6 @@ export class MinecraftBot {
   quit() {
     this.bot.quit()
   }
-
-  // TODO: Fix name checking (previously checked for anyone in database, which is anyone who has ever been queried)
-  fragbot(username: string) {
-    this.logger?.info(`${username} used the fragbot feature.`)
-    this.chat(`/p join ${username}`)
-    this.fragbotTimeout = setTimeout(() => {
-      this.chat("/pc Leaving because 10s passed")
-      this.clearFragbot()
-    }, 10000)
-  }
-
-  clearFragbot() {
-    setTimeout(() => {
-      this.chat("/p leave")
-      clearTimeout(this.fragbotTimeout)
-    }, 2000)
-  }
-
 }
 
 

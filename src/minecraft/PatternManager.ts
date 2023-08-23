@@ -1,6 +1,5 @@
 import { LoggerCategory } from "../utils/Logger";
 import { MinecraftBot } from "./MinecraftBot";
-import { enteredDungeon } from "./patterns/EnteredDungeon.js";
 import { guildChat } from "./patterns/GuildChat.js";
 import { guildJoin } from "./patterns/GuildJoin.js";
 import { guildKick } from "./patterns/GuildKick.js";
@@ -8,20 +7,17 @@ import { guildLeave } from "./patterns/GuildLeave.js";
 import { guildPromoteDemote } from "./patterns/GuildPromoteDemote.js";
 import { limbo } from "./patterns/Limbo.js";
 import { minecraftJoinLeave } from "./patterns/MinecraftJoinLeave.js";
-import { partyInvite } from "./patterns/PartyInvite.js";
 import { privateMessage } from "./patterns/PrivateMessage.js";
 import { spamProtection } from "./patterns/SpamProtection.js";
 
 export const PatternManager = {
   patterns: [
-    enteredDungeon,
     guildChat,
     guildJoin,
     guildKick,
     guildLeave,
     limbo,
     minecraftJoinLeave,
-    partyInvite,
     privateMessage,
     spamProtection,
     guildPromoteDemote
