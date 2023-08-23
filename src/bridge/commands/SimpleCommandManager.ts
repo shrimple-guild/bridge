@@ -73,6 +73,9 @@ export class SimpleCommandManager {
       response = e.toString()
     }
     this.logger?.info(`Response: ${response}`)
+    if (response) {
+      response += ` <@${Math.random().toString(36).substring(2)}>`
+    }
     return response
   }
 }
