@@ -4,12 +4,12 @@ import { guildChat } from "./patterns/GuildChat.js";
 import { guildJoin } from "./patterns/GuildJoin.js";
 import { guildKick } from "./patterns/GuildKick.js";
 import { guildLeave } from "./patterns/GuildLeave.js";
-import { guildLevelUp } from "./patterns/GuildLevelUp";
+import { guildLevelUp } from "./patterns/GuildLevelUp.js";
 import { guildPromoteDemote } from "./patterns/GuildPromoteDemote.js";
 import { limbo } from "./patterns/Limbo.js";
 import { minecraftJoinLeave } from "./patterns/MinecraftJoinLeave.js";
 import { privateMessage } from "./patterns/PrivateMessage.js";
-import { questTierCompleted } from "./patterns/QuestTierCompleted";
+import { questTierCompleted } from "./patterns/QuestTierCompleted.js";
 import { spamProtection } from "./patterns/SpamProtection.js";
 
 export const PatternManager = {
