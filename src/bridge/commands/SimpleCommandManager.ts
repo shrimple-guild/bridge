@@ -35,7 +35,7 @@ export class SimpleCommandManager {
       new HelpCommand(this),
       new PickCommand(),
       new PingCommand(),
-      new RainTimerCommand(),
+      // new RainTimerCommand(),
       new SkillsCommand(hypixelAPI),
       new SlayerCommand(hypixelAPI),
       new TrophyFishCommand(hypixelAPI),
