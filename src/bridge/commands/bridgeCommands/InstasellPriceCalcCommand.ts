@@ -7,14 +7,16 @@ export class InstasellPriceCalcCommand implements SimpleCommand {
 
   constructor(private hypixelAPI: HypixelAPI) {}
 
-  usage = "<item name>, <amount>"
+  usage = "<item name>, <amount>[k|m|b|s]"
 
   async execute(args: string[]) {
     const args2 = args.join(" ").split(",")
     if (args2.length != 2) return `Syntax: ${this.usage}`
     const bazaar = this.hypixelAPI.bazaar
     if (!bazaar) return `Bazaar isn't instantiated! Please report this!`
-    let amount = parseInt(args2.pop() || "0")
+    const amtString = args2.pop() || "0"
+    const amtMult = this.amountMult(amtString)
+    let amount = Math.round(parseFloat(amtString) * amtMult)
     const startingAmount = amount
     if (isNaN(amount) || amount <= 0) return `Invalid amount!`
     let product = await bazaar.getClosestProduct(args2.join(" "))
@@ -39,5 +41,20 @@ export class InstasellPriceCalcCommand implements SimpleCommand {
     if (!num) return "Not available"
     let formatter = Intl.NumberFormat("en", { notation: "compact" })
     return formatter.format(num)
+  }
+
+  amountMult(amount: string) {
+    switch(amount.charAt(amount.length - 1)) {
+        case "k":
+            return 1000
+        case "m":
+            return 1000000
+        case "b":
+            return 1000000000
+        case "s":
+            return 64
+        default:
+            return 1
+    }
   }
 }
