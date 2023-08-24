@@ -15,12 +15,14 @@ export class InstasellPriceCalcCommand implements SimpleCommand {
     const bazaar = this.hypixelAPI.bazaar
     if (!bazaar) return `Bazaar isn't instantiated! Please report this!`
     let amount = parseInt(args2.pop() || "0")
+    const startingAmount = amount
     if (isNaN(amount) || amount <= 0) return `Invalid amount!`
     let product = await bazaar.getClosestProduct(args2.join(" "))
     if (!product) return `No product found!`
     
-    let money = 0
     const summary = product.sellSummary
+    if (!summary.length) return `Could not sell any ${product.name}`
+    let money = 0
     while (amount > 0) {
         let buySummary = summary.shift()
         if (!buySummary) break
@@ -28,7 +30,7 @@ export class InstasellPriceCalcCommand implements SimpleCommand {
         money += buyAmount * buySummary.pricePerUnit
         amount -= buyAmount
     }
-    let returnString = `Total earned: ${this.format(money)} coins`
+    let returnString = `Total earned from selling ${startingAmount - amount} ${product.name}: ${this.format(money)} coins`
     if (amount > 0) returnString += `, could not sell ${amount} items`
     return returnString
   }
