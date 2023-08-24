@@ -7,8 +7,16 @@ import { deromanize } from "../utils/utils.js"
 type BazaarProduct = {
   id: string,
   name: string,
-  instabuy?: number,
-  instasell?: number
+  sellSummary: Summary[],
+  buySummary: Summary[]
+  instasell?: number,
+  instabuy?: number
+}
+
+type Summary = {
+  amount: number,
+  pricePerUnit: number,
+  orders: number
 }
 
 export class Bazaar {
@@ -33,9 +41,19 @@ export class Bazaar {
           return productList.map(productData => ({
             id: productData.product_id,
             name: this.skyblockItems.itemName(productData.product_id),
+            sellSummary: productData.sell_summary.map((summary: any) => ({
+              amount: summary.amount,
+              pricePerUnit: summary.pricePerUnit,
+              orders: summary.orders
+            })),
+            buySummary: productData.buy_summary.map((summary: any) => ({
+              amount: summary.amount,
+              pricePerUnit: summary.pricePerUnit,
+              orders: summary.orders
+            })),
             instasell: productData.sell_summary[0]?.pricePerUnit,
             instabuy: productData.buy_summary[0]?.pricePerUnit
-          })) 
+          }))
         }).catch(e => {
           this.logger.warn("Failed to update Bazaar products.")
           return products
