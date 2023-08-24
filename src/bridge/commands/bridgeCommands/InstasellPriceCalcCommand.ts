@@ -22,17 +22,22 @@ export class InstasellPriceCalcCommand implements SimpleCommand {
     let product = await bazaar.getClosestProduct(args2.join(" "))
     if (!product) return `No product found!`
     
-    const summary = product.sellSummary
-    if (!summary.length) return `Could not sell any ${product.name}`
+    const sellSummary = product.sellSummary
+    if (!sellSummary.length) return `Could not sell any ${product.name}`
     let money = 0
+    let avg = 0
+    let summaries = 0
     while (amount > 0) {
-        let buySummary = summary.shift()
-        if (!buySummary) break
-        let buyAmount = Math.min(amount, buySummary.amount)
-        money += buyAmount * buySummary.pricePerUnit
+        let summary = sellSummary.shift()
+        if (!summary) break
+        let buyAmount = Math.min(amount, summary.amount)
+        money += buyAmount * summary.pricePerUnit
         amount -= buyAmount
+        avg += summary.pricePerUnit
+        summaries++
     }
-    let returnString = `Total earned from selling ${startingAmount - amount} ${product.name}: ${this.format(money)} coins`
+    avg /= summaries || 1
+    let returnString = `Total earned from selling ${startingAmount - amount} ${product.name}: ${this.format(money)} coins, average price per unit: ${avg.toFixed(2)} coins`
     if (amount > 0) returnString += `, could not sell ${amount} items`
     return returnString
   }
