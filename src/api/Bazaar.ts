@@ -56,6 +56,7 @@ export class Bazaar {
           }))
         }).catch(e => {
           this.logger.warn("Failed to update Bazaar products.")
+          this.logger.error(e)
           return products
         }) 
         return products

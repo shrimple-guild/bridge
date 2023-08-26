@@ -54,19 +54,19 @@ const rl = readline.createInterface({
   output: process.stdout
 })
 
-rl.on("line", (input) => {
+rl.on("line", async (input) => {
   if (input != "quit") {
-    bridge.chatAsBot(input)
+    await bridge.chatAsBot(input)
   } else {
-    bridge.quit()
+    await bridge.quit()
   }
 })
 
 exitHook(async (cb) => {
-  postDisconnectEmbed()
-  bridge.chatAsBot("Process ended...")
+  await postDisconnectEmbed()
+  await bridge.chatAsBot("Process ended...")
   await sleep(1000)
-  bridge.quit()
+  await bridge.quit()
   await sleep(1000)
   cb()
 })

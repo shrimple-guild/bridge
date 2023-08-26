@@ -21,6 +21,10 @@ export class DiscordBot {
   ) {
     logger?.info(`Discord bot online.`)
 
+    this.client.on("error", (error) => {
+      logger?.error("Error talking to the Discord API...", error)
+    })
+
     this.client.on(Events.InteractionCreate, async (interaction) => {
       if (!interaction.isChatInputCommand() || !interaction.inCachedGuild()) return
       logger?.info(`Slash command used: ${interaction.commandName}`)
@@ -48,7 +52,7 @@ export class DiscordBot {
       }
       
       logger?.info(`Discord chat: ${authorName} to ${replyAuthor}: ${content}`)
-      this.bridge.onDiscordChat(authorName, content, this.isStaff(author), replyAuthor)
+      await this.bridge.onDiscordChat(authorName, content, this.isStaff(author), replyAuthor)
     })
   }
 
@@ -68,14 +72,14 @@ export class DiscordBot {
       .setFooter(guildRank ? { text: guildRank } : null)
       .setTimestamp(Date.now())
     if (imageAttachment) embed.setImage(imageAttachment)
-    channel.send({ embeds: [embed], files: [skin] })
+    await channel.send({ embeds: [embed], files: [skin] })
   }
   
   async sendSimpleEmbed(title: string, content: string, footer?: string) {
     const channel = this.getTextChannel(this.guildBridgeChannelId)
     if (!channel) return
     const embed = simpleEmbed(title, content, footer)
-    channel.send({ embeds: [embed] })
+    await channel.send({ embeds: [embed] })
   }
 
   private getTextChannel(channelId: string): TextChannel | undefined {
@@ -113,7 +117,7 @@ export async function createDiscordBot(
       GatewayIntentBits.MessageContent
     ]
   })
-  client.login(token)
+  await client.login(token)
   const readyClient: Client<true> = await new Promise((resolve, reject) => {
     client.once(Events.Error, reject),
     client.once(Events.ClientReady, (readyClient) => {

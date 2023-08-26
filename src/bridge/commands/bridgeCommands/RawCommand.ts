@@ -12,6 +12,6 @@ export class RawCommand implements SimpleCommand {
       if (args.length === 0) return "You need to give me some data to parse."
       if (!isStaff) return "No permission"
       const message = args.join(" ")
-      this.bridge.chatAsBot(message)
+      await this.bridge.chatAsBot(message)
     }
 } 

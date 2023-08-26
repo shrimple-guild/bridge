@@ -17,7 +17,7 @@ export class UpdateRoleCommand implements SimpleCommand {
         if (isStaff || updatingSelf) {
           const role = await this.getRole(specifiedUsername)
           console.log(`Updating role for ${specifiedUsername} to ${role}.`)
-          this.bridge.chatMinecraftRaw(`/g setrank ${specifiedUsername} ${role}`)
+          await this.bridge.chatMinecraftRaw(`/g setrank ${specifiedUsername} ${role}`)
           return "Role updated!"
         } else {
           return "You must be staff to update the role of another member!"
@@ -25,7 +25,7 @@ export class UpdateRoleCommand implements SimpleCommand {
       } else if (username) {
         const role = await this.getRole(username)
         console.log(`Updating role for ${username} to ${role}.`)
-        this.bridge.chatMinecraftRaw(`/g setrank ${username} ${role}`)
+        await this.bridge.chatMinecraftRaw(`/g setrank ${username} ${role}`)
         return "Role updated!"
       } else {
         return "No username provided. This command only works in-game (for non-staff members)."

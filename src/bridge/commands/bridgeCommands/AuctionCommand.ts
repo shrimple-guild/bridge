@@ -2,7 +2,6 @@ import { SimpleCommand } from "./Command.js"
 import { jaroWinkler as jaroDistance } from "jaro-winkler-typescript"
 import { titleCase } from "../../../utils/utils.js"
 import auctionAliases from "../../../data/auctionAliases.json" assert { type: "json" }
-import { Bridge } from "../../Bridge.js"
 
 let cachedLowestBins: { [id: string]: number } = {}
 
@@ -69,6 +68,7 @@ export class AuctionCommand implements SimpleCommand {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 (async function updateBinCache() {
   try {
     const auctionResponse = await fetch(`https://moulberry.codes/lowestbin.json`)

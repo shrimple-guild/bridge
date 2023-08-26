@@ -44,7 +44,7 @@ export class Bridge {
   }
 
   async chatMinecraftRaw(content: string, priority?: number) {
-    this.minecraft.chatRaw(content, priority)
+    await this.minecraft.chatRaw(content, priority)
   }
 
   async chatAsBot(content: string, priority?: number) {
@@ -52,8 +52,8 @@ export class Bridge {
     await this.discord.sendGuildChatEmbed(this.minecraft.username, content, "BOT")
   }
   
-  onMinecraftJoinLeave(username: string, action: "joined" | "left") {
-    this.discord.sendGuildChatEmbed(username, `**${action}.**`, action.toUpperCase())
+  async onMinecraftJoinLeave(username: string, action: "joined" | "left") {
+    await this.discord.sendGuildChatEmbed(username, `**${action}.**`, action.toUpperCase())
   }
   
   async onBotLeave(reason: string) {
@@ -69,7 +69,7 @@ export class Bridge {
   }
 
   async reload() {
-    this.quit()
+    await this.quit()
     await sleep(2000)
     this.minecraft.connect(this.minecraft.username)
   }

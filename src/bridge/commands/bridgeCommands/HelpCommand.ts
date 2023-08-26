@@ -1,6 +1,5 @@
 import { SimpleCommand } from "./Command.js"
 import { SimpleCommandManager } from "../SimpleCommandManager"
-import { Bridge } from "../../Bridge.js"
 
 export class HelpCommand implements SimpleCommand {
     aliases = ["help"]
