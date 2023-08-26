@@ -36,7 +36,7 @@ If you are having issues with **/verify [IGN]** and have attempted to link your 
 `)
         .setColor("DarkBlue")
       await interaction.channel?.send({ embeds: [embed] })?.catch(e => console.error(e))
-      await interaction.followUp({ embeds: [statusEmbed("success", "Sent embed!")] }).catch(e => this.logger?.error("Failed to send embed", e))
+      await interaction.followUp({ embeds: [statusEmbed("success", "Sent embed!")] }).catch(e => console.error(e))
     } catch (e) {
       if (e instanceof Error) {
         await interaction.followUp({ embeds: [statusEmbed("failure", `${e.message}`)] })
