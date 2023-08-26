@@ -10,7 +10,7 @@ export class InstasellPriceCalcCommand implements SimpleCommand {
   usage = "<amount>[k|m|b|s] <item name>"
 
   async execute(args: string[]) {
-    if (args.length != 2) return `Syntax: ${this.usage}`
+    if (args.length < 2) return `Syntax: ${this.usage}`
     const bazaar = this.hypixelAPI.bazaar
     if (!bazaar) return `Bazaar isn't instantiated! Please report this!`
     const amtString = args.shift() || "0"
