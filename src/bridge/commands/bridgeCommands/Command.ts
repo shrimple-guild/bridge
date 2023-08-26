@@ -1,5 +1,3 @@
-import { Bridge } from "../../Bridge"
-
 export interface SimpleCommand {
     usage?: string
     

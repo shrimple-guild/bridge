@@ -2,7 +2,6 @@ import { SimpleCommand } from "./Command.js"
 import { titleCase } from "../../../utils/utils.js"
 import { HypixelAPI } from "../../../api/HypixelAPI.js"
 import { trophyFishNames } from "../../../api/TrophyFish.js"
-import { Bridge } from "../../Bridge.js"
 
 export class TrophyFishCommand implements SimpleCommand {
     aliases = ["trophy", "trophyfish", "tfish"]

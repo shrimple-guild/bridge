@@ -2,7 +2,6 @@ import { SimpleCommand } from "./Command.js"
 import { formatNumber, titleCase } from "../../../utils/utils.js"
 import { HypixelAPI } from "../../../api/HypixelAPI.js"
 import { isSkill } from "../../../api/Skills.js"
-import { Bridge } from "../../Bridge.js"
 
 export class SkillsCommand implements SimpleCommand {
   aliases = ["skill"]
