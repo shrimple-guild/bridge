@@ -24,5 +24,5 @@ export async function postDisconnectEmbed() {
   const client = new WebhookClient({ url: config.discord.shutdownWebhook })
   await client.send({
     embeds: [simpleEmbed("Shutdown", "❌ Bot offline.").toJSON()]
-  })
+  }).catch(e => console.error(e))
 }

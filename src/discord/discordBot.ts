@@ -79,7 +79,7 @@ export class DiscordBot {
     const channel = this.getTextChannel(this.guildBridgeChannelId)
     if (!channel) return
     const embed = simpleEmbed(title, content, footer)
-    await channel.send({ embeds: [embed] })
+    await channel.send({ embeds: [embed] }).catch(e => this.logger?.error("Failed to send embed", e))
   }
 
   private getTextChannel(channelId: string): TextChannel | undefined {

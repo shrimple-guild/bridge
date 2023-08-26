@@ -9,8 +9,8 @@ export class VerifyEmbedCommand implements SlashCommand {
     .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
     .setDescription("Create an informational embed for a verification channel.")
 
-  constructor(private verification?: Verification) {}
-  
+  constructor(private verification?: Verification) { }
+
   async execute(interaction: ChatInputCommandInteraction<"cached">) {
     try {
       await interaction.deferReply({ ephemeral: true })
@@ -35,8 +35,8 @@ If you are having issues with **/verify [IGN]** and have attempted to link your 
 *Remember, this server will never require you to link your Microsoft account or request your Minecraft account information. Do not enter your information if you see this!*
 `)
         .setColor("DarkBlue")
-        interaction.channel?.send({ embeds: [embed] })
-        interaction.followUp({ embeds: [statusEmbed("success", "Sent embed!")]})
+      await interaction.channel?.send({ embeds: [embed] })?.catch(e => console.error(e))
+      await interaction.followUp({ embeds: [statusEmbed("success", "Sent embed!")] }).catch(e => this.logger?.error("Failed to send embed", e))
     } catch (e) {
       if (e instanceof Error) {
         await interaction.followUp({ embeds: [statusEmbed("failure", `${e.message}`)] })
