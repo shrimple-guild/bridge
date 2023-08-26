@@ -3,8 +3,8 @@ import { Pattern } from "./Pattern"
 export const guildChat: Pattern = {
   name: "guildChat",
   pattern: /^Guild > (?:\[(?<hypixelRank>[\w+]+)\] )?(?<username>\w{2,16})(?: \[(?<guildRank>[\w+]+)\])?: (?<content>.+)$/,
-  execute: (bot, groups) => {
+  execute: async (bot, groups) => {
     if (groups.username === bot.username) return
-    bot.sendToBridge(groups.username, groups.content, groups.hypixelRank, groups.guildRank)
+    await bot.sendToBridge(groups.username, groups.content, groups.hypixelRank, groups.guildRank)
   }
 }

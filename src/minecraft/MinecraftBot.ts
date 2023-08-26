@@ -43,32 +43,32 @@ export class MinecraftBot {
     return bot
   }
 
-  sendToBridge(username: string, content: string, colorAlias?: string, guildRank?: string) {
-    this.bridge?.onMinecraftChat(username, content, this.isStaff(guildRank), colorAlias, guildRank)
+  async sendToBridge(username: string, content: string, colorAlias?: string, guildRank?: string) {
+    await this.bridge?.onMinecraftChat(username, content, this.isStaff(guildRank), colorAlias, guildRank)
   }
 
   isStaff(guildRank?: string) {
     return guildRank ? (this.staffRanks?.includes(guildRank) ?? false) : false
   }
 
-  setOnline() {
+  async setOnline() {
     this.logger?.info("Bot online.")
     this.status = "online"
     this.retries = 0
-    this.bridge?.onBotJoin()
+    await this.bridge?.onBotJoin()
   }
 
-  onSpamProtection() {
+  async onSpamProtection() {
     if (Date.now() - this.spamProtectionLastSent < 120000) return
-    this.chat("Spam protection moment")
+    await this.chat("Spam protection moment")
     this.spamProtectionLastSent = Date.now()
   }
 
-  chat(msg: string, priority?: number) {
+  async chat(msg: string, priority?: number) {
     const split = msg.match(/.{1,256}/g)
     if (split) {
       for (const chunk of split) {
-        this.chatRaw(chunk, priority)
+        await this.chatRaw(chunk, priority)
       }
     }
   }
@@ -85,7 +85,7 @@ export class MinecraftBot {
   async onEnd(reason: string) {
     this.logger?.warn(`Disconnected (reason: ${reason}).`)
     this.status = "offline"
-    this.bridge?.onBotLeave(reason)
+    await this.bridge?.onBotLeave(reason)
     if (reason != "disconnect.quitting") {
       const waitTime = Math.min(1000 * Math.pow(2, this.retries), 60 * 10 * 1000)
       await sleep(waitTime)
@@ -94,8 +94,8 @@ export class MinecraftBot {
     } 
   }
   
-  onSpawn() {
-    this.chat("§")
+  async onSpawn() {
+    await this.chat("§")
   }
   
   isPrivileged(username: string) {

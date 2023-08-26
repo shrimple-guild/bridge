@@ -32,7 +32,7 @@ export class Bridge {
   async onDiscordChat(author: string, content: string, isStaff: boolean, replyAuthor: string | undefined) {
     const replyString = replyAuthor ? ` [to] ${replyAuthor}` : ""
     const message = `${author}${replyString}: ${content}`
-    this.minecraft.chat(`/gc ${message}`)
+    await this.minecraft.chat(`/gc ${message}`)
     await this.handleCommand(content, isStaff)
   }
 
@@ -48,7 +48,7 @@ export class Bridge {
   }
 
   async chatAsBot(content: string, priority?: number) {
-    this.minecraft.chat(content, priority)
+    await this.minecraft.chat(content, priority)
     await this.discord.sendGuildChatEmbed(this.minecraft.username, content, "BOT")
   }
   
