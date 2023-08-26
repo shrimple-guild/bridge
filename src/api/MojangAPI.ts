@@ -70,12 +70,12 @@ export class MojangAPI {
         if (uuid == null) throw new Error(`Failed to get uuid for ${username}`)
         const skin = await this.fetchSkinFromAPI(uuid)
         this.upsertSkin.run({ id: uuid, skin: skin, lastUpdated: Date.now() })
-        return MojangAPI.getSkinPng(skin)
+        return await MojangAPI.getSkinPng(skin)
       }
     } catch (e) {
       console.error(e)
     }
-    return MojangAPI.getSkinPng(cachedSkin ?? this.defaultSkin)
+    return await MojangAPI.getSkinPng(cachedSkin ?? this.defaultSkin)
   }
 
   private getCachedSkin(username: string) {

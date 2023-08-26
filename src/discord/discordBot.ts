@@ -72,7 +72,7 @@ export class DiscordBot {
       .setFooter(guildRank ? { text: guildRank } : null)
       .setTimestamp(Date.now())
     if (imageAttachment) embed.setImage(imageAttachment)
-    await channel.send({ embeds: [embed], files: [skin] })
+    await channel.send({ embeds: [embed], files: [skin] }).catch(e => this.logger?.error("Failed to send embed", e))
   }
   
   async sendSimpleEmbed(title: string, content: string, footer?: string) {
