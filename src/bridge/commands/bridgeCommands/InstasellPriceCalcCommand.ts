@@ -7,19 +7,18 @@ export class InstasellPriceCalcCommand implements SimpleCommand {
 
   constructor(private hypixelAPI: HypixelAPI) {}
 
-  usage = "<item name>, <amount>[k|m|b|s]"
+  usage = "<amount>[k|m|b|s] <item name>"
 
   async execute(args: string[]) {
-    const args2 = args.join(" ").split(",")
-    if (args2.length != 2) return `Syntax: ${this.usage}`
+    if (args.length != 2) return `Syntax: ${this.usage}`
     const bazaar = this.hypixelAPI.bazaar
     if (!bazaar) return `Bazaar isn't instantiated! Please report this!`
-    const amtString = args2.pop() || "0"
+    const amtString = args.shift() || "0"
     const amtMult = this.amountMult(amtString)
     let amount = Math.round(parseFloat(amtString) * amtMult)
     const startingAmount = amount
-    if (isNaN(amount) || amount <= 0) return `Invalid amount!`
-    let product = await bazaar.getClosestProduct(args2.join(" "))
+    if (isNaN(amount) || amount <= 0) return `Invalid amount, '${amtString}'!}`
+    let product = await bazaar.getClosestProduct(args.join(" "))
     if (!product) return `No product found!`
     
     const sellSummary = product.sellSummary
@@ -49,7 +48,7 @@ export class InstasellPriceCalcCommand implements SimpleCommand {
   }
 
   amountMult(amount: string) {
-    switch(amount.charAt(amount.length - 1)) {
+    switch(amount[amount.length - 1]) {
         case "k":
             return 1000
         case "m":
