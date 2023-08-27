@@ -17,7 +17,7 @@ export class InstasellPriceCalcCommand implements SimpleCommand {
     const amtMult = this.amountMult(amtString)
     let amount = Math.round(parseFloat(amtString) * amtMult)
     const startingAmount = amount
-    if (isNaN(amount) || amount <= 0) return `Invalid amount, '${amtString}'!}`
+    if (isNaN(amount) || amount <= 0) return `Invalid amount, '${amtString}'!`
     let product = await bazaar.getClosestProduct(args.join(" "))
     if (!product) return `No product found!`
     
