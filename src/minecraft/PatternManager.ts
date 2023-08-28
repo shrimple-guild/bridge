@@ -28,6 +28,7 @@ export const PatternManager = {
   ],
 
   execute: async (bot: MinecraftBot, message: string, logger?: LoggerCategory) => {
+    message = message.trim()
     for (const pattern of PatternManager.patterns) {
       const patternArray = Array.isArray(pattern.pattern) ? pattern.pattern : [pattern.pattern]
       const matchingPattern = patternArray.find(pattern => pattern.test(message))
