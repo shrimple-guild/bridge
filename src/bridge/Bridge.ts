@@ -25,15 +25,19 @@ export class Bridge {
   }
 
   async onMinecraftChat(username: string, content: string, isStaff: boolean, colorAlias?: string, guildRank?: string) {
-    await this.discord.sendGuildChatEmbed(username, content, colorAlias, guildRank)
-    await this.handleCommand(content, isStaff, username)
+    await Promise.all([
+      this.discord.sendGuildChatEmbed(username, content, colorAlias, guildRank),
+      this.handleCommand(content, isStaff, username)
+    ])
   }
 
   async onDiscordChat(author: string, content: string, isStaff: boolean, replyAuthor: string | undefined) {
     const replyString = replyAuthor ? ` [to] ${replyAuthor}` : ""
     const message = `${author}${replyString}: ${content}`
-    await this.minecraft.chat(`/gc ${message}`)
-    await this.handleCommand(content, isStaff)
+    await Promise.all([
+      this.minecraft.chat(`/gc ${message}`),
+      this.handleCommand(content, isStaff)
+    ])
   }
 
   async handleCommand(content: string, isStaff: boolean, username?: string) {
@@ -48,18 +52,20 @@ export class Bridge {
   }
 
   async chatAsBot(content: string, priority?: number) {
-    await this.minecraft.chat(content, priority)
-    await this.discord.sendGuildChatEmbed(this.minecraft.username, content, "BOT")
+    await Promise.all([
+      this.minecraft.chat(content, priority),
+      this.discord.sendGuildChatEmbed(this.minecraft.username, content, "BOT")
+    ])
   }
-  
+
   async onMinecraftJoinLeave(username: string, action: "joined" | "left") {
     await this.discord.sendGuildChatEmbed(username, `**${action}.**`, action.toUpperCase())
   }
-  
+
   async onBotLeave(reason: string) {
     await this.discord.sendSimpleEmbed(this.minecraft.username, "❌ Bot offline.", reason)
   }
-  
+
   async onBotJoin() {
     await this.discord.sendSimpleEmbed(this.minecraft.username, "✅ Bot online.")
   }

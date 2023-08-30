@@ -58,17 +58,17 @@ export class MinecraftBot {
     await this.bridge?.onBotJoin()
   }
 
-  async onSpamProtection() {
+  onSpamProtection() {
     if (Date.now() - this.spamProtectionLastSent < 120000) return
-    await this.chat("Spam protection moment")
+    this.chat("Spam protection moment")
     this.spamProtectionLastSent = Date.now()
   }
 
-  async chat(msg: string, priority?: number) {
+  chat(msg: string, priority?: number) {
     const split = msg.match(/.{1,256}/g)
     if (split) {
       for (const chunk of split) {
-        await this.chatRaw(chunk, priority)
+        void this.chatRaw(chunk, priority)
       }
     }
   }
@@ -95,7 +95,7 @@ export class MinecraftBot {
   }
   
   async onSpawn() {
-    await this.chat("§")
+    this.chat("§")
   }
   
   isPrivileged(username: string) {
