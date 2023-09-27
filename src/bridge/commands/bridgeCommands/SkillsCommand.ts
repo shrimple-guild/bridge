@@ -26,9 +26,9 @@ export class SkillsCommand implements SimpleCommand {
     if (!skillLevel) return `No data found for ${cuteName} profile; is your skills API on?`
     message = `${titleCase(skillName)} level for ${playerName} (${cuteName}): `
     message += `${formatNumber(skillLevel.fractionalLevel, 2, false)} | `
-    message += `Total XP: ${formatNumber(skillLevel.xp, 2, true)} | `
+    message += `Total XP: ${formatNumber(skillLevel.xp, 3, true)} | `
     if (skillLevel.level == skillLevel.maxLevel) {
-      message += `Overflow XP: ${formatNumber(skillLevel.overflow, 2, true)}`
+      message += `Overflow XP: ${formatNumber(skillLevel.overflow, 3, true)}`
     } else {
       message += `XP for level ${skillLevel.level + 1}: ${formatNumber(skillLevel.xpToNext, 2, true)}`
     }
