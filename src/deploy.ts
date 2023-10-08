@@ -6,7 +6,7 @@ import { SyncCommand } from "./verify/commands/SyncCommand.js";
 import { UnverifyCommand } from "./verify/commands/UnverifyCommand.js";
 import { VerifyCommand } from "./verify/commands/VerifyCommand.js";
 import { VerifyEmbedCommand } from "./verify/commands/VerifyEmbedCommand.js";
-import { GuildReqsCommand } from "./discord/commands/GuildReqsCommand";
+import { GuildReqsCommand } from "./discord/commands/GuildReqsCommand.js";
 
 const slashCommands = [
 	new ManualVerifyCommand(),

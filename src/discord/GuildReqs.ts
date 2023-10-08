@@ -588,7 +588,7 @@ async function getItemsInInventory(
 	const items = await nbt
 		.parse(buffer)
 		.then((data) =>
-			(nbt.simplify(data.parsed).i as any[]).filter((item) => item != undefined)
+			(nbt.simplify(data.parsed).i as any[]).filter((item) => item && Object.keys(item).length > 0)
 		);
 	return items;
 }
@@ -686,7 +686,10 @@ async function getAllWardrobeSets(
 }
 
 function hasAccessory(accessories: NBTItem[], accessory: string) {
-	return accessories.some((item) => item.tag.ExtraAttributes?.id == accessory);
+	return accessories.some((item) => {
+		if (!item.tag) console.log(item)
+		return item.tag.ExtraAttributes?.id == accessory
+	});
 }
 
 function getPetStats(member: APISkyblockMember) {

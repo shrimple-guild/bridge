@@ -85,7 +85,7 @@ export class GuildReqsCommand implements SlashCommand {
 		} catch (e) {
 			if (e instanceof Error) {
 				await interaction.followUp({
-					embeds: [statusEmbed("failure", `${e.message}`)]
+					embeds: [statusEmbed("failure", `${e.stack}`)]
 				});
 			}
 			console.error(e);
