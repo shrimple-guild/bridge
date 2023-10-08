@@ -1,49 +1,46 @@
-import { Bestiary } from "./Bestiary.js"
-import { Dungeons } from "./Dungeons.js"
-import { FarmingWeight, farmingWeight } from "./FarmingWeight.js"
-import { Kuudra } from "./Kuudra.js"
-import { Mobs } from "./Mobs.js"
-import { Skills } from "./Skills.js"
-import { Slayers } from "./Slayers.js"
-import { TrophyFish } from "./TrophyFish.js"
+import { Bestiary } from "./Bestiary.js";
+import { Dungeons } from "./Dungeons.js";
+import { FarmingWeight, farmingWeight } from "./FarmingWeight.js";
+import { Kuudra } from "./Kuudra.js";
+import { Mobs } from "./Mobs.js";
+import { Skills } from "./Skills.js";
+import { Slayers } from "./Slayers.js";
+import { TrophyFish } from "./TrophyFish.js";
 
 export class SkyblockProfile {
-  readonly profileId: string
-  readonly cuteName: string
-  readonly lastSave: Date
-  readonly selected: boolean
-  readonly skyblockLevel: number | undefined
-  readonly gamemode: "normal" | "bingo" | "ironman" | "stranded"
+	readonly profileId: string;
+	readonly cuteName: string;
+	readonly lastSave: Date;
+	readonly selected: boolean;
+	readonly skyblockLevel: number | undefined;
+	readonly gamemode: "normal" | "bingo" | "ironman" | "stranded";
 
-  readonly skills: Skills
-  readonly dungeons: Dungeons
-  readonly slayers: Slayers
-  readonly trophyFish: TrophyFish
-  readonly kuudra: Kuudra
-  readonly mobs: Mobs
-  readonly bestiary: Bestiary
-  readonly farmingWeight?: FarmingWeight
+	readonly memberRaw: any;
+	readonly skills: Skills;
+	readonly dungeons: Dungeons;
+	readonly slayers: Slayers;
+	readonly trophyFish: TrophyFish;
+	readonly kuudra: Kuudra;
+	readonly mobs: Mobs;
+	readonly bestiary: Bestiary;
+	readonly farmingWeight?: FarmingWeight;
 
+	constructor(raw: any, uuid: string) {
+		this.memberRaw = raw.members[uuid];
+		this.profileId = raw.profile_id;
+		this.cuteName = raw.cute_name;
+		this.lastSave = new Date(raw.last_save);
+		this.selected = raw.selected;
+		this.gamemode = raw.game_mode ?? "normal";
 
-
-  constructor(raw: any, uuid: string) {
-    const member = raw.members[uuid]
-    this.profileId = raw.profile_id
-    this.cuteName = raw.cute_name
-    this.lastSave = new Date(raw.last_save)
-    this.selected = raw.selected
-    this.gamemode = raw.game_mode ?? "normal"
-
-    this.skyblockLevel = member.leveling?.experience
-    this.skills = new Skills(member)
-    this.dungeons = new Dungeons(member)
-    this.slayers = new Slayers(member)
-    this.trophyFish = new TrophyFish(member)
-    this.kuudra = new Kuudra(member)
-    this.mobs = new Mobs(member)
-    this.bestiary = new Bestiary(member)
-    this.farmingWeight = farmingWeight(raw, uuid)
-  }
+		this.skyblockLevel = this.memberRaw.leveling?.experience;
+		this.skills = new Skills(this.memberRaw);
+		this.dungeons = new Dungeons(this.memberRaw);
+		this.slayers = new Slayers(this.memberRaw);
+		this.trophyFish = new TrophyFish(this.memberRaw);
+		this.kuudra = new Kuudra(this.memberRaw);
+		this.mobs = new Mobs(this.memberRaw);
+		this.bestiary = new Bestiary(this.memberRaw);
+		this.farmingWeight = farmingWeight(raw, uuid);
+	}
 }
-
-
