@@ -17,11 +17,13 @@ export class GuildReqsCommand implements SlashCommand {
 				.setDescription("The Minecraft username of the user")
 		);
 
-	constructor(private hypixelAPI: HypixelAPI) {}
+	constructor(private hypixelAPI?: HypixelAPI) {}
 
 	async execute(interaction: ChatInputCommandInteraction<"cached">) {
 		try {
 			await interaction.deferReply();
+			if (!this.hypixelAPI)
+				throw new Error("Improper configuration! Please report this to staff.");
 			const username = interaction.options.getString("username", true);
 			const uuid = await this.hypixelAPI.mojang.fetchUuid(username);
 			const profiles = await this.hypixelAPI.fetchProfiles(uuid);
