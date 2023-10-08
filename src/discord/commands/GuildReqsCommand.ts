@@ -93,7 +93,9 @@ export class GuildReqsCommand implements SlashCommand {
 					}),
 					{
 						name: "Rods",
-						value: guildRequirementResults.hellfireRods.join("\n")
+						value:
+							guildRequirementResults.hellfireRods.join("\n") ??
+							"No rods found!"
 					},
 					{
 						name: "Pets",

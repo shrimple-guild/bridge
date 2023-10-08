@@ -520,6 +520,12 @@ export async function getGuildRequirementResults(profile: SkyblockProfile) {
 
 	const wardrobe = await getAllWardrobeSets(member);
 
+	console.log(
+		wardrobe
+			.map((set) => set.map((item) => item.tag?.display?.Name ?? "").join(", "))
+			.join("\n")
+	);
+
 	const magmaLordSets = getMagmaLordSets(wardrobe);
 
 	reqs.magmaLord = magmaLordSets.length != 0;
@@ -749,6 +755,7 @@ async function getAllWardrobeSets(
 	const wardrobeContents = await getItemsInInventory(
 		member.wardrobe_contents?.data
 	);
+	const equippedSetContents = await getItemsInInventory(member.inv_armor?.data);
 	if (!wardrobeContents) return [];
 	const sets: NBTItem[][] = [];
 	for (let page = 0; page < 2; page++) {
@@ -760,6 +767,7 @@ async function getAllWardrobeSets(
 			sets.push(set);
 		}
 	}
+	sets.push(equippedSetContents);
 	return sets;
 }
 

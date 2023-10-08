@@ -17,7 +17,7 @@ const database = await Database.create("./src/database", migrations);
 const testAPI = new HypixelAPI(apiKey, database, logger.category("HypixelAPI"));
 await testAPI.init(itemNames);
 
-const uuid = await testAPI.mojang.fetchUuid("aidanqt");
+const uuid = await testAPI.mojang.fetchUuid("burstslinky");
 const profiles = await testAPI.fetchProfiles(uuid);
 
 const guildReqs = await getGuildRequirementResults(profiles.main);
