@@ -1,5 +1,6 @@
 import nbt from "prismarine-nbt";
 import { SkyblockProfile } from "../api/SkyblockProfile";
+import { titleCase } from "../utils/utils";
 
 function getReforge(reforgeName: string, rarity: Rarity, stat: string) {
 	return reforges[reforgeName]?.[rarity]?.[stat];
@@ -350,7 +351,17 @@ interface APISkyblockMember {
 type NBTItem = {
 	id: number;
 	Count: number;
-	tag?: any;
+	tag?: {
+		ench: { level: number; id: number }[];
+		Unbreakable: number;
+		HideFlags: number;
+		display: {
+			Lore: string[];
+			color?: number;
+			Name: string;
+		};
+		ExtraAttributes: any;
+	};
 	Damage: number;
 };
 
@@ -366,6 +377,12 @@ type Pet = {
 	skin: string;
 };
 
+const petNames: { [key: string]: string } = {
+	mythic_ff: "Mythic Flying Fish",
+	legendary_ff: "Legendary Flying Fish",
+	ammonite: "Legendary Ammonite"
+};
+
 type Requirements = {
 	skyblockLevel: number;
 	overflowFishingXp: number;
@@ -375,6 +392,10 @@ type Requirements = {
 	hellfire: boolean;
 	trophyHunter: "none" | "bronze" | "silver" | "gold" | "diamond";
 	statsCheck: boolean;
+	magmaLordSets: string[];
+	hellfireRods: string[];
+	petNames: string[];
+	scc: number;
 };
 
 type GuildJoinStatus = {
@@ -389,7 +410,7 @@ export function getGuildRank(reqs: Requirements): GuildJoinStatus {
 		reqs.skyblockLevel >= 320 && reqs.overflowFishingXp >= 56_500_000;
 
 	const meetsReqs =
-		(meetsJoinReqFishing || meetsJoinReqFishing) &&
+		(meetsJoinReqFishing || meetsJoinReqLevel) &&
 		reqs.flyingFish != "none" &&
 		reqs.magmaLord &&
 		reqs.hellfire &&
@@ -481,7 +502,6 @@ export async function getGuildRequirementResults(profile: SkyblockProfile) {
 	const items = await getItemsInInventories(member);
 
 	const equipment = getPresumedEquipmentStats(items);
-	console.log(equipment);
 
 	const hellfireRods = items
 		.filter((item) => item?.tag?.ExtraAttributes?.id == "HELLFIRE_ROD")
@@ -492,25 +512,53 @@ export async function getGuildRequirementResults(profile: SkyblockProfile) {
 
 	reqs.hellfire = hellfireRods.length != 0;
 
+	reqs.hellfireRods = hellfireRods.map((rod) =>
+		getItemNameWithAttributes(rod.rod)
+	);
+
 	const accessoryStats = await getAccessoryStats(member.talisman_bag?.data);
 
 	const wardrobe = await getAllWardrobeSets(member);
+
 	const magmaLordSets = getMagmaLordSets(wardrobe);
 
 	reqs.magmaLord = magmaLordSets.length != 0;
+
+	reqs.magmaLordSets = magmaLordSets.map((set) => {
+		return set
+			.map((piece) => {
+				if (Object.keys(piece).length == 0) return "[Empty]";
+				let pieceName = getItemNameWithAttributes(piece);
+				let btLevel =
+					piece.tag?.ExtraAttributes.enchantments?.ultimate_bobbin_time;
+				if (btLevel) {
+					pieceName += ` [BT ${btLevel}]`;
+				}
+				return pieceName;
+			})
+			.join("\n");
+	});
 
 	reqs.bobbinTime = magmaLordSets
 		.map((set) =>
 			set.reduce(
 				(bobbin, cur) =>
 					bobbin +
-					(cur.tag.ExtraAttributes.enchantments?.ultimate_bobbin_time ?? 0),
+					(cur.tag?.ExtraAttributes.enchantments?.ultimate_bobbin_time ?? 0),
 				0
 			)
 		)
 		.reduce((a, b) => (a > b ? a : b), 0);
 
 	const pets = getPetStats(member);
+
+	reqs.petNames = pets.map((pet) => {
+		let name = petNames[pet.pet];
+		if (pet.item != null) {
+			name += ` (${titleCase(pet.item)})`;
+		}
+		return name;
+	});
 
 	const setups: { scc: number; speed: number }[] = [];
 	for (let pet of pets) {
@@ -555,6 +603,12 @@ export async function getGuildRequirementResults(profile: SkyblockProfile) {
 		(setup) => setup.scc >= 100 && setup.speed >= 350
 	);
 
+	reqs.scc = Math.max(
+		...setups
+			.filter((setup) => (reqs.statsCheck ? setup.speed >= 350 : true))
+			.map((setup) => setup.scc)
+	);
+
 	return reqs as Requirements;
 }
 
@@ -580,6 +634,30 @@ async function getItemsInInventories(
 	return Promise.all(itemPromises).then((items) => items.flat());
 }
 
+function getItemNameWithAttributes(item: NBTItem) {
+	let name = item.tag?.display?.Name?.replaceAll(/§[a-f0-9k-or]/g, "")!;
+	const attributes = item.tag?.ExtraAttributes.attributes;
+	if (attributes) {
+		const attributesFormatted = Object.entries(attributes)
+			.map(([name, level]) => {
+				let abbreviated: string;
+				if (name.includes("_")) {
+					abbreviated = name
+						.replaceAll("_", " ")
+						.match(/\b(\w)/g)!
+						.join("")
+						.toUpperCase();
+				} else {
+					abbreviated = name.slice(0, 2).toUpperCase();
+				}
+				return `${abbreviated} ${level}`;
+			})
+			.join(", ");
+		name += ` (${attributesFormatted})`;
+	}
+	return name;
+}
+
 async function getItemsInInventory(
 	inventory: string | undefined
 ): Promise<NBTItem[]> {
@@ -587,9 +665,7 @@ async function getItemsInInventory(
 	const buffer = Buffer.from(inventory, "base64");
 	const items = await nbt
 		.parse(buffer)
-		.then((data) =>
-			(nbt.simplify(data.parsed).i as any[]).filter((item) => item && Object.keys(item).length > 0)
-		);
+		.then((data) => nbt.simplify(data.parsed).i as any[]);
 	return items;
 }
 
@@ -627,11 +703,13 @@ function getPresumedEquipmentStats(items: NBTItem[]) {
 		}
 		if (isFishingEquipment) {
 			const rarity =
-				item.tag.ExtraAttributes.rarity_upgrades == 1 ? nextRarity : baseRarity;
+				item.tag?.ExtraAttributes?.rarity_upgrades == 1
+					? nextRarity
+					: baseRarity;
 			const data = {
 				scc:
 					getReforge(
-						item.tag.ExtraAttributes.modifier,
+						item.tag?.ExtraAttributes?.modifier,
 						// @ts-ignore
 						rarity,
 						"sea_creature_chance"
@@ -639,7 +717,7 @@ function getPresumedEquipmentStats(items: NBTItem[]) {
 				speed:
 					baseSpeed +
 					(getReforge(
-						item.tag.ExtraAttributes.modifier,
+						item.tag?.ExtraAttributes?.modifier,
 						// @ts-ignore
 						rarity,
 						"fishing_speed"
@@ -687,13 +765,18 @@ async function getAllWardrobeSets(
 
 function hasAccessory(accessories: NBTItem[], accessory: string) {
 	return accessories.some((item) => {
-		if (!item.tag) console.log(item)
-		return item.tag.ExtraAttributes?.id == accessory
+		if (!item.tag) console.log(item);
+		return item?.tag?.ExtraAttributes?.id == accessory;
 	});
 }
 
 function getPetStats(member: APISkyblockMember) {
-	const fishingPets: { pet: string; scc: number; speed: number }[] = [];
+	const fishingPets: {
+		pet: string;
+		scc: number;
+		speed: number;
+		item: string | null;
+	}[] = [];
 	const pets = member.pets;
 	if (!pets) return [];
 	const mythicFf = pets.find(
@@ -707,7 +790,8 @@ function getPetStats(member: APISkyblockMember) {
 		fishingPets.push({
 			pet: "mythic_ff",
 			scc: mythicFf.heldItem == "WASHED_UP_SOUVENIR" ? 5 : 0,
-			speed: 80
+			speed: 80,
+			item: mythicFf.heldItem
 		});
 	} else {
 		const legFf = pets.find(
@@ -720,7 +804,8 @@ function getPetStats(member: APISkyblockMember) {
 			fishingPets.push({
 				pet: "legendary_ff",
 				scc: legFf.heldItem == "WASHED_UP_SOUVENIR" ? 5 : 0,
-				speed: 80
+				speed: 80,
+				item: legFf.heldItem
 			});
 		}
 	}
@@ -746,7 +831,8 @@ function getPetStats(member: APISkyblockMember) {
 		fishingPets.push({
 			pet: "ammonite",
 			scc: 5 + hotmLevel + (ammonite.heldItem == "WASHED_UP_SOUVENIR" ? 5 : 0),
-			speed: (miningLevel + fishingLevel) * 0.5
+			speed: (miningLevel + fishingLevel) * 0.5,
+			item: ammonite.heldItem
 		});
 	}
 	return fishingPets;
@@ -774,13 +860,13 @@ function getArmorStats(set: NBTItem[], mythicFish: boolean) {
 				piece.tag?.ExtraAttributes?.id?.startsWith("MAGMA_LORD_");
 			if (isMagmaLord) {
 				const rarity =
-					piece.tag.ExtraAttributes.rarity_upgrades == 1
+					piece?.tag?.ExtraAttributes?.rarity_upgrades == 1
 						? "mythic"
 						: "legendary";
 				scc =
 					4.5 +
 					(getReforge(
-						piece.tag.ExtraAttributes.modifier,
+						piece?.tag?.ExtraAttributes?.modifier,
 						rarity,
 						"sea_creature_chance"
 					) ?? 0);
@@ -794,7 +880,7 @@ function getArmorStats(set: NBTItem[], mythicFish: boolean) {
 				scc = parseFloat(sccLine?.slice(25, sccLine.indexOf("%")) ?? "0");
 			}
 			const bobbin: number =
-				piece.tag.ExtraAttributes.enchantments?.ultimate_bobbin_time ?? 0;
+				piece?.tag?.ExtraAttributes.enchantments?.ultimate_bobbin_time ?? 0;
 			const fishingSpeedLine = lore.find((line) =>
 				line.startsWith("§7Fishing Speed: §a+")
 			);

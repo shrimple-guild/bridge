@@ -32,50 +32,72 @@ export class GuildReqsCommand implements SlashCommand {
 			);
 			const guildRankData = getGuildRank(guildRequirementResults);
 
+			let description: string[] = [];
+
+			description.push(
+				`**Meets guild requirements: ** ${boolToCheck(guildRankData.canJoin)}`
+			);
+
+			if (guildRankData.canJoin) {
+				description.push(`**Guild Rank**: ${guildRankData.rank}`);
+			}
+
+			description.push("");
+
+			description.push(`**Breakdown:**`);
+
+			description.push(
+				`Skyblock Level: ${guildRequirementResults.skyblockLevel.toString()}`
+			);
+			description.push(
+				`Overflow Fishing XP: ${formatNumber(
+					guildRequirementResults.overflowFishingXp,
+					2,
+					true
+				)}`
+			);
+
+			description.push(
+				`Magma Lord Set: ${boolToCheck(guildRequirementResults.magmaLord)}`
+			);
+			description.push(
+				`Has Hellfire Rod: ${boolToCheck(guildRequirementResults.hellfire)}`
+			);
+			description.push(
+				`Bobbin Time Level: BT ${guildRequirementResults.bobbinTime}`
+			);
+			description.push(
+				`Trophy Hunter Tier: ${titleCase(guildRequirementResults.trophyHunter)}`
+			);
+			let statsCheckLine = `350 FS with 100 SCC: ${boolToCheck(
+				guildRequirementResults.statsCheck
+			)}`;
+			if (guildRequirementResults.statsCheck) {
+				statsCheckLine += `(max SCC: ${guildRequirementResults.scc})`;
+			}
+			description.push(statsCheckLine);
+
 			const embed = new EmbedBuilder()
 				.setTitle(`Guild requirement check for ${username}`)
-				.setDescription(
-					`**Meets guild requirements: ** ${boolToCheck(
-						guildRankData.canJoin
-					)}\n**Guild Rank**: ${guildRankData.rank}
-        `
-				)
+				.setDescription(description.join("\n"))
 				.addFields(
+					...guildRequirementResults.magmaLordSets.map((set, index) => {
+						return {
+							name:
+								"Magma Lord Set" +
+								(guildRequirementResults.magmaLordSets.length > 1
+									? ` ${index}`
+									: ""),
+							value: set
+						};
+					}),
 					{
-						name: "Skyblock Level",
-						value: guildRequirementResults.skyblockLevel.toString(),
-						inline: true
+						name: "Rods",
+						value: guildRequirementResults.hellfireRods.join("\n")
 					},
 					{
-						name: "Overflow Fishing XP",
-						value: formatNumber(
-							guildRequirementResults.overflowFishingXp,
-							2,
-							true
-						),
-						inline: true
-					},
-					{
-						name: "Magma Lord",
-						value: `${boolToCheck(
-							guildRequirementResults.magmaLord
-						)} (Bobbin Time ${guildRequirementResults.bobbinTime})`,
-						inline: true
-					},
-					{
-						name: "Hellfire Rod",
-						value: boolToCheck(guildRequirementResults.hellfire),
-						inline: true
-					},
-					{
-						name: "Trophy Hunter",
-						value: titleCase(guildRequirementResults.trophyHunter),
-						inline: true
-					},
-					{
-						name: "350 Speed and 100 SCCC",
-						value: boolToCheck(guildRequirementResults.statsCheck),
-						inline: true
+						name: "Pets",
+						value: guildRequirementResults.petNames.join("\n")
 					}
 				);
 
