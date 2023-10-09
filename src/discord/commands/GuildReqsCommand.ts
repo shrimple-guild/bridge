@@ -35,6 +35,12 @@ export class GuildReqsCommand implements SlashCommand {
 			let description: string[] = [];
 
 			description.push(
+				`This calculator finds whether you meet Shrimple guild reqs! Note: three bobbers are assumed for fishing speed caluclations, and the displayed SCC is the best SCC you can reach with 350 FS. Your Magma Lord **must be in your wardrobe or equipped** to be tracked.`
+			);
+
+			description.push("");
+
+			description.push(
 				`**Meets guild requirements: ** ${boolToCheck(guildRankData.canJoin)}`
 			);
 
