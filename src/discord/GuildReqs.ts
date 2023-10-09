@@ -17,6 +17,8 @@ type Reforge = {
 
 type Rarity = keyof Reforge;
 
+const bobberCount = 3;
+
 const reforges: Partial<Record<string, Reforge>> = {
 	pitchin: {
 		common: {
@@ -480,7 +482,7 @@ export async function getGuildRequirementResults(profile: SkyblockProfile) {
 		member.pets.find(
 			(pet) =>
 				pet.type == "FLYING_FISH" &&
-				pet.tier == "MYTHIC" &&
+				pet.tier == "LEGENDARY" &&
 				pet.exp >= petXpRequired
 		)
 	) {
@@ -519,12 +521,6 @@ export async function getGuildRequirementResults(profile: SkyblockProfile) {
 	const accessoryStats = await getAccessoryStats(member.talisman_bag?.data);
 
 	const wardrobe = await getAllWardrobeSets(member);
-
-	console.log(
-		wardrobe
-			.map((set) => set.map((item) => item.tag?.display?.Name ?? "").join(", "))
-			.join("\n")
-	);
 
 	const magmaLordSets = getMagmaLordSets(wardrobe);
 
@@ -573,7 +569,7 @@ export async function getGuildRequirementResults(profile: SkyblockProfile) {
 			stats: getArmorStats(set, pet.pet == "mythic_ff")
 		}));
 		for (let magmaLord of sets) {
-			const bobbinBonus = 1 + magmaLord.stats.bobbin * 0.0016 * 6;
+			const bobbinBonus = 1 + magmaLord.stats.bobbin * 0.0016 * bobberCount;
 			for (let hellfireRod of hellfireRods) {
 				const cakeScc = 1;
 				const beaconScc = 5;
