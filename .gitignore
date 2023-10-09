@@ -94,6 +94,7 @@ dist
 # vuepress build output
 .vuepress/dist
 
+
 # Serverless directories
 .serverless/
 
@@ -106,8 +107,8 @@ dist
 # TernJS port file
 .tern-port
 
-database/main.db
-database/backups/*
-!database/backups/.gitkeep
+src/database/main.db
+src/database/backups/*
+!src/database/backups/.gitkeep
 config*.json
 !config_example.json

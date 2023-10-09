@@ -79,7 +79,9 @@ export class GuildReqsCommand implements SlashCommand {
 				guildRequirementResults.statsCheck
 			)}`;
 			if (guildRequirementResults.statsCheck) {
-				statsCheckLine += `(max SCC: ${guildRequirementResults.scc})`;
+				statsCheckLine += `(max SCC: ${Math.floor(
+					guildRequirementResults.scc
+				)})`;
 			}
 			description.push(statsCheckLine);
 
@@ -92,20 +94,24 @@ export class GuildReqsCommand implements SlashCommand {
 							name:
 								"Magma Lord Set" +
 								(guildRequirementResults.magmaLordSets.length > 1
-									? ` ${index}`
+									? ` ${index + 1}`
 									: ""),
 							value: set
 						};
 					}),
 					{
-						name: "Rods",
+						name: "Fishing Rods",
 						value:
-							guildRequirementResults.hellfireRods.join("\n") ??
-							"No rods found!"
+							guildRequirementResults.rods.length != 0
+								? guildRequirementResults.rods.join("\n")
+								: "No rods found!"
 					},
 					{
 						name: "Pets",
-						value: guildRequirementResults.petNames.join("\n")
+						value:
+							guildRequirementResults.petNames.length != 0
+								? guildRequirementResults.petNames.join("\n")
+								: "No Lvl 100 ammonite or flying fish found!"
 					}
 				);
 

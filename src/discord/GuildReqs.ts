@@ -18,6 +18,12 @@ type Reforge = {
 type Rarity = keyof Reforge;
 
 const bobberCount = 3;
+const rodList = [
+	"GIANT_FISHING_ROD",
+	"HELLFIRE_ROD",
+	"ROD_OF_THE_SEA",
+	"AUGER_ROD"
+];
 
 const reforges: Partial<Record<string, Reforge>> = {
 	pitchin: {
@@ -367,18 +373,6 @@ type NBTItem = {
 	Damage: number;
 };
 
-type Pet = {
-	uuid: string;
-	uniqueId: string;
-	type: string;
-	exp: number;
-	active: boolean;
-	tier: string;
-	heldItem: string | null;
-	candyUsed: number;
-	skin: string;
-};
-
 const petNames: { [key: string]: string } = {
 	mythic_ff: "Mythic Flying Fish",
 	legendary_ff: "Legendary Flying Fish",
@@ -395,7 +389,7 @@ type Requirements = {
 	trophyHunter: "none" | "bronze" | "silver" | "gold" | "diamond";
 	statsCheck: boolean;
 	magmaLordSets: string[];
-	hellfireRods: string[];
+	rods: string[];
 	petNames: string[];
 	scc: number;
 };
@@ -512,11 +506,13 @@ export async function getGuildRequirementResults(profile: SkyblockProfile) {
 			stats: getHellfireRodStats(rod)
 		}));
 
+	const allRods = items
+		.filter((item) => rodList.includes(item?.tag?.ExtraAttributes?.id ?? ""))
+		.map((rod) => getItemNameWithAttributes(rod));
+
 	reqs.hellfire = hellfireRods.length != 0;
 
-	reqs.hellfireRods = hellfireRods.map((rod) =>
-		getItemNameWithAttributes(rod.rod)
-	);
+	reqs.rods = allRods;
 
 	const accessoryStats = await getAccessoryStats(member.talisman_bag?.data);
 
