@@ -1,6 +1,6 @@
 import nbt from "prismarine-nbt";
-import { SkyblockProfile } from "../api/SkyblockProfile";
-import { titleCase } from "../utils/utils";
+import { SkyblockProfile } from "../api/SkyblockProfile.js";
+import { titleCase } from "../utils/utils.js";
 
 function getReforge(reforgeName: string, rarity: Rarity, stat: string) {
 	return reforges[reforgeName]?.[rarity]?.[stat];
