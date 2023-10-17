@@ -19,11 +19,11 @@ export class Verification {
   private insertUser: Statement
   private deleteUser: Statement
   private selectDiscordId: Statement
-  private selectMinecraftId: Statement  
+  private selectMinecraftId: Statement
 
   constructor(
     client: Client<true>,
-    db: Database, 
+    db: Database,
     private config: VerificationConfig,
     hypixelAPI: HypixelAPI,
     slashCommandManager: SlashCommandManager
@@ -36,19 +36,19 @@ export class Verification {
     this.selectDiscordId = db.prepare(`SELECT discordId FROM DiscordMembers WHERE minecraftId = :minecraftId AND guildId = :guildId`)
     this.selectMinecraftId = db.prepare(`SELECT minecraftId FROM DiscordMembers WHERE discordId = :discordId AND guildId = :guildId`)
 
-    slashCommandManager.register( 
-      new ManualVerifyCommand(this, hypixelAPI), 
-      new UnverifyCommand(this), 
+    slashCommandManager.register(
+      new ManualVerifyCommand(this, hypixelAPI),
+      new UnverifyCommand(this),
       new SyncCommand(this),
       new VerifyCommand(this, hypixelAPI),
       new VerifyEmbedCommand(this)
     )
 
     client.on(Events.GuildMemberAdd, member => this.sync(member))
-    client.on(Events.MessageCreate, message => {
+    client.on(Events.MessageCreate, async (message) => {
       if (message.channelId != this.config.channelId) return
       if (message.member?.permissions?.has(PermissionFlagsBits.Administrator)) return
-      message.delete()
+      await message.delete()
     })
   }
 
@@ -76,7 +76,7 @@ export class Verification {
 
   async verify(member: GuildMember, uuid?: string) {
     try {
-      this.insertUser.run({ guildId: member.guild.id, discordId: member.id, minecraftId: uuid})
+      this.insertUser.run({ guildId: member.guild.id, discordId: member.id, minecraftId: uuid })
       await this.setVerifiedRole(member)
     } catch (e) {
       throw new Error("This Minecraft account is already linked to another Discord account. Please unlink the other account.")
@@ -100,11 +100,11 @@ export class Verification {
     const otherRoles = this.nonVerificationRoles(guildMember)
     await guildMember.roles.set([this.config.verifiedRole, ...otherRoles], reason)
   }
-  
+
   private async setUnverifiedRole(guildMember: GuildMember, reason?: string) {
     const otherRoles = this.nonVerificationRoles(guildMember)
     await guildMember.roles.set([this.config.unverifiedRole, ...otherRoles], reason)
   }
 }
 
-  
+

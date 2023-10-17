@@ -49,13 +49,15 @@ const discord = await createDiscordBot(
 	logger.category("Discord")
 );
 
-const verification = new Verification(
-	discord.client,
-	database,
-	config.discord.verification,
-	hypixelAPI,
-	slashCommands
-);
+if (config.discord.verification.channelId.length > 0) { // dont wanna bother with checking if i need to check a property, its length, or just the object but this should work
+	const verification = new Verification(
+		discord.client,
+		database,
+		config.discord.verification,
+		hypixelAPI,
+		slashCommands
+	);
+}
 
 const bridgeCommandManager = new SimpleCommandManager(
 	config.bridge.prefix,
