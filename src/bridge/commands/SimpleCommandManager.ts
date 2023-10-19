@@ -52,7 +52,7 @@ export class SimpleCommandManager {
       new RawCommand(bridge), 
       new ReloadCommand(bridge),
     )
-    if (bridge.roles && bridge.roles.length > 0) {
+    if (config.guildRoles && config.guildRoles.length > 0) {
       this.commands.push(new UpdateRoleCommand(bridge, this.hypixelAPI))
     }
   }
