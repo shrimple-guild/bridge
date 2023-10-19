@@ -1,6 +1,7 @@
 import { SimpleCommand } from "./Command.js"
 import { Bridge } from "../../Bridge.js"
 import { HypixelAPI } from "../../../api/HypixelAPI.js"
+import { config } from "../../../utils/config.js"
 
 export class UpdateRoleCommand implements SimpleCommand {
     aliases = ["update"]
@@ -37,7 +38,7 @@ export class UpdateRoleCommand implements SimpleCommand {
       if (!uuid) return undefined
       const profiles = await this.hypixelAPI?.fetchProfiles(uuid)
       if (!profiles) return undefined
-      const roles = this.bridge?.roles
+      const roles = config.guildRoles
       if (!roles) return undefined
       const profileRoles = profiles.profiles.map(profile => {
         const level = profile.skyblockLevel ?? 0

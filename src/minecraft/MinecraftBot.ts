@@ -5,6 +5,7 @@ import { sleep } from "../utils/utils.js"
 import { PatternManager } from "./PatternManager.js"
 import { LoggerCategory } from "../utils/Logger.js"
 import { PriorityLock } from "../utils/PriorityLock.js"
+import { config } from "../utils/config.js"
 
 export class MinecraftBot {
   bridge?: Bridge
@@ -17,9 +18,8 @@ export class MinecraftBot {
   private chatDelay = 1000
 
   constructor(
-    readonly username: string, 
+    readonly username: string,
     private privilegedUsers?: string[],
-    private staffRanks?: string[],
     private logger?: LoggerCategory
   ) {
     this.bot = this.connect(username)
@@ -48,7 +48,10 @@ export class MinecraftBot {
   }
 
   isStaff(guildRank?: string) {
-    return guildRank ? (this.staffRanks?.includes(guildRank) ?? false) : false
+    return guildRank ? (config.roles
+      .filter((role) => role.isStaff)
+      .map((role) => role.hypixelTag)
+      ?.includes(guildRank) ?? false) : false
   }
 
   async setOnline() {
@@ -72,7 +75,7 @@ export class MinecraftBot {
       }
     }
   }
-  
+
   async chatRaw(msg: string, priority?: number) {
     return this.chatLock.acquire(async () => {
       this.bot?.chat(msg)
@@ -81,7 +84,7 @@ export class MinecraftBot {
       this.logger?.error(e)
     })
   }
-  
+
   async onEnd(reason: string) {
     this.logger?.warn(`Disconnected (reason: ${reason}).`)
     this.status = "offline"
@@ -91,13 +94,13 @@ export class MinecraftBot {
       await sleep(waitTime)
       this.connect(this.username)
       this.retries++
-    } 
+    }
   }
-  
+
   async onSpawn() {
     this.chat("§")
   }
-  
+
   isPrivileged(username: string) {
     return this.privilegedUsers?.includes(username) ?? false
   }

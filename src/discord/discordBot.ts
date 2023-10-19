@@ -7,14 +7,14 @@ import { LoggerCategory } from "../utils/Logger.js";
 import { imageLinkRegex } from "../utils/RegularExpressions.js";
 import { colorOf, cleanContent } from "../utils/utils.js";
 import { HypixelAPI } from "../api/HypixelAPI.js";
+import { config } from "../utils/config.js";
 
 export class DiscordBot {
   bridge?: Bridge
 
   constructor(
-    readonly client: Client<true>, 
+    readonly client: Client<true>,
     private slashCommands: SlashCommandManager,
-    private staffRoles: string[],
     private guildBridgeChannelId: string,
     private hypixelAPI: HypixelAPI,
     private logger?: LoggerCategory
@@ -50,14 +50,17 @@ export class DiscordBot {
       if (stickers != null) {
         content += `${stickers}`
       }
-      
+
       logger?.info(`Discord chat: ${authorName} to ${replyAuthor}: ${content}`)
       await this.bridge.onDiscordChat(authorName, content, this.isStaff(author), replyAuthor)
     })
   }
 
   private isStaff(member: GuildMember) {
-    return this.staffRoles.some(id => member.roles.cache.has(id)) ?? false
+    return config.roles
+      .filter((role) => role.isStaff)
+      .map((role) => role.discord)
+      .some(id => member.roles.cache.has(id)) ?? false
   }
 
   async sendGuildChatEmbed(username: string, content: string, colorValue?: string, guildRank?: string) {
@@ -74,7 +77,7 @@ export class DiscordBot {
     if (imageAttachment) embed.setImage(imageAttachment)
     await channel.send({ embeds: [embed], files: [skin] }).catch(e => this.logger?.error("Failed to send embed", e))
   }
-  
+
   async sendSimpleEmbed(title: string, content: string, footer?: string) {
     const channel = this.getTextChannel(this.guildBridgeChannelId)
     if (!channel) return
@@ -102,9 +105,8 @@ export class DiscordBot {
 }
 
 export async function createDiscordBot(
-  token: string, 
+  token: string,
   slashCommands: SlashCommandManager,
-  staffRoles: string[],
   guildBridgeChannelId: string,
   hypixelAPI: HypixelAPI,
   logger?: LoggerCategory
@@ -120,10 +122,10 @@ export async function createDiscordBot(
   await client.login(token)
   const readyClient: Client<true> = await new Promise((resolve, reject) => {
     client.once(Events.Error, reject),
-    client.once(Events.ClientReady, (readyClient) => {
-      client.off(Events.Error, reject)
-      resolve(readyClient)
-    })
+      client.once(Events.ClientReady, (readyClient) => {
+        client.off(Events.Error, reject)
+        resolve(readyClient)
+      })
   })
-  return new DiscordBot(readyClient, slashCommands, staffRoles, guildBridgeChannelId, hypixelAPI, logger)
+  return new DiscordBot(readyClient, slashCommands, guildBridgeChannelId, hypixelAPI, logger)
 }
