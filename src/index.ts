@@ -31,19 +31,9 @@ if (config.discord.guildRequirements) {
 	slashCommands.register(new GuildReqsCommand(hypixelAPI));
 }
 
-const discordStaffRoles = config.roles
-	.filter((role) => role.isStaff)
-	.map((role) => role.discord);
-const minecraftStaffRoles = config.roles
-	.filter((role) => role.isStaff)
-	.map((role) => role.hypixelTag);
-
-const guildRoles = config.guildRoles;
-
 const discord = await createDiscordBot(
 	config.discord.token,
 	slashCommands,
-	discordStaffRoles,
 	config.discord.channel,
 	hypixelAPI,
 	logger.category("Discord")
@@ -67,15 +57,13 @@ const bridgeCommandManager = new SimpleCommandManager(
 const minecraft = new MinecraftBot(
 	config.minecraft.username,
 	config.minecraft.privilegedUsers,
-	minecraftStaffRoles,
 	logger.category("Minecraft")
 );
 const bridge = new Bridge(
 	discord,
 	minecraft,
 	bridgeCommandManager,
-	logger.category("Bridge"),
-	guildRoles
+	logger.category("Bridge")
 );
 
 const rl = readline.createInterface({
