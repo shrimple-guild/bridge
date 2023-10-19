@@ -18,7 +18,6 @@ const discordStaffRoles = config.roles.filter(role => role.isStaff).map(role => 
 const discord = await createDiscordBot(
   config.discord.token,
   slashCommands,
-  discordStaffRoles,
   config.discord.channel,
   hypixelAPI,
   logger.category("Discord")
