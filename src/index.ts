@@ -2,7 +2,7 @@ import { Verification } from "./verify/Verification.js";
 import { HypixelAPI } from "./api/HypixelAPI.js";
 import { createDiscordBot } from "./discord/discordBot.js";
 import { SlashCommandManager } from "./discord/commands/SlashCommandManager.js";
-import config from "./config.json" assert { type: "json" };
+import { config } from "./utils/config.js";
 import itemNames from "./data/itemNames.json" assert { type: "json" };
 import { MinecraftBot } from "./minecraft/MinecraftBot.js";
 import { Bridge } from "./bridge/Bridge.js";
@@ -60,8 +60,6 @@ if (config.discord.verification.channelId.length > 0) { // dont wanna bother wit
 }
 
 const bridgeCommandManager = new SimpleCommandManager(
-	config.bridge.prefix,
-	config.minecraft.username,
 	hypixelAPI,
 	logger.category("Commands")
 );

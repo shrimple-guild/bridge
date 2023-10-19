@@ -3,7 +3,7 @@ import { Database } from "../database/database.js"
 import { HypixelAPI } from "../api/HypixelAPI.js"
 import { createDiscordBot } from "../discord/discordBot.js"
 import { SlashCommandManager } from "../discord/commands/SlashCommandManager.js"
-import config from "../config.json" assert { type: "json" }
+import { config } from "../utils/config.js"
 import { Logger } from "../utils/Logger.js"
 import { migrations } from "../database/migrations.js"
 

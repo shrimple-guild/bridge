@@ -121,12 +121,16 @@ export class GuildReqsCommand implements SlashCommand {
 		} catch (e) {
 			if (e instanceof Error) {
 				await interaction.followUp({
-					embeds: [statusEmbed("failure", `${e.stack}`)]
+					embeds: [statusEmbed("failure", `${stripUserPath(e.stack || "")}`)]
 				});
 			}
 			console.error(e);
 		}
 	}
+}
+
+function stripUserPath(text: string) {
+	return text.replaceAll(/.*src/, "");
 }
 
 function boolToCheck(bool: boolean) {

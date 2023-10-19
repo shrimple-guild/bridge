@@ -1,5 +1,5 @@
 import { ColorResolvable, EmbedBuilder, WebhookClient } from "discord.js";
-import config from "../config.json" assert { type: "json" };
+import { config } from "../utils/config.js"
 import { colorOf } from "./utils.js";
 
 export function simpleEmbed(title: string, content: string, footer?: string, color?: ColorResolvable) {

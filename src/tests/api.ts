@@ -1,7 +1,7 @@
 import { HypixelAPI } from "../api/HypixelAPI.js";
 import { Logger } from "../utils/Logger.js";
 
-import config from "../config.json" assert { type: "json" };
+import { config } from "../utils/config.js"
 import itemNames from "../data/itemNames.json" assert { type: "json" };
 import { Database } from "../database/database.js";
 import { migrations } from "../database/migrations.js";

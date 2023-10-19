@@ -1,5 +1,5 @@
 import { Pattern } from "./Pattern"
-import config from "../../config.json" assert { type: "json" }
+import { config } from "../../utils/config.js"
 
 export const questTierCompleted: Pattern = {
   name: "questTierCompleted",

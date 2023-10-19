@@ -1,3 +1,4 @@
+import { config } from "../../utils/config.js";
 import { SimpleCommand } from "./bridgeCommands/Command.js"
 import { AuctionCommand } from "./bridgeCommands/AuctionCommand.js"
 import { BazaarCommand } from "./bridgeCommands/BazaarCommand.js"
@@ -25,7 +26,7 @@ import { InstasellPriceCalcCommand } from "./bridgeCommands/InstasellPriceCalcCo
 export class SimpleCommandManager {
   commands: SimpleCommand[]
 
-  constructor(public prefix: string, public botUsername: string, private hypixelAPI: HypixelAPI, private logger?: LoggerCategory) {
+  constructor(private hypixelAPI: HypixelAPI, private logger?: LoggerCategory, public prefix?: string) {
     this.commands = [
       new AuctionCommand(),
       new BazaarCommand(hypixelAPI),
@@ -57,14 +58,15 @@ export class SimpleCommandManager {
   }
 
   async execute(message: string, isStaff: boolean, username?: string) {
-    if (!message.startsWith(this.prefix)) return
-    const commStr = message.substring(this.prefix.length)
+    const prefix = this.prefix ?? config.bridge.prefix
+    if (!message.startsWith(prefix)) return
+    const commStr = message.substring(prefix.length)
     const args = commStr.trim().split(" ")
     const commandName = args.shift()?.toLowerCase()
 
     const command = this.commands.find(comm => comm.aliases.includes(commandName))
 
-    if (!command) return `Command ${commandName} not found, try ${this.prefix}help`
+    if (!command) return `Command ${commandName} not found, try ${prefix}help`
 
     this.logger?.info(`Command processing (staff: ${isStaff}): ${message}`)
     let response

@@ -1,5 +1,5 @@
 import { REST, Routes } from "discord.js";
-import config from "./config.json" assert { type: "json" };
+import { config } from "./utils/config.js"
 import { SlashCommand } from "./discord/commands/SlashCommand.js";
 import { ManualVerifyCommand } from "./verify/commands/ManualVerifyCommand.js";
 import { SyncCommand } from "./verify/commands/SyncCommand.js";
