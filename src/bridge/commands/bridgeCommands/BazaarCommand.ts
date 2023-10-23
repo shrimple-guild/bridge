@@ -1,5 +1,6 @@
 import { SimpleCommand } from "./Command.js"
 import { HypixelAPI } from "../../../api/HypixelAPI.js"
+import { formatNumber } from "../../../utils/utils.js"
 
 
 export class BazaarCommand implements SimpleCommand {
@@ -19,7 +20,6 @@ export class BazaarCommand implements SimpleCommand {
 
   format(num?: number) {
     if (!num) return "Not available"
-    let formatter = Intl.NumberFormat("en", { notation: "compact" })
-    return formatter.format(num)
+    return formatNumber(num, 2, true)
   }
 }

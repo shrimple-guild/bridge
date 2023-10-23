@@ -3,8 +3,8 @@ import { HypixelAPI } from "../../../api/HypixelAPI.js"
 import { formatNumber } from "../../../utils/utils.js"
 
 
-export class InstasellPriceCalcCommand implements SimpleCommand {
-  aliases = ["is", "bzis", "instasell"]
+export class InstabuyPriceCalcCommand implements SimpleCommand {
+  aliases = ["ib", "bzib", "instabuy"]
 
   constructor(private hypixelAPI: HypixelAPI) {}
 
@@ -22,13 +22,13 @@ export class InstasellPriceCalcCommand implements SimpleCommand {
     let product = await bazaar.getClosestProduct(args.join(" "))
     if (!product) return `No product found!`
     
-    const sellSummary = product.sellSummary
-    if (!sellSummary.length) return `Could not sell any ${product.name}`
+    const buySummary = product.buySummary
+    if (!buySummary.length) return `Could not buy any ${product.name}`
     let money = 0
     let avg = 0
     let summaries = 0
     while (amount > 0) {
-        let summary = sellSummary.shift()
+        let summary = buySummary.shift()
         if (!summary) break
         let buyAmount = Math.min(amount, summary.amount)
         money += buyAmount * summary.pricePerUnit
@@ -37,8 +37,8 @@ export class InstasellPriceCalcCommand implements SimpleCommand {
         summaries++
     }
     avg /= summaries || 1
-    let returnString = `Total earned from selling ${startingAmount - amount} ${product.name}: ${this.format(money)} coins, average price per unit: ${this.format(avg)} coins`
-    if (amount > 0) returnString += `, could not sell ${amount} items`
+    let returnString = `Total cost to buy ${startingAmount - amount} ${product.name}: ${this.format(money)} coins, average price per unit: ${this.format(avg)} coins`
+    if (amount > 0) returnString += `, could not buy ${amount} items`
     return returnString
   }
 

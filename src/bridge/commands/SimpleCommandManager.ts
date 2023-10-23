@@ -22,6 +22,7 @@ import { FarmingWeightCommand } from "./bridgeCommands/FarmingWeightCommand.js"
 import { FortuneCookieCommand } from "./bridgeCommands/FortuneCookieCommand.js"
 import { UpdateRoleCommand } from "./bridgeCommands/UpdateRoleCommand.js"
 import { InstasellPriceCalcCommand } from "./bridgeCommands/InstasellPriceCalcCommand.js"
+import { InstabuyPriceCalcCommand } from "./bridgeCommands/InstabuyPriceCalcCommand.js";
 
 export class SimpleCommandManager {
   commands: SimpleCommand[]
@@ -43,7 +44,8 @@ export class SimpleCommandManager {
       new ContestCommand(hypixelAPI),
       new FarmingWeightCommand(hypixelAPI),
       new FortuneCookieCommand(),
-      new InstasellPriceCalcCommand(hypixelAPI)
+      new InstasellPriceCalcCommand(hypixelAPI),
+      new InstabuyPriceCalcCommand(hypixelAPI)
     ]
   }
 
