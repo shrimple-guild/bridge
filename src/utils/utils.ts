@@ -42,7 +42,9 @@ export function cleanContent(content: string) {
     .replaceAll(emojiPattern, substring => ` :${emojiToName[substring.replace(/[\u{1F3FB}-\u{1F3FF}]/ug, '')] ?? "unknown_emoji"}: `)
     .replace(/\s+/g, " ")
     .replace(/<(?:a)?(:\w{2,}:)\d{17,19}>/g, "$1")
-    .replaceAll("ez", "e\u{200D}z")
+    .replaceAll(/\s+ez\s/g, " e\u{200D}z ")
+    .replaceAll(/$ez\s/g, "e\u{200D}z ")
+    .replaceAll(/\s+ez$/g, " e\u{200D}z")
     .trim()
     .slice(0, 256)
 }
