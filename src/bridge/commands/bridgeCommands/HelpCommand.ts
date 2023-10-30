@@ -1,5 +1,6 @@
 import { SimpleCommand } from "./Command.js"
 import { SimpleCommandManager } from "../SimpleCommandManager"
+import { config } from "../../../utils/config.js"
 
 export class HelpCommand implements SimpleCommand {
     aliases = ["help"]
@@ -9,7 +10,7 @@ export class HelpCommand implements SimpleCommand {
     async execute(args: string[]) {
         let helpMessage = "Available commands: "
         this.commandManager.commands.forEach(command => {
-            helpMessage += `${this.commandManager.prefix}`
+            helpMessage += `${config.bridge.prefix}`
             if (command.aliases.length == 1) {
                 helpMessage += `${command.aliases[0]} `
             } else {
