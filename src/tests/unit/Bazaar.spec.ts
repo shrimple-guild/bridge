@@ -1,7 +1,7 @@
-import { Bazaar } from "../../src/api/Bazaar";
-import { HypixelAPI } from "../../src/api/HypixelAPI";
-import { SkyblockItems } from "../../src/api/SkyblockItems";
-import { Logger, LoggerCategory } from "../../src/utils/Logger";
+import { Bazaar } from "../../api/Bazaar";
+import { HypixelAPI } from "../../api/HypixelAPI";
+import { SkyblockItems } from "../../api/SkyblockItems";
+import { Logger, LoggerCategory } from "../../utils/Logger";
 
 describe("Bazaar", () => {
 	let mockHypixelApi: HypixelAPI;
