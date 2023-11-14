@@ -34,6 +34,10 @@ type Config = {
         fishingXp: number;
         priority: number;
     }[];
+    joinRequirements: {
+        sbLevel: number;
+        overflowFishingXp: number;
+    }[];
 };
 
 export let config = JSON.parse(fs.readFileSync("./src/config.json", "utf-8")) as Config;

@@ -1,6 +1,7 @@
 import nbt from "prismarine-nbt";
 import { SkyblockProfile } from "../api/SkyblockProfile.js";
 import { titleCase } from "../utils/utils.js";
+import { config } from "../utils/config.js";
 
 function getReforge(reforgeName: string, rarity: Rarity, stat: string) {
 	return reforges[reforgeName]?.[rarity]?.[stat];
@@ -400,13 +401,19 @@ type GuildJoinStatus = {
 };
 
 export function getGuildRank(reqs: Requirements): GuildJoinStatus {
-	const meetsJoinReqFishing =
-		reqs.skyblockLevel >= 290 && reqs.overflowFishingXp >= 160_000_000;
-	const meetsJoinReqLevel =
-		reqs.skyblockLevel >= 320 && reqs.overflowFishingXp >= 56_500_000;
+	const crayfishReqs = config.guildRoles.find((role) => role.name == "Crayfish")!;
+	const shrimpReqs = config.guildRoles.find((role) => role.name == "Shrimp")!;
+	const lobsterReqs = config.guildRoles.find((role) => role.name == "Lobster")!;
+
+	const canJoinXpLVL = config.joinRequirements.some((req) => {
+		return (
+			reqs.skyblockLevel >= req.sbLevel &&
+			reqs.overflowFishingXp >= req.overflowFishingXp
+		);
+	});
 
 	const meetsReqs =
-		(meetsJoinReqFishing || meetsJoinReqLevel) &&
+		canJoinXpLVL &&
 		reqs.flyingFish != "none" &&
 		reqs.magmaLord &&
 		reqs.hellfire &&
@@ -414,19 +421,19 @@ export function getGuildRank(reqs: Requirements): GuildJoinStatus {
 
 	const meetsCrawfish =
 		meetsReqs &&
-		reqs.skyblockLevel >= 300 &&
-		reqs.overflowFishingXp >= 150_000_000;
+		reqs.skyblockLevel >= crayfishReqs.sbLevel &&
+		reqs.overflowFishingXp >= crayfishReqs.fishingXp - level50Xp;
 
 	const meetsShrimp =
 		meetsCrawfish &&
-		reqs.skyblockLevel >= 320 &&
-		reqs.overflowFishingXp >= 350_000_000 &&
+		reqs.skyblockLevel >= shrimpReqs.sbLevel &&
+		reqs.overflowFishingXp >= shrimpReqs.fishingXp - level50Xp &&
 		(reqs.trophyHunter == "gold" || reqs.trophyHunter == "diamond");
 
 	const meetsLobster =
 		meetsShrimp &&
-		reqs.skyblockLevel >= 340 &&
-		reqs.overflowFishingXp >= 800_000_000 &&
+		reqs.skyblockLevel >= lobsterReqs.sbLevel &&
+		reqs.overflowFishingXp >= lobsterReqs.sbLevel - level50Xp &&
 		reqs.trophyHunter == "diamond";
 
 	let rank: string;
