@@ -433,7 +433,7 @@ export function getGuildRank(reqs: Requirements): GuildJoinStatus {
 	const meetsLobster =
 		meetsShrimp &&
 		reqs.skyblockLevel >= lobsterReqs.sbLevel &&
-		reqs.overflowFishingXp >= lobsterReqs.sbLevel - level50Xp &&
+		reqs.overflowFishingXp >= lobsterReqs.fishingXp - level50Xp &&
 		reqs.trophyHunter == "diamond";
 
 	let rank: string;
