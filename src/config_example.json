@@ -38,5 +38,11 @@
       "discord": "snowflake",
       "isStaff": false
     }
+  ],
+  "joinRequirements": [
+    {
+      "sbLevel": 0,
+      "overflowFishingXp": 0
+    }
   ]
 }
