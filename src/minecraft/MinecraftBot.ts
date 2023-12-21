@@ -92,8 +92,18 @@ export class MinecraftBot {
     if (reason != "disconnect.quitting") {
       const waitTime = Math.min(1000 * Math.pow(2, this.retries), 60 * 10 * 1000)
       await sleep(waitTime)
-      this.connect(this.username)
+      try {
+        this.connect(this.username)
+      } catch (e) {
+        await sleep(waitTime)
+        this.connect(this.username)
+        console.error(e)
+      }
       this.retries++
+      if (this.retries > 10) {
+        this.logger?.error("Failed to connect after 10 attempts. Quitting.")
+        process.exit(1)
+      }
     }
   }
 
