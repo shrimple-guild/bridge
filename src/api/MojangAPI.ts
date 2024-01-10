@@ -16,8 +16,8 @@ type SkinResponse = {
 export class MojangAPI {
 
   private defaultSkin = "LyANKx4NLx8PKBwLJBgIJhoKKx4NKh0NKx4NKx4NKx4NMyQRQioSPyoVLB4OKBwLKx4NtolsvY5yxpaAvYtyvY50rHZaNCUSqn1mtIRtqn1mrYBtnHJcu4lynGlMnGlMtIRt////Uj2JtXtnu4lyUj2J////qn1mnGNGs3tit4JyakAwakAwvohsompHgFM0kF5Dll9Ad0I1d0I1d0I1d0I1j14+gVM5b0UsbUMqgVM5gVM5ek4zg1U7g1U7ek4z"
-  private skinTimeout = 60 * 1000
-  private uuidTimeout = 86400 * 1000
+  private skinTimeout = 21600 * 1000
+  // private uuidTimeout = 86400 * 1000
 
   private selectSkin: Statement
   private selectUuid: Statement
@@ -55,17 +55,17 @@ export class MojangAPI {
   async fetchUuid(username: string) {
     const data = this.selectUuid.all(username) as UUIDResponse[]
     let cachedUuid: string | undefined
-    let lastUpdated = 0
+    // let lastUpdated = 0
     if (data.length > 1) {
       this.deleteName.run()
       cachedUuid = undefined
-      lastUpdated = 0
+      // lastUpdated = 0
     } else {
       cachedUuid = data[0]?.id ?? undefined
-      lastUpdated = data[0]?.lastUpdated ?? 0 
+      // lastUpdated = data[0]?.lastUpdated ?? 0 
     }
     try {
-      if (cachedUuid == null || (Date.now() - lastUpdated) > this.uuidTimeout) {
+      if (!cachedUuid/* || (Date.now() - lastUpdated) > this.uuidTimeout*/) { // We do not need to cache UUIDs, because if someone changes their name, we will get a new UUID anyway.
         console.log("Fetching uuid because " + (!cachedUuid ? "no cached uuid was found" : "of timeout"))
         const uuid = await this.fetchUuidFromAPI(username)
         this.upsertName.run({ id: uuid, name: username, lastUpdated: Date.now() })
@@ -75,7 +75,7 @@ export class MojangAPI {
       console.error(`Failed to get UUID from Mojang API for ${username}`)
       console.error(e)
     }
-    if (cachedUuid == null) {
+    if (!cachedUuid) {
       throw new Error("Failed to get UUID from API, and no cached UUID was found.")
     }
     return cachedUuid
