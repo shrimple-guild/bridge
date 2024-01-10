@@ -54,7 +54,6 @@ export class MojangAPI {
 
   async fetchUuid(username: string) {
     const data = this.selectUuid.all(username) as UUIDResponse[]
-    console.log(data)
     let cachedUuid: string | undefined
     let lastUpdated = 0
     if (data.length > 1) {
