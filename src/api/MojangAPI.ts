@@ -93,6 +93,7 @@ export class MojangAPI {
       cachedSkin = data[0]?.skin ?? undefined
       lastUpdated = data[0]?.lastUpdated ?? 0
     }
+    console.log(`Found ${username}'s skin: ${!!cachedSkin}, ${lastUpdated}`)
     try {
       if (!cachedSkin || (Date.now() - lastUpdated) > this.skinTimeout) {
         console.log("Fetching skin because " + (!cachedSkin ? "no cached skin was found" : "of timeout"))
