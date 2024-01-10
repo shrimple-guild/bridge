@@ -63,9 +63,10 @@ export class MojangAPI {
     } else {
       cachedUuid = data[0]?.id ?? undefined
       lastUpdated = data[0]?.lastUpdated ?? 0 
-    } 
+    }
     try {
       if (cachedUuid == null || (Date.now() - lastUpdated) > this.uuidTimeout) {
+        console.log("Fetching uuid because " + (!cachedUuid ? "no cached uuid was found" : "of timeout"))
         const uuid = await this.fetchUuidFromAPI(username)
         this.upsertName.run({ id: uuid, name: username, lastUpdated: Date.now() })
         return uuid
@@ -94,6 +95,7 @@ export class MojangAPI {
     }
     try {
       if (!cachedSkin || (Date.now() - lastUpdated) > this.skinTimeout) {
+        console.log("Fetching skin because " + (!cachedSkin ? "no cached skin was found" : "of timeout"))
         const uuid = await this.fetchUuid(username)
         if (uuid == null) throw new Error(`Failed to get uuid for ${username}`)
         const skin = await this.fetchSkinFromAPI(uuid)
