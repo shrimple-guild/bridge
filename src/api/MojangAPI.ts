@@ -1,6 +1,17 @@
 import { Statement } from "better-sqlite3"
 import sharp from "sharp"
 import { Database } from "../database/database"
+import { UUID } from "crypto"
+
+type UUIDResponse = {
+  id: string
+  lastUpdated: number
+}
+
+type SkinResponse = {
+  skin: string
+  lastUpdated: number
+}
 
 export class MojangAPI {
 
@@ -14,9 +25,11 @@ export class MojangAPI {
   private upsertName: Statement
   private upsertSkin: Statement
 
-  constructor(private db: Database) {
+  constructor(db: Database) {
     this.selectSkin = db.prepare(`SELECT skin, skinLastUpdated AS lastUpdated FROM Players WHERE name = ?`)
+
     this.selectUuid = db.prepare(`SELECT id, nameLastUpdated AS lastUpdated FROM Players WHERE name = ?`)
+
     this.upsertName = db.prepare(`
       INSERT INTO Players (id, name, nameLastUpdated)
       VALUES (:id, :name, :lastUpdated)
@@ -24,10 +37,12 @@ export class MojangAPI {
       name = excluded.name,
       namelastUpdated = excluded.nameLastUpdated
     `)
+
     this.deleteName = db.prepare(`
       DELETE FROM Players
       WHERE name = ?
     `)
+
     this.upsertSkin = db.prepare(`
       INSERT INTO Players (id, skin, skinLastUpdated)
       VALUES (:id, :skin, :lastUpdated)
@@ -38,7 +53,8 @@ export class MojangAPI {
   }
 
   async fetchUuid(username: string) {
-    const data = this.selectUuid.all(username) as any[]
+    const data = this.selectUuid.all(username) as UUIDResponse[]
+    console.log(data)
     let cachedUuid: string | undefined
     let lastUpdated = 0
     if (data.length > 1) {
@@ -46,7 +62,7 @@ export class MojangAPI {
       cachedUuid = undefined
       lastUpdated = 0
     } else {
-      cachedUuid = data[0]?.uuid ?? undefined
+      cachedUuid = data[0]?.id ?? undefined
       lastUpdated = data[0]?.lastUpdated ?? 0 
     } 
     try {
@@ -55,7 +71,10 @@ export class MojangAPI {
         this.upsertName.run({ id: uuid, name: username, lastUpdated: Date.now() })
         return uuid
       }
-    } catch (e) {}
+    } catch (e) {
+      console.error(`Failed to get UUID from Mojang API for ${username}`)
+      console.error(e)
+    }
     if (cachedUuid == null) {
       throw new Error("Failed to get UUID from API, and no cached UUID was found.")
     }
@@ -63,7 +82,17 @@ export class MojangAPI {
   }
 
   async fetchSkin(username: string) {
-    const { skin: cachedSkin, lastUpdated } = this.getCachedSkin(username)
+    const data = this.selectSkin.all(username) as SkinResponse[]
+    let cachedSkin: string | undefined
+    let lastUpdated = 0
+    if (data.length > 1) {
+      this.deleteName.run()
+      cachedSkin = undefined
+      lastUpdated = 0
+    } else {
+      cachedSkin = data[0]?.skin ?? undefined
+      lastUpdated = data[0]?.lastUpdated ?? 0
+    }
     try {
       if (!cachedSkin || (Date.now() - lastUpdated) > this.skinTimeout) {
         const uuid = await this.fetchUuid(username)
@@ -73,19 +102,11 @@ export class MojangAPI {
         return await MojangAPI.getSkinPng(skin)
       }
     } catch (e) {
+      console.error(`Failed to get skin from Mojang API for ${username}`)
       console.error(e)
     }
     return await MojangAPI.getSkinPng(cachedSkin ?? this.defaultSkin)
   }
-
-  private getCachedSkin(username: string) {
-    const data = this.selectSkin.get(username) as any
-    return {
-      skin: (data?.skin ?? undefined) as string | undefined,
-      lastUpdated: (data?.lastUpdated ?? 0) as number
-    }
-  }
-
 
   private async fetchSkinFromAPI(uuid: string): Promise<string> {
     const profileResponse = await fetch(`https://sessionserver.mojang.com/session/minecraft/profile/${uuid}`)
