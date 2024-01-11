@@ -1,5 +1,5 @@
 import { EmbedBuilder } from "@discordjs/builders";
-import { AttachmentBuilder, ChannelType, Client, Events, GatewayIntentBits, GuildMember, Message, TextChannel } from "discord.js";
+import { ChannelType, Client, Events, GatewayIntentBits, GuildMember, Message, TextChannel } from "discord.js";
 import { SlashCommandManager } from "./commands/SlashCommandManager.js";
 import { Bridge } from "../bridge/Bridge.js";
 import { simpleEmbed } from "../utils/discordUtils.js";
@@ -68,14 +68,14 @@ export class DiscordBot {
     if (!channel) return
     const imageAttachment = content.match(imageLinkRegex)?.at(0)
     const contentWithoutImage = content.replace(imageLinkRegex, "")
-    const { embed, skin } = await this.setMinecraftAuthor(username)
+    const embed = await this.setMinecraftAuthor(username)
     embed
       .setDescription((contentWithoutImage.length > 0) ? contentWithoutImage : null)
       .setColor(colorOf(colorValue))
       .setFooter(guildRank ? { text: guildRank } : null)
       .setTimestamp(Date.now())
     if (imageAttachment) embed.setImage(imageAttachment)
-    await channel.send({ embeds: [embed], files: [skin] }).catch(e => this.logger?.error("Failed to send embed", e))
+    await channel.send({ embeds: [embed] }).catch(e => this.logger?.error("Failed to send embed", e))
   }
 
   async sendSimpleEmbed(title: string, content: string, footer?: string) {
@@ -96,11 +96,8 @@ export class DiscordBot {
     return message.embeds.at(0)?.author?.name ?? messageAuthor
   }
 
-  private async setMinecraftAuthor(username: string): Promise<{ embed: EmbedBuilder, skin: AttachmentBuilder }> {
-    return {
-      embed: new EmbedBuilder().setAuthor({ name: username, iconURL: "attachment://skin.png" }),
-      skin: new AttachmentBuilder(await this.hypixelAPI.mojang.fetchSkin(username), { name: "skin.png" })
-    }
+  private async setMinecraftAuthor(username: string): Promise<EmbedBuilder> {
+    return new EmbedBuilder().setAuthor({ name: username, iconURL: await this.hypixelAPI.mojang.fetchSkin(username) })
   }
 }
 
