@@ -52,6 +52,7 @@
 		"jaro-winkler-typescript": "^1.0.1",
 		"log4js": "^6.9.1",
 		"mineflayer": "^4.12.0",
+		"p-throttle": "^6.1.0",
 		"romans": "^2.0.8",
 		"sharp": "^0.32.5"
 	},
