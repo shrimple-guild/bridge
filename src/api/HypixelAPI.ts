@@ -16,10 +16,6 @@ export class HypixelAPI {
 	contests?: FarmingContests;
 	bazaar?: Bazaar;
 
-	private rateLimit: number = 60;
-	private rateLimitRemaining: number = 60;
-	private rateLimitReset: number = 60;
-
 	constructor(
 		private apiKey: string,
 		private database: Database,
