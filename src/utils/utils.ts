@@ -1,6 +1,7 @@
 import { Collection } from "discord.js"
 import emojiRegex from "emoji-regex"
-import { emojiToName } from "gemoji"
+// TODO: ESM only libraries? Ew.
+// import { emojiToName } from "gemoji"
 import { jaro } from "jaro-winkler-typescript"
 import { deromanize as deromanization } from "romans"
 
@@ -39,7 +40,7 @@ export function colorOf(hypixelRank: string | undefined): [red: number, green: n
 
 export function cleanContent(content: string) {
   return content
-    .replaceAll(emojiPattern, substring => ` :${emojiToName[substring.replace(/[\u{1F3FB}-\u{1F3FF}]/ug, '')] ?? "unknown_emoji"}: `)
+    .replaceAll(emojiPattern, substring => ` :${'TODO: FIX' ?? "unknown_emoji"}: `)
     .replace(/\s+/g, " ")
     .replace(/<(?:a)?(:\w{2,}:)\d{17,19}>/g, "$1")
     .replaceAll(/\bez\b/ig, "éz")
