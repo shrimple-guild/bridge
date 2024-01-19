@@ -6,4 +6,5 @@ export interface IMineflayerBot {
 	chat(msg: string): void;
 	quit(): void;
 	isOnline(): boolean;
+	tryReloadBot(): Promise<void>;
 }
