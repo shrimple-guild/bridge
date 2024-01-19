@@ -3,7 +3,6 @@ import mineflayer from "mineflayer";
 import pRetry from "p-retry";
 import { IMineflayerBot } from "./IMineflayerBot";
 
-
 function debug(message: string) {
 	console.log(message);
 }
@@ -67,8 +66,9 @@ class ReconnectingBot extends EventEmitter implements IMineflayerBot {
 		this.bot = this.setupBot(bot);
 	}
 
-	private async tryReloadBot() {
+	async tryReloadBot() {
 		try {
+			this.bot.quit();
 			const bot = await createBotWithRetry(this.bot.username);
 			this.bot = this.setupBot(bot);
 		} catch (e) {

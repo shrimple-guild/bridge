@@ -41,6 +41,10 @@ export class MinecraftBot {
 		return this.bot.isOnline;
 	}
 
+	reconnect() {
+		return this.bot.tryReloadBot();
+	}
+
 	async sendToBridge(
 		username: string,
 		content: string,

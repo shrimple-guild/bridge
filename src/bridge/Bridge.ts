@@ -107,6 +107,6 @@ export class Bridge {
 	async reload() {
 		await this.quit();
 		await sleep(2000);
-		this.minecraft.connect(this.minecraft.username);
+		await this.minecraft.reconnect();
 	}
 }

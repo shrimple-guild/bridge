@@ -15,6 +15,7 @@ import { migrations } from "./database/migrations.js";
 import { postDisconnectEmbed } from "./utils/discordUtils.js";
 import { sleep } from "./utils/utils.js";
 import { GuildReqsCommand } from "./discord/commands/GuildReqsCommand.js";
+import ReconnectingBot from "./minecraft/ReconnectingBot.js";
 
 const logger = new Logger();
 const database = await Database.create("./src/database", migrations);
@@ -39,7 +40,8 @@ const discord = await createDiscordBot(
 	logger.category("Discord")
 );
 
-if (config.discord.verification.channelId.length > 0) { // dont wanna bother with checking if i need to check a property, its length, or just the object but this should work
+if (config.discord.verification.channelId.length > 0) {
+	// dont wanna bother with checking if i need to check a property, its length, or just the object but this should work
 	const verification = new Verification(
 		discord.client,
 		database,
@@ -54,7 +56,10 @@ const bridgeCommandManager = new SimpleCommandManager(
 	logger.category("Commands")
 );
 
+const bot = await ReconnectingBot.create(config.minecraft.username);
+
 const minecraft = new MinecraftBot(
+	bot,
 	config.minecraft.username,
 	config.minecraft.privilegedUsers,
 	logger.category("Minecraft")
