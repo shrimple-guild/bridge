@@ -11,7 +11,6 @@ export class UpdateRoleCommand implements SimpleCommand {
 
     async execute(args: string[], isStaff?: boolean, username?: string) {
       if (!this.bridge) return "Bridge not configured, cannot use command!"
-      console.log(`${args} | ${isStaff} | ${username}`)
       const specifiedUsername = args.shift()
       const updatingSelf = specifiedUsername?.toLowerCase() == username?.toLowerCase()      
       if (specifiedUsername) {
@@ -30,7 +29,7 @@ export class UpdateRoleCommand implements SimpleCommand {
         return "Role updated!"
       } else {
         return "No username provided. This command only works in-game (for non-staff members)."
-      } 
+      }
     }
 
     private async getRole(username: string): Promise<string | undefined> {
