@@ -1,4 +1,11 @@
-import fs from "fs";
+import fs from "fs/promises";
+
+export type GuildRole = {
+    name: string;
+    sbLevel: number;
+    fishingXp: number;
+    priority: number;
+};
 
 type Config = {
     minecraft: {
@@ -28,16 +35,11 @@ type Config = {
         discord: string;
         isStaff: boolean;
     }[];
-    guildRoles: {
-        name: string;
-        sbLevel: number;
-        fishingXp: number;
-        priority: number;
-    }[];
+    guildRoles: GuildRole[];
     joinRequirements: {
         sbLevel: number;
         overflowFishingXp: number;
     }[];
 };
 
-export let config = JSON.parse(fs.readFileSync("./src/config.json", "utf-8")) as Config;
+export let config = JSON.parse(await fs.readFile("./src/config.json", "utf-8")) as Config;
