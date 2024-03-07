@@ -1,7 +1,9 @@
 import { SimpleCommand } from "./Command.js"
 import { Bridge } from "../../Bridge.js"
 import { HypixelAPI } from "../../../api/HypixelAPI.js"
-import { config } from "../../../utils/config.js"
+import { GuildRole, config } from "../../../utils/config.js"
+import { SkyblockProfile } from "../../../api/SkyblockProfile.js"
+import { formatNumber } from "../../../utils/utils.js"
 
 export class UpdateRoleCommand implements SimpleCommand {
     aliases = ["update"]
@@ -15,39 +17,46 @@ export class UpdateRoleCommand implements SimpleCommand {
       const updatingSelf = specifiedUsername?.toLowerCase() == username?.toLowerCase()      
       if (specifiedUsername) {
         if (isStaff || updatingSelf) {
-          const role = await this.getRole(specifiedUsername)
-          console.log(`Updating role for ${specifiedUsername} to ${role}.`)
-          await this.bridge.chatMinecraftRaw(`/g setrank ${specifiedUsername} ${role}`)
-          return "Role updated!"
+          return await this.update(specifiedUsername)
         } else {
           return "You must be staff to update the role of another member!"
         }
       } else if (username) {
-        const role = await this.getRole(username)
-        console.log(`Updating role for ${username} to ${role}.`)
-        await this.bridge.chatMinecraftRaw(`/g setrank ${username} ${role}`)
-        return "Role updated!"
+        return await this.update(username)
       } else {
         return "No username provided. This command only works in-game (for non-staff members)."
       }
     }
 
-    private async getRole(username: string): Promise<string | undefined> {
+    private async update(username: string): Promise<string> {
       const uuid = await this.hypixelAPI?.mojang.fetchUuid(username)
-      if (!uuid) return undefined
+        if (!uuid) return "Invalid username provided."
+        const currentRole = (await this.hypixelAPI?.fetchGuildMembers(config.bridge.hypixelGuild) ?? []).find(member => member.uuid == uuid)?.rank
+        const profile = await this.getHighestProfile(uuid)
+        if (!profile) return "Failed to fetch profile for user."
+        const role = await this.getRole(profile)
+        if (!role) return "Failed to fetch role for user."
+        const nextRole = config.guildRoles[config.guildRoles.indexOf(role) - 1]
+        if (!nextRole) return "You are already maxed out buddy!"
+        const fishXp = Math.max(0, nextRole.fishingXp - (profile.skills.fishing?.xp ?? 0))
+        const sbLvl = Math.max(0, (nextRole.sbLevel - (profile.skyblockLevel ?? 0)) / 100)
+        if (currentRole == role.name) return `Role is already up to date! Missing ${formatNumber(fishXp, 2, true)} Fishing XP and ${sbLvl} Skyblock Levels for ${nextRole.name}.`
+        console.log(`Updating role for ${username} to ${role.name}.`)
+        await this.bridge!.chatMinecraftRaw(`/g setrank ${username} ${role.name}`)
+        return "Role updated!"
+    }
+
+    private async getHighestProfile(uuid: string) {
       const profiles = await this.hypixelAPI?.fetchProfiles(uuid)
       if (!profiles) return undefined
-      const roles = config.guildRoles
-      if (!roles) return undefined
-      const profileRoles = profiles.profiles.map(profile => {
-        const level = profile.skyblockLevel ?? 0
-        const fishingXp = profile.skills.fishing?.xp ?? 0
-        return roles.find(role => (
-          level >= role.sbLevel && fishingXp >= role.fishingXp
-        )) 
-      })
-      return profileRoles.reduce((prev, cur) => (
-        ((cur?.priority ?? -Infinity) > (prev?.priority ?? -Infinity)) ? cur : prev
-      ), undefined)?.name
+      return profiles.profiles.reduce((prev, cur) => (
+        (cur.skyblockLevel ?? 0) > (prev.skyblockLevel ?? 0) ? cur : prev
+      ))
+    }
+
+    private async getRole(profile: SkyblockProfile): Promise<GuildRole | undefined> {
+      return config.guildRoles.find(role => (
+        (profile.skyblockLevel ?? 0) >= role.sbLevel && (profile.skills.fishing?.xp ?? 0) >= role.fishingXp
+      ))
     }
 }
