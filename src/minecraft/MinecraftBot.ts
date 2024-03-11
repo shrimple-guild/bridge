@@ -98,9 +98,9 @@ export class MinecraftBot {
 	}
 
 	chatRaw(msg: string, priority?: number) {
-		return this.throttle(() => {
+		this.throttle(() => {
 			this.bot?.chat(msg);
-		});
+		})();
 	}
 
 	async onEnd(reason: string) {
