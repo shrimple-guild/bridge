@@ -6,7 +6,7 @@ import { guildKick } from "./patterns/GuildKick.js";
 import { guildLeave } from "./patterns/GuildLeave.js";
 import { guildLevelUp } from "./patterns/GuildLevelUp.js";
 import { guildPromoteDemote } from "./patterns/GuildPromoteDemote.js";
-import { guildRankGift } from "./patterns/GuildRankGift";
+import { guildRankGift } from "./patterns/GuildRankGift.js";
 import { limbo } from "./patterns/Limbo.js";
 import { minecraftJoinLeave } from "./patterns/MinecraftJoinLeave.js";
 import { privateMessage } from "./patterns/PrivateMessage.js";
