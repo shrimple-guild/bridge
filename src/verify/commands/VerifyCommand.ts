@@ -23,9 +23,9 @@ export class VerifyCommand implements SlashCommand {
       const username = interaction.options.getString("username", true)
       const uuid = await this.hypixelAPI.mojang.fetchUuid(username)
       const player = await this.hypixelAPI.fetchPlayer(uuid)
-      const discordTag = interaction.user.discriminator == "0" ? interaction.user.username : interaction.user.tag
+      const discordTag = (interaction.user.discriminator == "0" ? interaction.user.username : interaction.user.tag).toLowerCase()
       if (player.discordTag == null) throw new Error("This Hypixel account isn't linked to any Discord account.")
-      if (player.discordTag != discordTag) {
+      if (player.discordTag.toLowerCase() != discordTag) {
         let errorString = `${username} is linked to \`${player.discordTag}\`.`
         if (interaction.user.discriminator == "0") errorString += `**Due to the Discord username update, you may need to update your linked Discord username in-game.**`
         throw new Error(errorString)

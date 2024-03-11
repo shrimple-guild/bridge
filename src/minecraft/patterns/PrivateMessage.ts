@@ -1,7 +1,7 @@
 import { Pattern } from "./Pattern"
 import { config } from "../../utils/config.js"
 import { MinecraftBot } from "../MinecraftBot";
-import fs from "fs"
+import fs from "fs/promises"
 import { sleep } from "../../utils/utils.js";
 
 export const privateMessage: Pattern = {
@@ -11,7 +11,15 @@ export const privateMessage: Pattern = {
     if (bot.isPrivileged(groups.name)) {
       if (groups.content.startsWith("_config")) {
         const args = groups.content.split(" ")
-        await changeConfig(bot, groups.name, args[1], args[2])
+        if (args[1].toLowerCase() == "backup") {
+          await backupConfig(bot, groups.name)
+        } else if (args[1].toLowerCase() == "restore") {
+          await restoreConfig(bot, groups.name)
+        } else if (args.length == 3) {
+          await changeConfig(bot, groups.name, args[1], args[2])
+        } else {
+          bot.chat(`/msg ${groups.name} Invalid usage of _config. <@${Math.random().toString(36).substring(2)}>`)
+        }
       } else {
         bot.chat(groups.content)
         await bot.sendToBridge(bot.username, groups.content, "BOT")
@@ -48,14 +56,26 @@ async function changeConfig(bot: MinecraftBot, sender: string, path: string, new
         }
         current[keys[i]] = property
         await bot.chatRaw(`/msg ${sender} Changed ${keys[i]} to ${newProperty} <@${Math.random().toString(36).substring(2)}>`)
-        fs.writeFile("./src/config.json", JSON.stringify(config, null, 2), (err) => {
-          if (err) {
-            console.error(err)
-          }
-        })
+        await fs.writeFile("./src/config.json", JSON.stringify(config, null, 2))
       }
     } else {
       current = current[keys[i]]
     }
   }
+}
+
+async function backupConfig(bot: MinecraftBot, sender: string) {
+  bot.chat(`/msg ${sender} Backing up config... <@${Math.random().toString(36).substring(2)}>`)
+  const backup = JSON.stringify(config, null, 2)
+  await fs.writeFile("./src/config-backup.json", backup)
+  bot.chat(`/msg ${sender} Backup complete. <@${Math.random().toString(36).substring(2)}>`)
+}
+
+async function restoreConfig(bot: MinecraftBot, sender: string) {
+  bot.chat(`/msg ${sender} Restoring config... <@${Math.random().toString(36).substring(2)}>`)
+  const backup = JSON.parse(await fs.readFile("./src/config-backup.json", "utf-8"))
+  await fs.writeFile("./src/config.json", JSON.stringify(backup, null, 2))
+  let current = config
+  current = backup
+  bot.chat(`/msg ${sender} Restore complete. <@${Math.random().toString(36).substring(2)}>`)
 }

@@ -26,7 +26,7 @@ If your account is not linked on Hypixel:
 2. Run "/profile" in a lobby.
 3. Click the "Social Media" button in the GUI.
 4. Click "Discord"
-5. Type in your IGN.
+5. Type in your discord tag (small text in your profile).
 
 Alternatively, you can use the "/discord" command on the Hypixel server and link through their website.
 
