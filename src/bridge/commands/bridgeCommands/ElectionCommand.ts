@@ -47,7 +47,7 @@ export class ElectionCommand implements SimpleCommand {
     } else {
       let mayorQuery = args.join(" ").toLowerCase()
       let nextSpecial = nextSpecials.sort((a, b) => jaroDistance(mayorQuery, b.name) - jaroDistance(mayorQuery, a.name))[0]
-      return `${titleCase(nextSpecial.name)} is in ${this.humanizer.humanize(nextSpecial.time, { largest: 2, delimiter: " and " })}.`
+      return `${titleCase(nextSpecial.name)} is in ${this.humanizer.humanize(nextSpecial.time, { largest: 3, delimiter: " and " })}.`
     }
   }
 }
