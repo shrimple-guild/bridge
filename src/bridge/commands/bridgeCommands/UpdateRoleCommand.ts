@@ -27,9 +27,8 @@ export class UpdateRoleCommand implements SimpleCommand {
           const members = await this.hypixelAPI?.fetchGuildMembers(config.bridge.hypixelGuild)
           if (!members) return "Failed to fetch guild members."
           for (const member of members) {
-            if (await this.updateMember(member)) {
-              await sleep(2000)
-            }
+            await this.updateMember(member)
+            await sleep(2000)
           }
           this.lastMassUpdate = Date.now()
           return "Roles updated for all members!"
