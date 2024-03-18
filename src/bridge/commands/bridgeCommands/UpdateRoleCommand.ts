@@ -19,7 +19,7 @@ export class UpdateRoleCommand implements SimpleCommand {
     const specifiedUsername = args.shift()
     const updatingSelf = specifiedUsername?.toLowerCase() == username?.toLowerCase()
     if (specifiedUsername) {
-      if (isStaff) {
+      if (isStaff || updatingSelf) {
         if (updatingSelf) {
           return await this.update(specifiedUsername)
         } else if (specifiedUsername.toLowerCase() == "all") {
@@ -27,11 +27,17 @@ export class UpdateRoleCommand implements SimpleCommand {
           const members = await this.hypixelAPI?.fetchGuildMembers(config.bridge.hypixelGuild)
           if (!members) return "Failed to fetch guild members."
           for (const member of members) {
-            await this.updateMember(member)
+            try {
+              await this.updateMember(member)
+            } catch (e) {
+              console.error(e)
+            }
             await sleep(2000)
           }
           this.lastMassUpdate = Date.now()
           return "Roles updated for all members!"
+        } else {
+          return await this.update(specifiedUsername)
         }
       } else {
         return "You must be staff to update the role of another member!"
