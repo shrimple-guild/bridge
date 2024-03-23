@@ -9,59 +9,37 @@ type UUIDResponse = {
 export class MojangAPI {
 	private steveUUID = "c06f89064c8a49119c29ea1dbd1aab82";
 
-	private selectSkin: Statement;
 	private selectUuid: Statement;
 	private deleteName: Statement;
 	private upsertName: Statement;
-	private upsertSkin: Statement;
 
 	constructor(db: Database) {
-		this.selectSkin = db.prepare(
-			`SELECT skin, skinLastUpdated AS lastUpdated FROM Players WHERE name = ?`
-		);
-
-		this.selectUuid = db.prepare(
-			`SELECT id, nameLastUpdated AS lastUpdated FROM Players WHERE lower(name) = ?`
-		);
+		this.selectUuid = db.prepare(`SELECT id, nameLastUpdated AS lastUpdated FROM Players WHERE lower(name) = ?`);
 
 		this.upsertName = db.prepare(`
-      INSERT INTO Players (id, name, nameLastUpdated)
-      VALUES (:id, :name, :lastUpdated)
-      ON CONFLICT (id) DO UPDATE SET
-      name = excluded.name,
-      namelastUpdated = excluded.nameLastUpdated
-    `);
+     	 	INSERT INTO Players (id, name, nameLastUpdated)
+     		VALUES (:id, :name, :lastUpdated)
+     		ON CONFLICT (id) DO UPDATE SET
+     	 	name = excluded.name,
+     		namelastUpdated = excluded.nameLastUpdated
+    	`);
 
-		this.deleteName = db.prepare(`
-      DELETE FROM Players
-      WHERE name = ?
-    `);
-
-		this.upsertSkin = db.prepare(`
-      INSERT INTO Players (id, skin, skinLastUpdated)
-      VALUES (:id, :skin, :lastUpdated)
-      ON CONFLICT (id) DO UPDATE SET
-      skin = excluded.skin,
-      skinLastUpdated = excluded.skinLastUpdated
-    `);
+		this.deleteName = db.prepare(`DELETE FROM Players WHERE name = ?`);
 	}
 
 	async fetchUuid(username: string) {
-		const lowercase = username.toLocaleLowerCase();
 		const data = this.selectUuid.all(username) as UUIDResponse[];
 		let cachedUuid: string | undefined;
-		// let lastUpdated = 0
 		if (data.length > 1) {
+			console.log(`Multiple UUID entries found for ${username}`);
 			this.deleteName.run();
 			cachedUuid = undefined;
-			// lastUpdated = 0
 		} else {
-			cachedUuid = data[0]?.id ?? undefined;
-			// lastUpdated = data[0]?.lastUpdated ?? 0
+			cachedUuid = data[0]?.id;
+			if (cachedUuid) console.log(`Found cached UUID for ${username}`);
 		}
 		try {
-			if (!cachedUuid /* || (Date.now() - lastUpdated) > this.uuidTimeout*/) {
-				// We do not need to cache UUIDs, because if someone changes their name, we will get a new UUID anyway.
+			if (!cachedUuid) {
 				const uuid = await this.fetchUuidFromAPI(username);
 				this.upsertName.run({
 					id: uuid,
