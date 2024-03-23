@@ -28,22 +28,21 @@ export class MojangAPI {
 	}
 
 	async fetchUuid(username: string) {
-		const data = this.selectUuid.all(username) as UUIDResponse[];
+		const lower = username.toLowerCase();
+		const data = this.selectUuid.all(lower) as UUIDResponse[];
 		let cachedUuid: string | undefined;
 		if (data.length > 1) {
-			console.log(`Multiple UUID entries found for ${username}`);
 			this.deleteName.run();
 			cachedUuid = undefined;
 		} else {
 			cachedUuid = data[0]?.id;
-			if (cachedUuid) console.log(`Found cached UUID for ${username}`);
 		}
 		try {
 			if (!cachedUuid) {
-				const uuid = await this.fetchUuidFromAPI(username);
+				const uuid = await this.fetchUuidFromAPI(lower);
 				this.upsertName.run({
 					id: uuid,
-					name: username,
+					name: lower,
 					lastUpdated: Date.now()
 				});
 				return uuid;
