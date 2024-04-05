@@ -52,34 +52,45 @@ export class UpdateRoleCommand implements SimpleCommand {
   private async updateMember(member: HypixelGuildMember) {
     const currentRole = member.rank
     const profile = await this.getHighestProfile(member.uuid)
-    if (!profile) return undefined
+    if (!profile) return
+
     const role = await this.getRole(profile)
-    if (!role) return undefined
+    if (!role) return
+
+    const roleUpToDate = currentRole == role.name
     const nextRole = config.guildRoles[config.guildRoles.indexOf(role) - 1]
-    if (!nextRole) return undefined
-    if (currentRole == role.name) return undefined
-    if (!config.guildRoles.find(role => role.name == currentRole)) return undefined
+
+    if (!nextRole && roleUpToDate) return
+    if (roleUpToDate) return
+    if (!config.guildRoles.find(role => role.name == currentRole)) return
+
     console.log(`Updating role for ${member.uuid} to ${role.name}.`)
     await this.bridge!.chatMinecraftRaw(`/g setrank ${member.uuid} ${role.name}`)
-    return "Role updated!"
   }
 
   private async update(username: string): Promise<string> {
     const uuid = await this.hypixelAPI?.mojang.fetchUuid(username)
     if (!uuid) return "Invalid username provided."
+
     const currentRole = (await this.hypixelAPI?.fetchGuildMembers(config.bridge.hypixelGuild) ?? []).find(member => member.uuid == uuid)?.rank
     const profile = await this.getHighestProfile(uuid)
     if (!profile) return "Failed to fetch profile for user."
+
     const role = await this.getRole(profile)
     if (!role) return "Failed to fetch role for user."
+
+    const roleUpToDate = currentRole == role.name
     const nextRole = config.guildRoles[config.guildRoles.indexOf(role) - 1]
-    if (!nextRole) return "You are already maxed out buddy!"
-    const fishXp = Math.max(0, nextRole.fishingXp - (profile.skills.fishing?.xp ?? 0))
-    const sbLvl = Math.max(0, (nextRole.sbLevel - (profile.skyblockLevel ?? 0)) / 100)
+    if (!nextRole && roleUpToDate) return "You are already maxed out buddy!"
+
+    const fishXp = nextRole ? Math.max(0, nextRole.fishingXp - (profile.skills.fishing?.xp ?? 0)) : 0
+    const sbLvl = nextRole ? Math.max(0, (nextRole.sbLevel - (profile.skyblockLevel ?? 0)) / 100) : 0
+
     let prefixMsg;
     if (!config.guildRoles.find(role => role.name == currentRole)) prefixMsg = "Your role does not have requirements! But you are"
-    if (currentRole == role.name) prefixMsg = "Role is already up to date!"
+    if (roleUpToDate) prefixMsg = "Role is already up to date!"
     if (prefixMsg) return prefixMsg + ` Missing ${formatNumber(fishXp, 2, true)} Fishing XP and ${sbLvl} Skyblock Levels for ${nextRole.name}.`
+
     console.log(`Updating role for ${username} to ${role.name}.`)
     await this.bridge!.chatMinecraftRaw(`/g setrank ${username} ${role.name}`)
     return "Role updated!"
