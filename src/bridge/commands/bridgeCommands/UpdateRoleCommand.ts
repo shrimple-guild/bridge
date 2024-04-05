@@ -30,6 +30,7 @@ export class UpdateRoleCommand implements SimpleCommand {
             try {
               await this.updateMember(member)
             } catch (e) {
+              console.log("Failed to update role for member: ", member.uuid)
               console.error(e)
             }
             await sleep(2000)
