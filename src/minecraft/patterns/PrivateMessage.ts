@@ -11,9 +11,9 @@ export const privateMessage: Pattern = {
     if (bot.isPrivileged(groups.name)) {
       if (groups.content.startsWith("_config")) {
         const args = groups.content.split(" ")
-        if (args[1].toLowerCase() == "backup") {
+        if (args[1]?.toLowerCase() == "backup") {
           await backupConfig(bot, groups.name)
-        } else if (args[1].toLowerCase() == "restore") {
+        } else if (args[1]?.toLowerCase() == "restore") {
           await restoreConfig(bot, groups.name)
         } else if (args.length == 3) {
           await changeConfig(bot, groups.name, args[1], args[2])
