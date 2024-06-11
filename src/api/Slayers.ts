@@ -24,7 +24,8 @@ const slayerMapping: { name: string, slayer: SlayerName }[] = [
   { name: "wolf", slayer: "wolf" },
   { name: "enderman", slayer: "enderman" },
   { name: "blaze", slayer: "blaze" },
-  { name: "vampire", slayer: "vampire"}
+  { name: "vampire", slayer: "vampire"},
+  { name: "woof", slayer: "wolf"}
 ]
 
 export function resolveSlayer(str: string): SlayerName | undefined {
