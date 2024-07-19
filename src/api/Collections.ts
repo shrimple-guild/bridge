@@ -55,4 +55,8 @@ export class Collections {
     getByItem(item: string) {
         return this.collections.find(collection => collection.name.toLowerCase() == item.toLowerCase() || collection.name.toLowerCase().includes(item.toLowerCase()))
     }
+
+    get all() {
+        return this.collections
+    }
 }

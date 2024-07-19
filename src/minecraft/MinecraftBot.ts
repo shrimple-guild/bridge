@@ -91,8 +91,11 @@ export class MinecraftBot {
 	chat(msg: string, priority?: number) {
 		const split = msg.match(/.{1,256}/g);
 		if (split) {
+			let i = 0;
 			for (const chunk of split) {
+				const msg = i > 0 && chunk.startsWith("/") ? `.${chunk}` : chunk;
 				this.chatRaw(chunk, priority);
+				i++;
 			}
 		}
 	}

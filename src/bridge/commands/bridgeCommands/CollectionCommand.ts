@@ -19,6 +19,7 @@ export class CollectionCommand implements SimpleCommand {
         const profiles = await this.hypixelAPI.fetchProfiles(uuid)
         const profile = profiles.getByQuery(profileArg)
         if (!profile) return `Profile not found`
+        if (!profile.collections.all.length) return `No collection data found for ${playerName} (${profile.cuteName})`
         const byCategory = profile.collections.getByCategory(mainArg)
         if (byCategory.length) {
             let retStr = `${mainArg} completion for ${playerName} (${profile.cuteName}): `
