@@ -47,7 +47,6 @@ export class Collections {
 
     getByCategory(category: string) {
         return this.collections.filter(collection => {
-            console.log(collection)
             return collection.category.toLowerCase() == category.toLowerCase()
         })
     }
