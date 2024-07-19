@@ -94,7 +94,7 @@ export class MinecraftBot {
 			let i = 0;
 			for (const chunk of split) {
 				const msg = i > 0 && chunk.startsWith("/") ? `.${chunk}` : chunk;
-				this.chatRaw(chunk, priority);
+				this.chatRaw(msg, priority);
 				i++;
 			}
 		}
