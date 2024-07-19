@@ -1,6 +1,7 @@
 import { Database } from "../database/database.js";
 import { LoggerCategory } from "../utils/Logger.js";
 import { Bazaar } from "./Bazaar.js";
+import { CollectionCategory } from "./CollectionTypes.js";
 import { FarmingContests } from "./FarmingContests.js";
 import { HypixelAPIError } from "./HypixelAPIError.js";
 import { HypixelGuildMember } from "./HypixelGuildMember.js";
@@ -15,6 +16,7 @@ export class HypixelAPI {
 	readonly mojang: MojangAPI;
 	contests?: FarmingContests;
 	bazaar?: Bazaar;
+	collections?: CollectionCategory[]
 
 	constructor(
 		private apiKey: string,
@@ -28,6 +30,8 @@ export class HypixelAPI {
 		const items = await SkyblockItems.create(this, specifiedNames);
 		this.bazaar = new Bazaar(this, items, this.logger);
 		this.contests = await FarmingContests.create(this.logger);
+		this.collections = await this.fetchCollections();
+		this.logger.info("Hypixel API initialized.");
 	}
 
 	async fetchPlayer(uuid: string): Promise<HypixelPlayer> {
@@ -49,7 +53,7 @@ export class HypixelAPI {
 		if (data.profiles == null || data.profiles.length == 0) {
 			throw new Error(`This player has not joined SkyBlock!`);
 		}
-		return new SkyblockProfiles(data.profiles, uuidTrimmed);
+		return new SkyblockProfiles(data.profiles, uuidTrimmed, this);
 	}
 
 	async fetchGuildMembers(guildId: string): Promise<HypixelGuildMember[]> {
@@ -60,6 +64,25 @@ export class HypixelAPI {
 		if (!data.guild) throw new Error(`This guild does not exist!`);
 		const members = data.guild.members as any[];
 		return members.map((member) => new HypixelGuildMember(member, this));
+	}
+
+	private async fetchCollections(): Promise<CollectionCategory[]> {
+		const { data } = await this.fetchHypixel("/resources/skyblock/collections");
+		return Object.entries(data.collections).map(([k, v]) => {
+			const items = Object.entries((v as any).items).map(([k, v]) => {
+				const item = v as any;
+				return {
+					id: k,
+					name: item.name,
+					maxTier: item.maxTiers,
+					tiers: item.tiers
+				}
+			})
+			return {
+				id: k,
+				items: items
+			}
+		});
 	}
 
 	async fetchHypixel(

@@ -56,7 +56,11 @@ export class TrophyFish {
   get total() {
     return Object.values(this.fish).reduce((prev, cur) => prev + cur.total, 0)
   }
-} 
+
+  get totalNoObf() {
+    return this.total - this.fish["Obfuscated 1"].total
+  }
+}
 
 class Fish {
   readonly bronze: number
@@ -87,6 +91,3 @@ function tierValue(tier: TrophyFishTier | undefined) {
   const tiers = { "bronze": 1, "silver": 2, "gold": 3, "diamond": 4 }
   return (tier != null) ? tiers[tier] : 0
 }
-
-
-

@@ -1,21 +1,22 @@
+import { HypixelAPI } from "./HypixelAPI.js";
 import { SkyblockProfile } from "./SkyblockProfile.js";
 
 export class SkyblockProfiles {
 	readonly profiles: SkyblockProfile[];
 
-	constructor(raw: any, uuid: string) {
+	constructor(raw: any, uuid: string, api: HypixelAPI) {
 		this.profiles = (raw as any[]).map(
-			(profile) => new SkyblockProfile(profile, uuid)
+			(profile) => new SkyblockProfile(profile, uuid, api)
 		);
 	}
 
-	get selected() {
+	get selected(): SkyblockProfile {
 		return (
 			this.profiles.find((profile) => profile.selected) ?? this.profiles[0]
 		);
 	}
 
-	get bingo() {
+	get bingo(): SkyblockProfile {
 		const profile = this.profiles.find(
 			(profile) => profile.gamemode == "bingo"
 		);
@@ -23,7 +24,13 @@ export class SkyblockProfiles {
 		return profile;
 	}
 
-	get(name: string) {
+	get main(): SkyblockProfile {
+		return this.profiles.reduce((prev, cur) =>
+			(cur.skyblockLevel ?? 0) > (prev.skyblockLevel ?? 0) ? cur : prev
+		);
+	}
+	
+	get(name: string): SkyblockProfile {
 		const profile = this.profiles.find(
 			(profile) => profile.cuteName.toLowerCase() == name.toLowerCase()
 		);
@@ -31,17 +38,11 @@ export class SkyblockProfiles {
 		return profile;
 	}
 
-	getByQuery(query: string | undefined) {
+	getByQuery(query: string | undefined): SkyblockProfile {
 		const queryLowercase = query?.toLowerCase();
 		if (queryLowercase == "bingo") return this.bingo;
 		if (queryLowercase == "main") return this.main;
 		if (queryLowercase == null) return this.selected;
 		return this.get(queryLowercase);
-	}
-
-	get main() {
-		return this.profiles.reduce((prev, cur) =>
-			(cur.skyblockLevel ?? 0) > (prev.skyblockLevel ?? 0) ? cur : prev
-		);
 	}
 }

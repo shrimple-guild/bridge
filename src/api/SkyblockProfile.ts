@@ -1,6 +1,8 @@
 import { Bestiary } from "./Bestiary.js";
+import { Collections } from "./Collections.js";
 import { Dungeons } from "./Dungeons.js";
 import { FarmingWeight, farmingWeight } from "./FarmingWeight.js";
+import { HypixelAPI } from "./HypixelAPI.js";
 import { Kuudra } from "./Kuudra.js";
 import { Mobs } from "./Mobs.js";
 import { Skills } from "./Skills.js";
@@ -23,9 +25,10 @@ export class SkyblockProfile {
 	readonly kuudra: Kuudra;
 	readonly mobs: Mobs;
 	readonly bestiary: Bestiary;
+	readonly collections: Collections;
 	readonly farmingWeight?: FarmingWeight;
 
-	constructor(raw: any, uuid: string) {
+	constructor(raw: any, uuid: string, api: HypixelAPI) {
 		this.memberRaw = raw.members[uuid];
 		this.profileId = raw.profile_id;
 		this.cuteName = raw.cute_name;
@@ -41,6 +44,7 @@ export class SkyblockProfile {
 		this.kuudra = new Kuudra(this.memberRaw);
 		this.mobs = new Mobs(this.memberRaw);
 		this.bestiary = new Bestiary(this.memberRaw);
+		this.collections = new Collections(this.memberRaw, api);
 		this.farmingWeight = farmingWeight(raw, uuid);
 	}
 }

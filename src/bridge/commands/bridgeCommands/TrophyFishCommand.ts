@@ -5,7 +5,7 @@ import { trophyFishNames } from "../../../api/TrophyFish.js"
 
 export class TrophyFishCommand implements SimpleCommand {
     aliases = ["trophy", "trophyfish", "tfish"]
-    usage = "<player:[profile|bingo|main]> [fish]"
+    usage = "<player:[profile|bingo|main]> [fish|noobf]"
 
     constructor(private hypixelAPI: HypixelAPI) {}
 
@@ -21,7 +21,7 @@ export class TrophyFishCommand implements SimpleCommand {
       const profile = profiles.getByQuery(profileArg)
       const cuteName = profile.cuteName
       const trophyFish = profile.trophyFish
-      if (fish) {
+      if (fish && fish != "noobf") {
         const fishMatch = this.guessFish(fish)
         if (!fishMatch) return "Invalid fish."
         const name = fishMatch
@@ -30,7 +30,8 @@ export class TrophyFishCommand implements SimpleCommand {
         message += `Total ${titleCase(name)}: ${fishData.total} | Bronze: ${fishData.bronze} | Silver: ${fishData.silver} | Gold: ${fishData.gold} | Diamond: ${fishData.diamond}`
       } else {
         message = `Trophy fish for ${playerName} (${cuteName}): `
-        message += `Total: ${trophyFish.total} | `
+        const noObfString = fish == "noobf" ? `${trophyFish.totalNoObf} (w/o Obf 1)` : trophyFish.total
+        message += `Total: ${noObfString} | `
         message += `Bronze: ${trophyFish.unlocked("bronze")}/18 | Silver: ${trophyFish.unlocked("silver")}/18 | Gold: ${trophyFish.unlocked("gold")}/18 | Diamond: ${trophyFish.unlocked("diamond")}/18`
       }
       return message

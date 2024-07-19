@@ -102,3 +102,7 @@ export function toCamelCase(str: string) {
 export function collectionFrom<T>(data: Record<string, T>): Collection<string, T> {
   return new Collection(Object.entries(data))
 }
+
+export function stripColorCodes(str: string) {
+  return str.replace(/§[0-9a-fklmnor]/g, "")
+}
