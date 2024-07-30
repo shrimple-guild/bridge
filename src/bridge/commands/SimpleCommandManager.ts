@@ -7,7 +7,6 @@ import { ElectionCommand } from "./bridgeCommands/ElectionCommand.js"
 import { HelpCommand } from "./bridgeCommands/HelpCommand.js"
 import { PickCommand } from "./bridgeCommands/PickCommand.js"
 import { PingCommand } from "./bridgeCommands/PingCommand.js"
-import { RainTimerCommand } from "./bridgeCommands/RainTimerCommand.js"
 import { RawCommand } from "./bridgeCommands/RawCommand.js"
 import { ReloadCommand } from "./bridgeCommands/ReloadCommand.js"
 import { SkillsCommand } from "./bridgeCommands/SkillsCommand.js"
@@ -25,6 +24,7 @@ import { InstasellPriceCalcCommand } from "./bridgeCommands/InstasellPriceCalcCo
 import { InstabuyPriceCalcCommand } from "./bridgeCommands/InstabuyPriceCalcCommand.js";
 import { CollectionCommand } from "./bridgeCommands/CollectionCommand.js";
 import { BestiaryCommand } from "./bridgeCommands/BestiaryCommand.js";
+import { BoopDemonCommand } from "./bridgeCommands/BoopDemonCommand.js";
 
 export class SimpleCommandManager {
   commands: SimpleCommand[]
@@ -57,6 +57,7 @@ export class SimpleCommandManager {
     this.commands.push(
       new RawCommand(bridge), 
       new ReloadCommand(bridge),
+      new BoopDemonCommand(bridge)
     )
     if (config.guildRoles && config.guildRoles.length > 0) {
       this.commands.push(new UpdateRoleCommand(bridge, this.hypixelAPI))
