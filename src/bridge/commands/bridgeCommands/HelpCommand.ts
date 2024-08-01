@@ -8,17 +8,10 @@ export class HelpCommand implements SimpleCommand {
     constructor(private commandManager: SimpleCommandManager) {}
 
     async execute(args: string[]) {
-        let helpMessage = "Available commands: "
+        let helpMessage = `Available commands (${config.bridge.prefix}command): `
         this.commandManager.commands.forEach(command => {
-            helpMessage += `${config.bridge.prefix}`
-            if (command.aliases.length == 1) {
-                helpMessage += `${command.aliases[0]} `
-            } else {
-                helpMessage += `${command.aliases.join("|")}`
-            }
-            const usage = command.usage
-            helpMessage += usage ? ` ${usage}, ` : ", "
+            helpMessage += `${command.aliases[0]} `
         })
-        return helpMessage = helpMessage.substring(0, helpMessage.length - 2)
+        return helpMessage
     }
 }

@@ -36,7 +36,7 @@ export class SimpleCommandManager {
       new CataCommand(hypixelAPI),
       new EightballCommand(),
       new ElectionCommand(hypixelAPI),
-      // new HelpCommand(this),
+      new HelpCommand(this),
       new PickCommand(),
       new PingCommand(),
       // new RainTimerCommand(),
