@@ -10,8 +10,8 @@ export class HelpCommand implements SimpleCommand {
     async execute(args: string[]) {
         let helpMessage = `Available commands (${config.bridge.prefix}command): `
         this.commandManager.commands.forEach(command => {
-            helpMessage += `${command.aliases[0]} `
+            helpMessage += `${command.aliases[0]}, `
         })
-        return helpMessage
+        return helpMessage.substring(0, helpMessage.length - 2)
     }
 }
