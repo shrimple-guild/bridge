@@ -24,7 +24,8 @@ import { InstasellPriceCalcCommand } from "./bridgeCommands/InstasellPriceCalcCo
 import { InstabuyPriceCalcCommand } from "./bridgeCommands/InstabuyPriceCalcCommand.js";
 import { CollectionCommand } from "./bridgeCommands/CollectionCommand.js";
 import { BestiaryCommand } from "./bridgeCommands/BestiaryCommand.js";
-import { BoopDemonCommand } from "./bridgeCommands/BoopDemonCommand.js";
+import { BoopCommand } from "./bridgeCommands/BoopCommand.js";
+import { antiSpamProtString } from "../../utils/utils.js";
 
 export class SimpleCommandManager {
   commands: SimpleCommand[]
@@ -57,7 +58,7 @@ export class SimpleCommandManager {
     this.commands.push(
       new RawCommand(bridge), 
       new ReloadCommand(bridge),
-      new BoopDemonCommand(bridge)
+      new BoopCommand(bridge)
     )
     if (config.guildRoles && config.guildRoles.length > 0) {
       this.commands.push(new UpdateRoleCommand(bridge, this.hypixelAPI))
@@ -85,7 +86,7 @@ export class SimpleCommandManager {
     }
     this.logger?.info(`Response: ${response}`)
     if (response) {
-      response += ` <@${Math.random().toString(36).substring(2)}>`
+      response += ` ${antiSpamProtString()}`
     }
     return response
   }

@@ -106,3 +106,7 @@ export function collectionFrom<T>(data: Record<string, T>): Collection<string, T
 export function stripColorCodes(str: string) {
   return str.replace(/§[0-9a-fklmnor]/g, "")
 }
+
+export function antiSpamProtString() {
+  return `<@${Math.random().toString(36).substring(2)}>`
+}

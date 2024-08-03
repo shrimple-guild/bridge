@@ -1,7 +1,7 @@
 import { Bridge } from "../../Bridge.js"
 import { SimpleCommand } from "./Command.js"
 
-export class BoopDemonCommand implements SimpleCommand {
+export class BoopCommand implements SimpleCommand {
   aliases = ["boop"]
   lastBoop = 0
 
@@ -17,7 +17,7 @@ export class BoopDemonCommand implements SimpleCommand {
       this.bridge?.chatAsBot(`/boop ${boop}`)
     }
     this.lastBoop = Date.now()
-    return `Booped ${boop ?? "demonhunter990"}!`
+    return undefined
   }
 } 
 
