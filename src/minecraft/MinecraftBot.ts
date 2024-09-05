@@ -132,7 +132,7 @@ export class MinecraftBot {
 	}
 
 	async onSpawn() {
-		this.chat("/limbo");
+		this.chatRaw("/limbo");
 	}
 
 	isPrivileged(username: string) {
