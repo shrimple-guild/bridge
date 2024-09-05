@@ -132,6 +132,7 @@ export class MinecraftBot {
 	}
 
 	async onSpawn() {
+		sleep(1000);
 		this.chatRaw("/limbo");
 	}
 
