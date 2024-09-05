@@ -132,8 +132,6 @@ export class MinecraftBot {
 	}
 
 	async onSpawn() {
-		sleep(1000);
-		this.logger?.info("Attempting to go to limbo...");
 		this.chatRaw("/limbo");
 	}
 
