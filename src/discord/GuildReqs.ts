@@ -318,7 +318,9 @@ interface APIPet {
 }
 
 interface APISkyblockMember {
-	pets?: APIPet[];
+	pets_data?: {
+		pets?: APIPet[];
+	};
 	trophy_fish?: {
 		rewards?: number[];
 	};
@@ -329,32 +331,37 @@ interface APISkyblockMember {
 		type: number;
 		data: string;
 	};
-	inv_contents?: {
-		type: number;
-		data: string;
+	inventory?: {
+		inv_contents?: {
+			type: number;
+			data: string;
+		};
+		equippment_contents?: {
+			type: number;
+			data: string;
+		};
+		wardrobe_contents?: {
+			type: number;
+			data: string;
+		};
+		backpack_contents?: Record<number, { type: number; data: string }>;
+		ender_chest_contents?: {
+			type: number;
+			data: string;
+		};
+		talisman_bag?: {
+			type: number;
+			data: string;
+		};
 	};
-	equippment_contents?: {
-		type: number;
-		data: string;
-	};
-	wardrobe_contents?: {
-		type: number;
-		data: string;
-	};
-	backpack_contents?: Record<number, { type: number; data: string }>;
-	ender_chest_contents?: {
-		type: number;
-		data: string;
-	};
-	talisman_bag?: {
-		type: number;
-		data: string;
-	};
-	experience_skill_fishing?: number;
+	player_data?: {
+		experience?: {
+			SKILL_FISHING?: number;
+		};
+	}
 	mining_core?: {
 		experience?: number;
 	};
-	experience_skill_mining?: number;
 }
 
 type NBTItem = {
@@ -458,7 +465,7 @@ export async function getGuildRequirementResults(profile: SkyblockProfile) {
 
 	reqs.skyblockLevel = Math.floor((member.leveling?.experience ?? 0) / 100);
 
-	const fishingXp = member.experience_skill_fishing;
+	const fishingXp = member.player_data?.experience?.SKILL_FISHING;
 
 	if (!fishingXp) {
 		throw new Error("Couldn't find Fishing XP! Is your skills API off?");
@@ -466,12 +473,12 @@ export async function getGuildRequirementResults(profile: SkyblockProfile) {
 
 	reqs.overflowFishingXp = fishingXp - level50Xp;
 
-	if (!member.pets) {
+	if (!member.pets_data?.pets) {
 		throw new Error("Couldn't find any pets for this profile. Weird!");
 	}
 
 	if (
-		member.pets.find(
+		member.pets_data?.pets.find(
 			(pet) =>
 				pet.type == "FLYING_FISH" &&
 				pet.tier == "MYTHIC" &&
@@ -480,7 +487,7 @@ export async function getGuildRequirementResults(profile: SkyblockProfile) {
 	) {
 		reqs.flyingFish = "mythic";
 	} else if (
-		member.pets.find(
+		member.pets_data?.pets.find(
 			(pet) =>
 				pet.type == "FLYING_FISH" &&
 				pet.tier == "LEGENDARY" &&
@@ -521,7 +528,7 @@ export async function getGuildRequirementResults(profile: SkyblockProfile) {
 
 	reqs.rods = allRods;
 
-	const accessoryStats = await getAccessoryStats(member.talisman_bag?.data);
+	const accessoryStats = await getAccessoryStats(member.inventory?.talisman_bag?.data);
 
 	const wardrobe = await getAllWardrobeSets(member);
 
@@ -620,18 +627,18 @@ export async function getGuildRequirementResults(profile: SkyblockProfile) {
 async function getItemsInInventories(
 	member: APISkyblockMember
 ): Promise<NBTItem[]> {
-	if (member.inv_contents == null) {
+	if (member.inventory?.inv_contents == null) {
 		throw new Error("No inventory found! Is your inventory API off?");
 	}
 
 	const itemPromises: Promise<NBTItem[]>[] = [];
 
-	itemPromises.push(getItemsInInventory(member.inv_contents.data));
-	itemPromises.push(getItemsInInventory(member.equippment_contents?.data));
-	itemPromises.push(getItemsInInventory(member.ender_chest_contents?.data));
+	itemPromises.push(getItemsInInventory(member.inventory?.inv_contents?.data));
+	itemPromises.push(getItemsInInventory(member.inventory?.equippment_contents?.data));
+	itemPromises.push(getItemsInInventory(member.inventory?.ender_chest_contents?.data));
 
-	if (member.backpack_contents != null) {
-		Object.values(member.backpack_contents).forEach((inventory) =>
+	if (member.inventory?.backpack_contents != null) {
+		Object.values(member.inventory?.backpack_contents).forEach((inventory) =>
 			itemPromises.push(getItemsInInventory(inventory.data))
 		);
 	}
@@ -752,7 +759,7 @@ async function getAllWardrobeSets(
 	member: APISkyblockMember
 ): Promise<NBTItem[][]> {
 	const wardrobeContents = await getItemsInInventory(
-		member.wardrobe_contents?.data
+		member.inventory?.wardrobe_contents?.data
 	);
 	const equippedSetContents = await getItemsInInventory(member.inv_armor?.data);
 	if (!wardrobeContents) return [];
@@ -784,7 +791,7 @@ function getPetStats(member: APISkyblockMember) {
 		speed: number;
 		item: string | null;
 	}[] = [];
-	const pets = member.pets;
+	const pets = member.pets_data?.pets;
 	if (!pets) return [];
 	const mythicFf = pets.find(
 		(pet) =>
@@ -824,12 +831,12 @@ function getPetStats(member: APISkyblockMember) {
 	);
 	if (ammonite != null) {
 		const miningLevel = miningLeveling.findLastIndex(
-			(levelXp) => (member.experience_skill_mining ?? 0) >= levelXp
+			(levelXp) => (member.player_data?.experience?.SKILL_FISHING ?? 0) >= levelXp
 		);
 		const fishingLevel = Math.min(
 			50,
 			miningLeveling.findLastIndex(
-				(levelXp) => (member.experience_skill_fishing ?? 0) >= levelXp
+				(levelXp) => (member.player_data?.experience?.SKILL_FISHING ?? 0) >= levelXp
 			)
 		);
 		const hotmLevel = hotmLeveling.findLastIndex(

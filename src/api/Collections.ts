@@ -6,7 +6,7 @@ export class Collections {
     private collections: Collection[] = []
     private tierRegex = /^(.*?)(-?\d+)$/
     constructor(member: any, api: HypixelAPI) {
-        const unlockedTiers = member.unlocked_coll_tiers as string[]
+        const unlockedTiers = member.player_data?.unlocked_coll_tiers as string[]
         if (!unlockedTiers) return;
         const unlockedTiersParsed: UnlockedTierEntry = {}
         unlockedTiers.forEach(tierStr => {

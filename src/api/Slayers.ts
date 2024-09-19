@@ -46,7 +46,7 @@ export class Slayers {
   readonly vampire: Slayer
 
   constructor(member: any) {
-    const bosses = member.slayer_bosses
+    const bosses = member.slayer?.slayer_bosses
     this.zombie = new Slayer("zombie", bosses)
     this.spider = new Slayer("spider", bosses)
     this.wolf = new Slayer("wolf", bosses)

@@ -13,7 +13,7 @@ const { apiKey } = config.bridge
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout
-})
+} as any)
 
 const logger = new Logger()
 const database = await Database.create("./src/database", migrations)

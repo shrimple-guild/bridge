@@ -6,7 +6,7 @@ import auctionAliases from "../../../data/auctionAliases.json" assert { type: "j
 let cachedLowestBins: { [id: string]: number } = {}
 
 // get full names from api data + additional data
-const itemResults = (await (await fetch(`https://api.hypixel.net/resources/skyblock/items`)).json() as { items: { id: string, name: string }[] }).items
+const itemResults = (await (await fetch(`https://api.hypixel.net/v2/resources/skyblock/items`)).json() as { items: { id: string, name: string }[] }).items
 
 let itemApiNames = Object.fromEntries(itemResults.map(itemData => {
   let aliases: string[] = []

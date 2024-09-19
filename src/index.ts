@@ -69,7 +69,7 @@ const bridge = new Bridge(
 const rl = readline.createInterface({
 	input: process.stdin,
 	output: process.stdout
-});
+} as any);
 
 rl.on("line", async (input) => {
 	if (input != "quit") {

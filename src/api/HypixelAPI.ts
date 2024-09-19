@@ -90,7 +90,7 @@ export class HypixelAPI {
 		parameters: { [key: string]: string } = {}
 	): Promise<HypixelResponse> {
 		let url = new URL("https://api.hypixel.net");
-		url.pathname = endpoint;
+		url.pathname = `/v2${endpoint}`;
 		url.search = new URLSearchParams(parameters).toString();
 		const response = await fetchWithTimeout(url);
 		if (response.status == 200) {

@@ -32,16 +32,16 @@ export class Skills {
   readonly runecrafting?: Level
 
   constructor(member: any) {
-    this.taming = buildSkyblockSkill("taming", member)
-    this.farming = buildSkyblockSkill("farming", member)
-    this.mining = buildSkyblockSkill("mining", member)
-    this.combat = buildSkyblockSkill("combat", member)
-    this.foraging = buildSkyblockSkill("foraging", member)
-    this.fishing = buildSkyblockSkill("fishing", member)
-    this.enchanting = buildSkyblockSkill("enchanting", member)
-    this.alchemy = buildSkyblockSkill("alchemy", member)
-    this.carpentry = buildSkyblockSkill("carpentry", member)
-    this.runecrafting = buildSkyblockSkill("runecrafting", member)
+    this.taming = buildSkyblockSkill("TAMING", member)
+    this.farming = buildSkyblockSkill("FARMING", member)
+    this.mining = buildSkyblockSkill("MINING", member)
+    this.combat = buildSkyblockSkill("COMBAT", member)
+    this.foraging = buildSkyblockSkill("FORAGING", member)
+    this.fishing = buildSkyblockSkill("FISHING", member)
+    this.enchanting = buildSkyblockSkill("ENCHANTING", member)
+    this.alchemy = buildSkyblockSkill("ALCHEMY", member)
+    this.carpentry = buildSkyblockSkill("CARPENTRY", member)
+    this.runecrafting = buildSkyblockSkill("RUNECRAFTING", member)
   }
 
   get average() {
@@ -51,7 +51,7 @@ export class Skills {
 }
 
 function buildSkyblockSkill(skill: string, member: any) {
-  return buildSkyblockSkillLike(skill, member[`experience_skill_${skill}`])
+  return buildSkyblockSkillLike(skill.toLowerCase(), member.player_data?.experience?.[`SKILL_${skill}`])
 }
 
 

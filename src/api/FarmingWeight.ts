@@ -38,8 +38,8 @@ function collectionWeight(crops: Collections): Collections {
 }
 
 function levelWeight(profileMember: any): number {
-  const farmingXp = profileMember.experience_skill_farming ?? 0
-  const farmingCap = profileMember.jacob2?.perks?.farming_level_cap ?? 0
+  const farmingXp = profileMember.player_data?.experience?.SKILL_FARMING ?? 0
+  const farmingCap = profileMember.jacobs_contest?.perks?.farming_level_cap ?? 0
   if (farmingXp >= 111672425 && farmingCap >= 10) return 250
   return farmingXp > 55172425 ? 100 : 0
 }
