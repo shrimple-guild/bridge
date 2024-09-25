@@ -44,7 +44,6 @@ export function cleanContent(content: string) {
     .replace(/<(?:a)?(:\w{2,}:)\d{17,19}>/g, "$1")
     .replaceAll(/\bez\b/ig, "éz")
     .trim()
-    .slice(0, 256)
 }
 
 export function randRange(min: number, max: number) {

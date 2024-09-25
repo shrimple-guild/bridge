@@ -69,9 +69,9 @@ export class MinecraftBot {
 	isStaff(guildRank?: string) {
 		return guildRank
 			? config.roles
-					.filter((role) => role.isStaff)
-					.map((role) => role.hypixelTag)
-					?.includes(guildRank) ?? false
+				.filter((role) => role.isStaff)
+				.map((role) => role.hypixelTag)
+				?.includes(guildRank) ?? false
 			: false;
 	}
 
@@ -89,15 +89,28 @@ export class MinecraftBot {
 	}
 
 	chat(msg: string, priority?: number) {
-		const split = msg.match(/.{1,256}/g);
-		if (split) {
-			let i = 0;
-			for (const chunk of split) {
-				const msg = i > 0 && chunk.startsWith("/") ? `.${chunk}` : chunk;
-				this.chatRaw(msg, priority);
-				i++;
+		for (const chunk of this.splitMsg(msg)) {
+			this.chatRaw(chunk, priority);
+		}
+	}
+
+	splitMsg(msg: string) {
+		const split = msg.match(/.{1,254}/g);
+
+		if (!split) return [];
+		if (split.length === 1) return split;
+
+		for (let i = 0; i < split.length; i++) {
+			if (i === 0 && split.length > 1) {
+				split[i] += "➩";
+			} else if (i > 0 && i < split.length - 1) {
+				split[i] = "➩" + split[i] + "➩";
+			} else if (i === split.length - 1 && i > 0) {
+				split[i] = "➩" + split[i];
 			}
 		}
+
+		return split;
 	}
 
 	chatRaw(msg: string, priority?: number) {

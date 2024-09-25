@@ -43,9 +43,10 @@ export class Bridge {
 		replyAuthor: string | undefined
 	) {
 		const replyString = replyAuthor ? ` [to] ${replyAuthor}` : "";
+		console.log(content);
 		const message = `${author}${replyString}: ${content}`;
 		await Promise.all([
-			this.minecraft.chat(`/gc ${message}`),
+			this.minecraft.chat(message),
 			this.handleCommand(content, isStaff)
 		]);
 	}
