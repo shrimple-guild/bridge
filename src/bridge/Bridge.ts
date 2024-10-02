@@ -39,7 +39,7 @@ export class Bridge {
 		replyAuthor: string | undefined
 	) {
 		const replyString = replyAuthor ? ` [to] ${replyAuthor}` : "";
-		const stufedContent = content.replace(this.urlRegex, (url) => STuF.encode(url));
+		const stufedContent = content.replace(this.urlRegex, (url) => `[LINK](${STuF.encode(url)})`);
 		const message = `${author}${replyString}: ${stufedContent}`;
 		await Promise.all([
 			this.minecraft.chat(message),
