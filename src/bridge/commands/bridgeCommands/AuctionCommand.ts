@@ -2,6 +2,7 @@ import { SimpleCommand } from "./Command.js"
 import { jaroWinkler as jaroDistance } from "jaro-winkler-typescript"
 import { titleCase } from "../../../utils/utils.js"
 import auctionAliases from "../../../data/auctionAliases.json" assert { type: "json" }
+import { config } from "../../../utils/config.js"
 
 let cachedLowestBins: { [id: string]: number } = {}
 
@@ -62,6 +63,7 @@ export class AuctionCommand implements SimpleCommand {
 
   async execute(args: string[]) {
     let formatter = Intl.NumberFormat("en", { notation: "compact" })
+    if (args.length < 2) return config.bridge.prefix + "lbin <item name>"
     let { id, name } = this.closestAuctionProduct(args)
     let lowestBin = cachedLowestBins[id]
     return `Lowest BIN for ${name} is ${formatter.format(lowestBin)}`
