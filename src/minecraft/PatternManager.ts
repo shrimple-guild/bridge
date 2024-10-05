@@ -2,6 +2,8 @@ import { LoggerCategory } from "../utils/Logger";
 import { MinecraftBot } from "./MinecraftBot";
 import { boopReceived } from "./patterns/BoopReceived.js";
 import { boopSent } from "./patterns/BoopSent.js";
+import { booReceived } from "./patterns/BooReceived.js";
+import { booSent } from "./patterns/BooSent.js";
 import { guildChat } from "./patterns/GuildChat.js";
 import { guildJoin } from "./patterns/GuildJoin.js";
 import { guildKick } from "./patterns/GuildKick.js";
@@ -18,6 +20,8 @@ import { spamProtection } from "./patterns/SpamProtection.js";
 
 export const PatternManager = {
 	patterns: [
+		booReceived,
+		booSent,
 		boopReceived,
 		boopSent,
 		guildChat,

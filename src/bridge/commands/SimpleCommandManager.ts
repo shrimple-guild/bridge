@@ -26,6 +26,7 @@ import { CollectionCommand } from "./bridgeCommands/CollectionCommand.js";
 import { BestiaryCommand } from "./bridgeCommands/BestiaryCommand.js";
 import { BoopCommand } from "./bridgeCommands/BoopCommand.js";
 import { antiSpamProtString } from "../../utils/utils.js";
+import { BooCommand } from "./bridgeCommands/BooCommand.js";
 
 export class SimpleCommandManager {
   commands: SimpleCommand[]
@@ -60,6 +61,9 @@ export class SimpleCommandManager {
       new ReloadCommand(bridge),
       new BoopCommand(bridge)
     )
+    if (new Date().getMonth() === 9 /*Starts at 0*/) {
+      this.commands.push(new BooCommand(bridge))
+    }
     if (config.guildRoles && config.guildRoles.length > 0) {
       this.commands.push(new UpdateRoleCommand(bridge, this.hypixelAPI))
     }

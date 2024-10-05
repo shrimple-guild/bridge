@@ -48,7 +48,7 @@ export class DiscordBot {
       }
       const stickers = message.stickers?.map(sticker => `<${sticker.name}>`)?.join(" ")
       if (stickers != null) {
-        content += `${stickers}`
+        content += `${stickers.trim()}`
       }
 
       logger?.info(`Discord chat: ${authorName} to ${replyAuthor}: ${content}`)
