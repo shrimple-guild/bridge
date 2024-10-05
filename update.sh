@@ -5,6 +5,8 @@ echo "Pulling latest changes from Git..."
 git pull || { echo "Failed to pull from Git"; exit 1; }
 
 # Run yarn prestart
+echo "Installing packages..."
+yarn || { echo "Failed to update packages."; exit 1;}
 echo "Running yarn prestart..."
 yarn prestart || { echo "Failed to run yarn prestart"; exit 1; }
 
