@@ -3,11 +3,8 @@ import { DiscordBot } from "../discord/discordBot.js";
 import { MinecraftBot } from "../minecraft/MinecraftBot.js";
 import { sleep } from "../utils/utils.js";
 import { LoggerCategory } from "../utils/Logger.js";
-//@ts-ignore
-import { STuF } from "stuf";
 
 export class Bridge {
-	private urlRegex = /(?:https?:\/\/|www\.)[^\s\/$.?#].[^\s]*/g;
 	constructor(
 		private discord: DiscordBot,
 		private minecraft: MinecraftBot,
@@ -39,11 +36,10 @@ export class Bridge {
 		replyAuthor: string | undefined
 	) {
 		const replyString = replyAuthor ? ` [to] ${replyAuthor}` : "";
-		const stufedContent = content.replace(this.urlRegex, (url) => `[LINK](${STuF.encode(url)})`);
-		const message = `${author}${replyString}: ${stufedContent}`;
+		const message = `${author}${replyString}: ${content}`;
 		await Promise.all([
 			this.minecraft.chat(message),
-			this.handleCommand(stufedContent, isStaff)
+			this.handleCommand(content, isStaff)
 		]);
 	}
 

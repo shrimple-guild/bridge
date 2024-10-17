@@ -8,6 +8,8 @@ import { imageLinkRegex } from "../utils/RegularExpressions.js";
 import { colorOf, cleanContent } from "../utils/utils.js";
 import { HypixelAPI } from "../api/HypixelAPI.js";
 import { config } from "../utils/config.js";
+//@ts-ignore
+import { STuF } from "stuf";
 
 export class DiscordBot {
   bridge?: Bridge
@@ -42,12 +44,13 @@ export class DiscordBot {
 
       let content = cleanContent(message.cleanContent)
 
-      const attachments = message.attachments.map((attachment) => attachment.url)?.join(" ")
-      if (attachments != null) {
+      const attachments = message.attachments.map((attachment) => `[LINK](${STuF.encode(attachment.url)})`)?.join(" ")
+      if (attachments) {
         content += ` ${attachments}`
       }
+
       const stickers = message.stickers?.map(sticker => `<${sticker.name}>`)?.join(" ")
-      if (stickers != null) {
+      if (stickers) {
         content += `${stickers.trim()}`
       }
 
