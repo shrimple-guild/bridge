@@ -115,7 +115,11 @@ export class MinecraftBot {
 
 	chatRaw(msg: string, priority?: number) {
 		this.throttle(() => {
-			this.bot?.chat(msg);
+			try {
+				this.bot?.chat(msg);
+			} catch (e) {
+				console.error(e);
+			}
 		})();
 	}
 
