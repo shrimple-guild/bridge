@@ -62,7 +62,7 @@ export class Bridge {
 	async chatAsBot(content: string, priority?: number) {
 		await Promise.all([
 			this.minecraft.chat(content, priority),
-			this.discord.sendGuildChatEmbed(this.minecraft.username, content, "BOT")
+			this.discord.sendGuildChatEmbed(this.minecraft.username, content?.replace(/<@[^>]+>$/g, "")?.trim(), "BOT")
 		]);
 	}
 
