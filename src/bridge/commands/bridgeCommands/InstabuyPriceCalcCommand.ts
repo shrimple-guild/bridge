@@ -3,24 +3,26 @@ import { HypixelAPI } from "../../../api/HypixelAPI.js"
 import { formatNumber } from "../../../utils/utils.js"
 
 
-export class InstabuyPriceCalcCommand implements SimpleCommand {
+export class InstabuyPriceCalcCommand extends SimpleCommand {
   aliases = ["ib", "bzib", "instabuy"]
 
-  constructor(private hypixelAPI: HypixelAPI) {}
+  constructor(private hypixelAPI: HypixelAPI) {
+    super()
+  }
 
   usage = "<amount>[k|m|b|s] <item name>"
 
   async execute(args: string[]) {
-    if (args.length < 2) return `Syntax: ${this.usage}`
+    if (args.length < 2) this.throwUsageError()
     const bazaar = this.hypixelAPI.bazaar
-    if (!bazaar) return `Bazaar isn't instantiated! Please report this!`
+    if (!bazaar) this.error(`Bazaar isn't instantiated! Please report this!`)
     const amtString = args.shift() || "0"
     const amtMult = this.amountMult(amtString)
     let amount = Math.round(parseFloat(amtString) * amtMult)
     const startingAmount = amount
-    if (isNaN(amount) || amount <= 0) return `Invalid amount, '${amtString}'!`
+    if (isNaN(amount) || amount <= 0) this.error(`Invalid amount, '${amtString}'!`)
     let product = await bazaar.getClosestProduct(args.join(" "))
-    if (!product) return `No product found!`
+    if (!product) this.error(`No product found!`)
     
     const buySummary = product.buySummary
     if (!buySummary.length) return `Could not buy any ${product.name}`

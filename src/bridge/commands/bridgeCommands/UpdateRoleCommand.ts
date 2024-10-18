@@ -6,16 +6,18 @@ import { SkyblockProfile } from "../../../api/SkyblockProfile.js"
 import { formatNumber, sleep } from "../../../utils/utils.js"
 import { HypixelGuildMember } from "../../../api/HypixelGuildMember.js"
 
-export class UpdateRoleCommand implements SimpleCommand {
+export class UpdateRoleCommand extends SimpleCommand {
   aliases = ["update"]
-  usage?: "[username|all]"
+  usage = "[username|all]"
 
   lastMassUpdate = -1
 
-  constructor(private bridge?: Bridge, private hypixelAPI?: HypixelAPI) { }
+  constructor(private bridge?: Bridge, private hypixelAPI?: HypixelAPI) {
+    super()
+  }
 
   async execute(args: string[], isStaff?: boolean, username?: string) {
-    if (!this.bridge) return "Bridge not configured, cannot use command!"
+    if (!this.bridge) this.error("Bridge not configured, cannot use command!")
     const specifiedUsername = args.shift()
     const updatingSelf = specifiedUsername?.toLowerCase() == username?.toLowerCase()
     if (specifiedUsername) {
@@ -23,9 +25,9 @@ export class UpdateRoleCommand implements SimpleCommand {
         if (updatingSelf) {
           return await this.update(specifiedUsername)
         } else if (specifiedUsername.toLowerCase() == "all") {
-          if (Date.now() - this.lastMassUpdate < 84600000) return "Please wait at least 24 hours between mass updates."
+          if (Date.now() - this.lastMassUpdate < 84600000) this.error("Please wait at least 24 hours between mass updates.")
           const members = await this.hypixelAPI?.fetchGuildMembers(config.bridge.hypixelGuild)
-          if (!members) return "Failed to fetch guild members."
+          if (!members) this.error("Failed to fetch guild members.")
           for (const member of members) {
             try {
               await this.updateMember(member)
@@ -41,12 +43,12 @@ export class UpdateRoleCommand implements SimpleCommand {
           return await this.update(specifiedUsername)
         }
       } else {
-        return "You must be staff to update the role of another member!"
+        this.error("You must be staff to update the role of another member!")
       }
     } else if (username) {
       return await this.update(username)
     } else {
-      return "No username provided. This command only works in-game (for non-staff members)."
+      this.error("No username provided. This command only works in-game (for non-staff members).")
     }
   }
 
@@ -71,14 +73,14 @@ export class UpdateRoleCommand implements SimpleCommand {
 
   private async update(username: string): Promise<string> {
     const uuid = await this.hypixelAPI?.mojang.fetchUuid(username)
-    if (!uuid) return "Invalid username provided."
+    if (!uuid) this.error("Invalid username provided.")
 
     const currentRole = (await this.hypixelAPI?.fetchGuildMembers(config.bridge.hypixelGuild) ?? []).find(member => member.uuid == uuid)?.rank
     const profile = await this.getHighestProfile(uuid)
-    if (!profile) return "Failed to fetch profile for user."
+    if (!profile) this.error("Failed to fetch profile for user.")
 
     const role = await this.getRole(profile)
-    if (!role) return "Failed to fetch role for user."
+    if (!role) this.error("Failed to fetch role for user.")
 
     const roleUpToDate = currentRole == role.name
     const nextRole = config.guildRoles[config.guildRoles.indexOf(role) - 1]

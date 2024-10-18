@@ -5,14 +5,16 @@ import { HypixelAPI } from "../../../api/HypixelAPI.js"
 
 const floorArgRegex = /^(f[0-7]|m[1-7])$/
 
-export class CataCommand implements SimpleCommand {
+export class CataCommand extends SimpleCommand {
   aliases = ["cata"]
   usage = "<player:[profile|bingo|main]> [class|f[0-7]|m[1-7]]"
 
-  constructor(private hypixelAPI: HypixelAPI) {}
+  constructor(private hypixelAPI: HypixelAPI) {
+    super()
+  }
 
   async execute(args: string[]) {
-    if (args.length < 1) return `Syntax: cata ${this.usage}`
+    if (args.length < 1) this.throwUsageError()
     const playerArg = args.shift()!.split(":")
     const playerName = playerArg[0]
     const profileArg = playerArg[1]?.toLowerCase()
@@ -27,7 +29,7 @@ export class CataCommand implements SimpleCommand {
       const type = commandArg.charAt(0) === "f" ? "normal" : "master"
       const dungeonFloor = profile.dungeons.floor(type, floor)
       const comps = dungeonFloor?.completions
-      if (!comps) return "No data found for this floor."
+      if (!comps) this.error("No data found for this floor.")
       const fastestRun = msToTime(dungeonFloor?.pb)
       const fastestRunS = msToTime(dungeonFloor?.sPb)
       const fastestRunSPlus = msToTime(dungeonFloor?.sPlusPb)

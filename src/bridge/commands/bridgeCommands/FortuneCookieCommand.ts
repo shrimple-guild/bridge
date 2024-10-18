@@ -1,7 +1,7 @@
 import { randItem } from "../../../utils/utils.js";
 import { SimpleCommand } from "./Command.js";
 
-export class FortuneCookieCommand implements SimpleCommand {
+export class FortuneCookieCommand extends SimpleCommand {
 	aliases = ["fc", "cookie"];
 
 	fortunes = [

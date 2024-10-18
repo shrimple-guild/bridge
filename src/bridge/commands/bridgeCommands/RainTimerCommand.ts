@@ -1,7 +1,7 @@
 import { SimpleCommand } from "./Command.js"
 import { secsToTime } from "../../../utils/utils.js"
 
-export class RainTimerCommand implements SimpleCommand {
+export class RainTimerCommand extends SimpleCommand {
     aliases = ["rain", "rt"]
 
     async execute(args: string[]) {

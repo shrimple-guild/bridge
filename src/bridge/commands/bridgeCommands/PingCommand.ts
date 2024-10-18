@@ -1,6 +1,6 @@
 import { SimpleCommand } from "./Command.js"
 
-export class PingCommand implements SimpleCommand {
+export class PingCommand extends SimpleCommand {
     aliases = ["ping"]
     
     async execute(args: string[]) {

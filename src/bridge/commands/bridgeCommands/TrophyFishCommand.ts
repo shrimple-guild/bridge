@@ -3,14 +3,16 @@ import { titleCase } from "../../../utils/utils.js"
 import { HypixelAPI } from "../../../api/HypixelAPI.js"
 import { trophyFishNames } from "../../../api/TrophyFish.js"
 
-export class TrophyFishCommand implements SimpleCommand {
-    aliases = ["trophy", "trophyfish", "tfish"]
+export class TrophyFishCommand extends SimpleCommand {
+    aliases = ["tfish", "trophy", "trophyfish"]
     usage = "<player:[profile|bingo|main]> [fish|noobf]"
 
-    constructor(private hypixelAPI: HypixelAPI) {}
+    constructor(private hypixelAPI: HypixelAPI) {
+      super()
+    }
 
     async execute(args: string[]) {
-      if (args.length < 1) return `Syntax: trophy ${this.usage}`
+      if (args.length < 1) this.throwUsageError()
       const playerArg = args.shift()!.split(":")
       const playerName = playerArg[0]
       const profileArg = playerArg[1]?.toLowerCase()
@@ -23,7 +25,7 @@ export class TrophyFishCommand implements SimpleCommand {
       const trophyFish = profile.trophyFish
       if (fish && fish != "noobf") {
         const fishMatch = this.guessFish(fish)
-        if (!fishMatch) return "Invalid fish."
+        if (!fishMatch) this.error("Invalid fish.")
         const name = fishMatch
         const fishData = trophyFish.get(name)
         message = `${name} caught for ${playerName} (${cuteName}): `

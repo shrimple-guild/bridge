@@ -44,11 +44,8 @@ export class Bridge {
 	}
 
 	async handleCommand(content: string, isStaff: boolean, username?: string) {
-		const response = await this.commandManager.execute(
-			content,
-			isStaff,
-			username
-		);
+		const response = await this.commandManager.execute(content, isStaff, username).catch((e) => `⚠ ${e}`);
+
 		if (response) {
 			if (response.startsWith("Pong!")) this.minecraft.chat(`/gc ${response}`);
 			else await this.chatAsBot(response);

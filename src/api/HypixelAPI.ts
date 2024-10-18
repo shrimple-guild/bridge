@@ -85,6 +85,11 @@ export class HypixelAPI {
 		});
 	}
 
+	async fetchElections(): Promise<ElectionResponse> {
+		const { data } = await this.fetchHypixel("/resources/skyblock/election");
+		return data as ElectionResponse;
+	}
+
 	async fetchHypixel(
 		endpoint: string,
 		parameters: { [key: string]: string } = {}

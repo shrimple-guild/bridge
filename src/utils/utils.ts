@@ -39,7 +39,11 @@ export function colorOf(hypixelRank: string | undefined): [red: number, green: n
 
 export function cleanContent(content: string) {
   return content
-    .replaceAll(emojiPattern, substring => ` :${emojiToName[substring.replace(/[\u{1F3FB}-\u{1F3FF}]/ug, '')] ?? "unknown_emoji"}: `)
+    .replaceAll(emojiPattern, substring => {
+      const emoji = emojiToName[substring.replace(/[\u{1F3FB}-\u{1F3FF}]/ug, '')]
+      if (!emoji) return ` ${substring} `
+      return ` :${emoji}: `
+    })
     .replace(/\s+/g, " ")
     .replace(/<(?:a)?(:\w{2,}:)\d{17,19}>/g, "$1")
     .replaceAll(/\bez\b/ig, "éz")

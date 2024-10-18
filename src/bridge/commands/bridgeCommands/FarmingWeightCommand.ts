@@ -2,14 +2,16 @@ import { SimpleCommand } from "./Command.js"
 import { HypixelAPI } from "../../../api/HypixelAPI.js"
 import { formatNumber } from "../../../utils/utils.js"
 
-export class FarmingWeightCommand implements SimpleCommand {
+export class FarmingWeightCommand extends SimpleCommand {
   aliases = ["fw", "fweight", "elite"]
   usage = "<player:[profile|bingo|main]>"
 
-  constructor(private hypixelAPI: HypixelAPI) {}
+  constructor(private hypixelAPI: HypixelAPI) {
+    super()
+  }
 
   async execute(args: string[]) {
-    if (args.length < 1) return `Syntax: fw ${this.usage}`
+    if (args.length < 1) this.throwUsageError()
     const playerArg = args.shift()!.split(":")
     const playerName = playerArg[0]
     const profileArg = playerArg[1]?.toLowerCase()
@@ -17,10 +19,10 @@ export class FarmingWeightCommand implements SimpleCommand {
     const uuid = await this.hypixelAPI.mojang.fetchUuid(playerName)
     const profiles = await this.hypixelAPI.fetchProfiles(uuid)
     const profile = profiles.getByQuery(profileArg)
+
     const weight = profile.farmingWeight
-    if (weight == undefined) {
-      return `The profile ${profile.cuteName} has collections disabled!`
-    }
+    if (!weight) this.error(`The profile ${profile.cuteName} has collections disabled!`)
+    
     const totalWeight = formatNumber(weight.total, 2, false)
     const collectionWeight = formatNumber(weight.collection, 2, false)
     const bestCollections = Object.entries(weight.collections).sort(([crop1, collection1], [crop2, collection2]) => (

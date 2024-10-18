@@ -83,7 +83,7 @@ export class SimpleCommandManager {
     this.logger?.info(`Command processing (staff: ${isStaff}): ${message}`)
     let response
     try {
-      response = await command.execute(args, isStaff, username)
+      response = await command.execute(args, isStaff, username).catch(e => `⚠ ${e.message ?? e}`)
     } catch (e: any) {
       this.logger?.error("Command error!", e)
       response = e.toString()

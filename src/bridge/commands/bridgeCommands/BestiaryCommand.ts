@@ -1,24 +1,26 @@
 import { HypixelAPI } from "../../../api/HypixelAPI"
-import { SimpleCommand } from "./Command"
+import { SimpleCommand } from "./Command.js"
 
-export class BestiaryCommand implements SimpleCommand {
-    aliases = ["bestiary", "be"]
+export class BestiaryCommand extends SimpleCommand {
+    aliases = ["be", "bestiary"]
     usage = "<player:[profile|bingo|main]> <type|mob>"
 
-    constructor(private hypixelAPI: HypixelAPI) { }
+    constructor(private hypixelAPI: HypixelAPI) {
+        super()
+    }
 
     async execute(args: string[]) {
-        if (args.length < 2) return `Syntax: bestiary ${this.usage}`
+        if (args.length < 2) this.throwUsageError()
         const playerArg = args.shift()!.split(":")
         const playerName = playerArg[0]
         const profileArg = playerArg[1]?.toLowerCase()
         const mainArg = args.join(" ")?.toLowerCase()!
 
         const uuid = await this.hypixelAPI.mojang.fetchUuid(playerName)
-        if (!uuid) return `Player not found`
+        if (!uuid) this.error(`Player not found`)
         const profiles = await this.hypixelAPI.fetchProfiles(uuid)
         const profile = profiles.getByQuery(profileArg)
-        if (!profile) return `Profile not found`
+        if (!profile) this.error(`Profile not found`)
         const byIsland = profile.bestiary.getByIsland(mainArg)
         if (byIsland) {
             let retStr = `${byIsland.name} bestiary for ${playerName} (${profile.cuteName}) k/d (kdr): `
@@ -34,7 +36,7 @@ export class BestiaryCommand implements SimpleCommand {
                 if (byMob.kdr) str += `(${byMob.kdr.toFixed(2)})`
                 return str
             } else {
-                return `Invalid type or mob: ${mainArg}`
+                this.error(`Invalid type or mob: ${mainArg}`)
             }
         }
     }

@@ -1,24 +1,26 @@
 import { Bridge } from "../../Bridge.js"
 import { SimpleCommand } from "./Command.js"
 
-export class BooCommand implements SimpleCommand {
+export class BooCommand extends SimpleCommand {
   aliases = ["boo"]
   lastBoo = 0
 
-  constructor(private bridge?: Bridge) {}
+  constructor(private bridge?: Bridge) {
+    super()
+  }
 
   async execute(args: string[]) {
-    if (new Date().getMonth() !== 9) return "It's not October! You can't scare people right now."
-    if (Date.now() - this.lastBoo < 60000 * 5) return "You're scaring too often! Wait a while before trying again."
-    if (args.length > 1) return "Too many arguments!"
-    const boop = args[0]
-    if (!boop) {
-      this.bridge?.chatAsBot("/boo demonhunter990")
+    if (new Date().getMonth() !== 9) this.error("It's not October! You can't scare people right now.")
+    if (Date.now() - this.lastBoo < 60000 * 5) this.error("You're scaring too often! Wait a while before trying again.")
+    if (!this.bridge) this.error("Bridge not set.")
+
+    const spook = args[0]
+    if (!spook) {
+      this.bridge.chatAsBot("/boo demonhunter990")
     } else {
-      this.bridge?.chatAsBot(`/boo ${boop}`)
+      this.bridge.chatAsBot(`/boo ${spook}`)
     }
     this.lastBoo = Date.now()
-    return undefined
   }
 } 
 

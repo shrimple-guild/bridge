@@ -5,8 +5,8 @@ export const booReceived: Pattern = {
   name: "booReceived",
   pattern: /^From (?:\[(?<hypixelRank>[\w+]+)\] )?(?<name>\w{2,16}): Boo!$/,
   execute: async (bot, groups) => {
-    const content = `AAH! You scared me, ${groups.name}! ${antiSpamProtString()}`
-    bot.chat(content)
+    const content = `AAH! You scared me, ${groups.name}!`
+    bot.chat(`${content} ${antiSpamProtString()}`)
     bot.sendToBridge(bot.username, content)
   }
 }

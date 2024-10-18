@@ -84,7 +84,7 @@ export class MinecraftBot {
 
 	onSpamProtection() {
 		if (Date.now() - this.spamProtectionLastSent < 120000) return;
-		this.chat("Spam protection moment");
+		this.chat("⚠ Spam protection moment");
 		this.spamProtectionLastSent = Date.now();
 	}
 

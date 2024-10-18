@@ -1,25 +1,27 @@
 import { HypixelAPI } from "../../../api/HypixelAPI"
-import { SimpleCommand } from "./Command"
+import { SimpleCommand } from "./Command.js"
 
-export class CollectionCommand implements SimpleCommand {
+export class CollectionCommand extends SimpleCommand {
     aliases = ["collection", "coll", "col"]
     usage = "<player:[profile|bingo|main]> <collection|item>"
 
-    constructor(private hypixelAPI: HypixelAPI) { }
+    constructor(private hypixelAPI: HypixelAPI) {
+        super()
+    }
 
     async execute(args: string[]) {
-        if (args.length < 2) return `Syntax: collection ${this.usage}`
+        if (args.length < 2) this.throwUsageError()
         const playerArg = args.shift()!.split(":")
         const playerName = playerArg[0]
         const profileArg = playerArg[1]?.toLowerCase()
         const mainArg = args.join(" ")?.toLowerCase()!
 
         const uuid = await this.hypixelAPI.mojang.fetchUuid(playerName)
-        if (!uuid) return `Player not found`
+        if (!uuid) this.error(`Player not found`)
         const profiles = await this.hypixelAPI.fetchProfiles(uuid)
         const profile = profiles.getByQuery(profileArg)
-        if (!profile) return `Profile not found`
-        if (!profile.collections.all.length) return `No collection data found for ${playerName} (${profile.cuteName})`
+        if (!profile) this.error(`Profile not found`)
+        if (!profile.collections.all.length) this.error(`No collection data found for ${playerName} (${profile.cuteName})`)
         const byCategory = profile.collections.getByCategory(mainArg)
         if (byCategory.length) {
             let retStr = `${mainArg} completion for ${playerName} (${profile.cuteName}): `
@@ -32,7 +34,7 @@ export class CollectionCommand implements SimpleCommand {
             if (byItem) {
                 return `${byItem.name} data for ${playerName} (${profile.cuteName}): ${byItem.unlockedTier}/${byItem.maxTier} (${byItem.amtString})`
             } else {
-                return `Invalid collection category or item: ${mainArg}`
+                this.error(`Invalid collection category or item: ${mainArg}`)
             }
         }
         
