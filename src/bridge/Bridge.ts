@@ -50,7 +50,7 @@ export class Bridge {
 			username
 		);
 		if (response) {
-			if (response.startsWith("Pong!")) this.minecraft.chat(`/gc ${response}`);
+			if (response.startsWith("Pong!")) this.minecraft.chat(`/gc ${response.replace(/<@[^>]+>$/g, "").trim()}`);
 			else await this.chatAsBot(response);
 		}
 	}
