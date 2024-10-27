@@ -4,6 +4,7 @@ import { boopReceived } from "./patterns/BoopReceived.js";
 import { boopSent } from "./patterns/BoopSent.js";
 import { booReceived } from "./patterns/BooReceived.js";
 import { booSent } from "./patterns/BooSent.js";
+import { gListOnlineMembersRegex, gListRankMembersRegex, gListRankRegex, gListTotalMembersRegex } from "./patterns/GListCommandRegex.js";
 import { guildChat } from "./patterns/GuildChat.js";
 import { guildJoin } from "./patterns/GuildJoin.js";
 import { guildKick } from "./patterns/GuildKick.js";
@@ -37,29 +38,49 @@ export const PatternManager = {
 		privateMessageFailed,
 		privateMessageFailedOffline,
 		questTierCompleted,
-		spamProtection
+		spamProtection,
+		gListRankRegex,
+		gListRankMembersRegex,
+		gListTotalMembersRegex,
+		gListOnlineMembersRegex
 	],
 
 	execute: async (
 		bot: MinecraftBot,
-		message: string,
+		formattedMessage: string,
+		plainMessage: string,
 		logger?: LoggerCategory
 	) => {
-		message = message.trim();
+		plainMessage = plainMessage.trim();
+		formattedMessage = formattedMessage.trim();
+
 		for (const pattern of PatternManager.patterns) {
-			const patternArray = Array.isArray(pattern.pattern)
-				? pattern.pattern
-				: [pattern.pattern];
-			const matchingPattern = patternArray.find((pattern) =>
+			const message = pattern.raw ? formattedMessage : plainMessage;
+			const patterns = Array.isArray(pattern.pattern) ? pattern.pattern : [pattern.pattern];
+
+			const matchingPattern = patterns.find((pattern) =>
 				pattern.test(message)
 			);
-			if (matchingPattern != null) {
-				logger?.info(`Matched ${pattern.name}: ${message}`);
-				const groups = message.match(matchingPattern)?.groups!;
-				await pattern.execute(bot, groups);
+
+			if (matchingPattern) {
+				logger?.info(`Matched ${pattern.name}: ${plainMessage}`);
+				const groups = [];
+				matchingPattern.lastIndex = 0;
+				if (matchingPattern.global) {
+					let match;
+					while ((match = matchingPattern.exec(message)) !== null) {
+						groups.push(match.groups!);
+					}
+				} else {
+					const match = message.match(matchingPattern);
+					if (match) {
+						groups.push(match.groups!);
+					}
+				}
+				await pattern.execute(bot, groups[0], groups);
 				return;
 			}
 		}
-		logger?.debug(`Unmatched: ${message}`);
+		logger?.debug(`Unmatched: ${plainMessage}`);
 	}
 };

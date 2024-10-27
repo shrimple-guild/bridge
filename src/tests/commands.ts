@@ -24,12 +24,12 @@ await testAPI.init(itemNames)
 const commandManager = new SimpleCommandManager(testAPI)
 
 const results = await Promise.all([
-  commandManager.execute("_bz grand", false), 
-  commandManager.execute("_bz p jasper", false)
+  commandManager.execute("_bz grand", false, false), 
+  commandManager.execute("_bz p jasper", false, false)
 ])
 
 console.log(results)
 
 rl.on("line", async (input) => {
-  console.log(await commandManager.execute(input, true))
+  console.log(await commandManager.execute(input, false, true))
 })

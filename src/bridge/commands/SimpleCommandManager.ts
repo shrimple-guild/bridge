@@ -27,6 +27,7 @@ import { BestiaryCommand } from "./bridgeCommands/BestiaryCommand.js";
 import { BoopCommand } from "./bridgeCommands/BoopCommand.js";
 import { antiSpamProtString } from "../../utils/utils.js";
 import { BooCommand } from "./bridgeCommands/BooCommand.js";
+import { GListCommand, GOnlineCommand } from "./bridgeCommands/GuildStatusCommands.js";
 
 export class SimpleCommandManager {
   commands: SimpleCommand[]
@@ -57,9 +58,11 @@ export class SimpleCommandManager {
 
   addBridgeCommands(bridge: Bridge) {
     this.commands.push(
-      new RawCommand(bridge), 
+      new RawCommand(bridge),
       new ReloadCommand(bridge),
-      new BoopCommand(bridge)
+      new BoopCommand(bridge),
+      new GListCommand(bridge),
+      new GOnlineCommand(bridge)
     )
     if (new Date().getMonth() === 9 /*Starts at 0*/) {
       this.commands.push(new BooCommand(bridge))
@@ -69,7 +72,7 @@ export class SimpleCommandManager {
     }
   }
 
-  async execute(message: string, isStaff: boolean, username?: string) {
+  async execute(message: string, isStaff: boolean, isDiscord: boolean, username?: string) {
     const prefix = this.prefix ?? config.bridge.prefix
     if (!message.startsWith(prefix)) return
     const commStr = message.substring(prefix.length)
@@ -79,6 +82,7 @@ export class SimpleCommandManager {
     const command = this.commands.find(comm => comm.aliases.includes(commandName))
 
     if (!command) return `Command ${commandName} not found, try ${prefix}help`
+    if (command.discordOnly && !isDiscord) return "This command is not available ingame."
 
     this.logger?.info(`Command processing (staff: ${isStaff}): ${message}`)
     let response

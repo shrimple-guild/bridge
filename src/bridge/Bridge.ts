@@ -6,7 +6,7 @@ import { LoggerCategory } from "../utils/Logger.js";
 
 export class Bridge {
 	constructor(
-		private discord: DiscordBot,
+		public discord: DiscordBot,
 		private minecraft: MinecraftBot,
 		private commandManager: SimpleCommandManager,
 		private logger: LoggerCategory
@@ -25,7 +25,7 @@ export class Bridge {
 	) {
 		await Promise.all([
 			this.discord.sendGuildChatEmbed(username, content, colorAlias, guildRank),
-			this.handleCommand(content, isStaff, username)
+			this.handleCommand(content, isStaff, false, username)
 		]);
 	}
 
@@ -39,12 +39,12 @@ export class Bridge {
 		const message = `${author}${replyString}: ${content}`;
 		await Promise.all([
 			this.minecraft.chat(message),
-			this.handleCommand(content, isStaff)
+			this.handleCommand(content, isStaff, true)
 		]);
 	}
 
-	async handleCommand(content: string, isStaff: boolean, username?: string) {
-		const response = await this.commandManager.execute(content, isStaff, username).catch((e) => `⚠ ${e}`);
+	async handleCommand(content: string, isStaff: boolean, isDiscord: boolean, username?: string) {
+		const response = await this.commandManager.execute(content, isStaff, isDiscord, username).catch((e) => `⚠ ${e}`);
 
 		if (response) {
 			if (response.startsWith("Pong!")) this.minecraft.chat(`/gc ${response}`);

@@ -6,6 +6,8 @@ import { PatternManager } from "./PatternManager.js";
 import { LoggerCategory } from "../utils/Logger.js";
 import { config } from "../utils/config.js";
 import pThrottle from "p-throttle";
+import { ChatMessage } from "prismarine-chat";
+import { gListData } from "../bridge/commands/bridgeCommands/GuildStatusCommands.js";
 
 export class MinecraftBot {
 	bridge?: Bridge;
@@ -44,7 +46,7 @@ export class MinecraftBot {
 			version: "1.17.1",
 			checkTimeoutInterval: 10000
 		});
-		bot.on("messagestr", (chat) => this.onChat(chat));
+		bot.on("message", (raw) => this.onChat(raw.toMotd(), raw.toString()));
 		bot.on("end", (reason) => this.onEnd(reason));
 		bot.once("spawn", () => this.onSpawn());
 		this.bot = bot;
@@ -150,14 +152,17 @@ export class MinecraftBot {
 
 	async onSpawn() {
 		this.chatRaw("/limbo");
+		// set values for gListData
+		gListData.listening = true;
+		this.chatRaw("/g list");
 	}
 
 	isPrivileged(username: string) {
 		return this.privilegedUsers?.includes(username) ?? false;
 	}
 
-	onChat(message: string) {
-		const matchedPattern = PatternManager.execute(this, message, this.logger);
+	onChat(rawMessage: string, plainMessage: string) {
+		PatternManager.execute(this, rawMessage, plainMessage, this.logger);
 	}
 
 	quit() {
