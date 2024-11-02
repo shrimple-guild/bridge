@@ -15,7 +15,7 @@ import { guildRankGift } from "./patterns/GuildRankGift.js";
 import { limbo } from "./patterns/Limbo.js";
 import { minecraftJoinLeave } from "./patterns/MinecraftJoinLeave.js";
 import { privateMessage } from "./patterns/PrivateMessage.js";
-import { privateMessageFailed, privateMessageFailedOffline } from "./patterns/PrivateMessageFailed.js";
+import { privateMessageFailed, privateMessageFailedOffline, privateMessageFailedBlocked } from "./patterns/PrivateMessageFailed.js";
 import { questTierCompleted } from "./patterns/QuestTierCompleted.js";
 import { spamProtection } from "./patterns/SpamProtection.js";
 
@@ -37,6 +37,7 @@ export const PatternManager = {
 		privateMessage,
 		privateMessageFailed,
 		privateMessageFailedOffline,
+		privateMessageFailedBlocked,
 		questTierCompleted,
 		spamProtection,
 		gListRankRegex,
