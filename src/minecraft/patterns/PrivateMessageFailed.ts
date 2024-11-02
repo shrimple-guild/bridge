@@ -20,3 +20,13 @@ export const privateMessageFailedOffline: Pattern = {
       bot.sendToBridge(bot.username, content)
     }
   }
+
+  export const privateMessageFailedBlocked: Pattern = {
+    name: "privateMessageFailedBlocked",
+    pattern: /^That player blocked you!/,
+    execute: async (bot, groups) => {
+      const content = `⚠ This player has blocked me :(`
+      bot.chat(`${content} ${antiSpamProtString()}`)
+      bot.sendToBridge(bot.username, content)
+    }
+  }
