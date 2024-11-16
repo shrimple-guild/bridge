@@ -32,6 +32,14 @@ class GListData {
     const member = this.members.find(m => m.username === username)
     if (member) member.guildRank = rank
   }
+
+  clear() {
+    this.members = []
+    this.knownRanks = []
+    this.currentRank = ""
+    this.totalMembers = 0
+    this.onlineMembers = 0
+  }
 }
 
 export const gListData = new GListData();
@@ -100,6 +108,24 @@ export class GOnlineCommand extends SimpleCommand {
 
     this.bridge!.discord.sendSimpleEmbed("Guild Online", embedMessage)
     return "Sent online guild members to bridge channel."
+  }
+}
+
+export class GResetCommand extends SimpleCommand {
+  aliases = ["resetglist"]
+  discordOnly = true
+
+  constructor(private bridge?: Bridge) {
+    super()
+  }
+
+  async execute(args: string[]) {
+    if (!this.bridge) this.error("Bridge not configured, cannot use command!");
+
+    gListData.clear()
+    gListData.listening = true
+    this.bridge.chatMinecraftRaw("/g list")
+    return "Guild list data reset."
   }
 }
 

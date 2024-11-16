@@ -153,6 +153,7 @@ export class MinecraftBot {
 	async onSpawn() {
 		this.chatRaw("/limbo");
 		// set values for gListData
+		gListData.clear();
 		gListData.listening = true;
 		this.chatRaw("/g list");
 	}
