@@ -27,7 +27,7 @@ import { BestiaryCommand } from "./bridgeCommands/BestiaryCommand.js";
 import { BoopCommand } from "./bridgeCommands/BoopCommand.js";
 import { antiSpamProtString } from "../../utils/utils.js";
 import { BooCommand } from "./bridgeCommands/BooCommand.js";
-import { GListCommand, GOnlineCommand } from "./bridgeCommands/GuildStatusCommands.js";
+import { GListCommand, GOnlineCommand, GResetCommand } from "./bridgeCommands/GuildStatusCommands.js";
 
 export class SimpleCommandManager {
   commands: SimpleCommand[]
@@ -62,7 +62,8 @@ export class SimpleCommandManager {
       new ReloadCommand(bridge),
       new BoopCommand(bridge),
       new GListCommand(bridge),
-      new GOnlineCommand(bridge)
+      new GOnlineCommand(bridge),
+      new GResetCommand(bridge)
     )
     if (new Date().getMonth() === 9 /*Starts at 0*/) {
       this.commands.push(new BooCommand(bridge))
