@@ -83,6 +83,8 @@ export class UpdateRoleCommand extends SimpleCommand {
     if (!role) this.error("Failed to fetch role for user.")
 
     const roleUpToDate = currentRole == role.name
+    const roleWithoutReq = !config.guildRoles.find(role => role.name == currentRole)
+
     const nextRole = config.guildRoles[config.guildRoles.indexOf(role) - 1]
     if (!nextRole && roleUpToDate) return "You are already maxed out buddy!"
 
@@ -90,9 +92,17 @@ export class UpdateRoleCommand extends SimpleCommand {
     const sbLvl = nextRole ? Math.max(0, (nextRole.sbLevel - (profile.skyblockLevel ?? 0)) / 100) : 0
 
     let prefixMsg;
-    if (!config.guildRoles.find(role => role.name == currentRole)) prefixMsg = "Your role does not have requirements! But you are"
-    if (roleUpToDate) prefixMsg = "Role is already up to date!"
-    if (prefixMsg) return prefixMsg + ` Missing ${formatNumber(fishXp, 2, true)} Fishing XP and ${sbLvl} Skyblock Levels for ${nextRole.name}.`
+
+    if (roleWithoutReq) {
+      prefixMsg = "Your role does not have requirements! But you are "
+      if (nextRole) prefixMsg += `missing ${formatNumber(fishXp, 2, true)} Fishing XP and ${sbLvl} Skyblock Levels for ${nextRole.name}.`
+      else prefixMsg += "already maxed out!"
+      return prefixMsg
+    }
+    
+    if (roleUpToDate) {
+      return `Role is already up to date! Missing ${formatNumber(fishXp, 2, true)} Fishing XP and ${sbLvl} Skyblock Levels for ${nextRole.name}.`
+    }
 
     console.log(`Updating role for ${username} to ${role.name}.`)
     await this.bridge!.chatMinecraftRaw(`/g setrank ${username} ${role.name}`)
