@@ -37,12 +37,12 @@ export function colorOf(hypixelRank: string | undefined): [red: number, green: n
   return colorMap[hypixelRank ?? "DEFAULT"]!
 }
 
-export function cleanContent(content: string) {
+export function cleanContent(content: string, noColons = false) {
   return content
     .replaceAll(emojiPattern, substring => {
       const emoji = emojiToName[substring.replace(/[\u{1F3FB}-\u{1F3FF}]/ug, '')]
       if (!emoji) return ` ${substring} `
-      return ` :${emoji}: `
+      return noColons ? ` ${emoji} ` : ` :${emoji}: `
     })
     .replace(/\s+/g, " ")
     .replace(/<(?:a)?(:\w{2,}:)\d{17,19}>/g, "$1")

@@ -36,11 +36,19 @@ export class DiscordBot {
     this.client.on(Events.MessageCreate, async (message) => {
       if (!this.bridge || !message.inGuild() || message.author.bot) return
       if (this.guildBridgeChannelId != message.channelId) return
+      let authorName;
       const author = message.member
       if (!author) return
-      const authorName = message.member.displayName.trim() ?? message.author.username.trim()
+
+      authorName = cleanContent(author.displayName ?? author.user.username ?? author.user.tag)
+      if (!authorName) {
+        authorName = cleanContent(message.author.displayName ?? message.author.username ?? message.author.tag)
+      }
+      
+      if (!authorName) return;
+
       const reply = await message.fetchReference().catch(e => undefined)
-      const replyAuthor = reply ? this.getAuthorName(reply) : undefined
+      const replyAuthor = reply ? cleanContent(this.getAuthorName(reply), true) : undefined
 
       let content = cleanContent(message.cleanContent)
 
@@ -94,7 +102,8 @@ export class DiscordBot {
   }
 
   private getAuthorName(message: Message<true>): string {
-    const messageAuthor = message.member?.displayName ?? message.author.tag
+    // if a server has >1000 members, it doesnt know about the offline ones (member in a guild) so you need to use author (discord user)
+    const messageAuthor = message.member?.displayName ?? message.author.displayName ?? message.author.tag
     if (message.author.id != this.client.user?.id) return messageAuthor
     return message.embeds.at(0)?.author?.name ?? messageAuthor
   }
