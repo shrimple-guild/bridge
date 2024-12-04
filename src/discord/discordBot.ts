@@ -38,7 +38,7 @@ export class DiscordBot {
       if (this.guildBridgeChannelId != message.channelId) return
       const author = message.member
       if (!author) return
-      const authorName = message.member.displayName
+      const authorName = message.member.displayName.trim() ?? message.author.username.trim()
       const reply = await message.fetchReference().catch(e => undefined)
       const replyAuthor = reply ? this.getAuthorName(reply) : undefined
 
@@ -54,7 +54,7 @@ export class DiscordBot {
         content += `${stickers.trim()}`
       }
 
-      logger?.info(`Discord chat: ${authorName} to ${replyAuthor}: ${content}`)
+      logger?.info(`Discord chat: ${authorName}${replyAuthor ? ` to ${replyAuthor}` : ""}: ${content}`)
       await this.bridge.onDiscordChat(authorName, content, this.isStaff(author), replyAuthor)
     })
   }
