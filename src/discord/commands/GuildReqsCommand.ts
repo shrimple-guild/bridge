@@ -130,7 +130,7 @@ export class GuildReqsCommand implements SlashCommand {
 }
 
 function stripUserPath(text: string) {
-	return text.replaceAll(/.*src/g, "");
+	return text.replaceAll(/.*(src|dist)/g, "");
 }
 
 function boolToCheck(bool: boolean) {
