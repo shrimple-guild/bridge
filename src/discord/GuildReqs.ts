@@ -506,8 +506,10 @@ export async function getGuildRequirementResults(profile: SkyblockProfile) {
 		"gold",
 		"diamond"
 	] as const;
-	reqs.trophyHunter =
-		trophyHunterLevels[Math.max(...(member.trophy_fish?.rewards ?? [0]))];
+
+	const tfish = member.trophy_fish?.rewards?.filter((level) => level < 5) ?? [];
+
+	reqs.trophyHunter = trophyHunterLevels[Math.max(...tfish)];
 
 	const items = await getItemsInInventories(member);
 
