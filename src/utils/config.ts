@@ -19,6 +19,7 @@ type Config = {
         guild: string;
         channel: string;
         shutdownWebhook: string;
+        loggerWebhook: string;
         verification: {
             channelId: string;
             unverifiedRole: string;

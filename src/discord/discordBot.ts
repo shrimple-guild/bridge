@@ -12,6 +12,8 @@ import { config } from "../utils/config.js";
 import { STuF } from "stuf";
 
 export class DiscordBot {
+  private urlRegex = /(?:https?:\/\/|www\.)[^\s\/$.?#].[^\s]*/g;
+
   bridge?: Bridge
 
   constructor(
@@ -50,7 +52,7 @@ export class DiscordBot {
       const reply = await message.fetchReference().catch(e => undefined)
       const replyAuthor = reply ? cleanContent(this.getAuthorName(reply), true) : undefined
 
-      let content = cleanContent(message.cleanContent)
+      let content = cleanContent(message.cleanContent).replace(this.urlRegex, (url) => `[LINK](${STuF.encode(url)})`)
 
       const attachments = message.attachments.map((attachment) => `[LINK](${STuF.encode(attachment.url)})`)?.join(" ")
       if (attachments) {

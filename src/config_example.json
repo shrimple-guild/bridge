@@ -12,6 +12,7 @@
     "guild": "snowflake",
     "channel": "snowflake",
     "shutdownWebhook": "snowflake",
+    "loggerWebhook": "snowflake",
     "verification": {
       "channelId": "snowflake",
       "unverifiedRole": "snowflake",

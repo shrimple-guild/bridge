@@ -17,6 +17,9 @@ import { sleep } from "./utils/utils.js";
 import { GuildReqsCommand } from "./discord/commands/GuildReqsCommand.js";
 
 const logger = new Logger();
+
+export const general = logger.category("General");
+
 const database = await Database.create("./src/database", migrations);
 
 const hypixelAPI = new HypixelAPI(

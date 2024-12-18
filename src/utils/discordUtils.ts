@@ -25,4 +25,5 @@ export async function postDisconnectEmbed() {
   await client.send({
     embeds: [simpleEmbed("Shutdown", "❌ Bot offline.").toJSON()]
   }).catch(e => console.error(e))
+  client.destroy()
 }
