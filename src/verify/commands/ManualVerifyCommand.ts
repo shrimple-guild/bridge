@@ -30,7 +30,7 @@ export class ManualVerifyCommand implements SlashCommand {
       const username = interaction.options.getString("username", false)
       if (!member) throw new Error("Couldn't find this member! Weird!")
       if (username == null) {
-        await this.verification.verify(member, undefined)
+        await this.verification.verify(member)
         await interaction.followUp({ embeds: [statusEmbed("success", `Verified \`${member.user.tag}\` without a Minecraft account.`)] })
         return
       }
@@ -43,7 +43,7 @@ export class ManualVerifyCommand implements SlashCommand {
         await this.verification.unverify(interaction.guild, member ?? previousDiscordId)
       }
       
-      await this.verification.verify(member, uuid)
+      await this.verification.link(member, uuid)
       await interaction.followUp({ embeds: [statusEmbed("success", `Verified \`${member.user.tag}\` as \`${username}\`.`)] })
     } catch (e) {
       if (e instanceof Error) {

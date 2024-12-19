@@ -1,13 +1,14 @@
 import db from "better-sqlite3"
 import { existsSync, mkdirSync } from "fs"
 import { migrations } from "./migrations.js"
+import { IDatabase } from "./IDatabase.js"
 
 type Migration = {
   init: { script: string },
   migrations: { version: number, script: string }[]
 }
 
-export class Database {
+export class Database implements IDatabase {
 
   private database: db.Database
   private backupsPath: string
@@ -29,8 +30,8 @@ export class Database {
     return database
   }
 
-  prepare(query: string) {
-    return this.database.prepare(query)
+  prepare<I extends unknown[], O>(query: string) {
+    return this.database.prepare<I, O>(query)
   }
 
   exec(statements: string) {

@@ -1,4 +1,3 @@
-import { Statement } from "better-sqlite3"
 import { Client, Events, Guild, GuildMember, PermissionFlagsBits } from "discord.js"
 import { HypixelAPI } from "../api/HypixelAPI.js"
 import { Database } from "../database/database.js"
@@ -8,6 +7,8 @@ import { SyncCommand } from "./commands/SyncCommand.js"
 import { UnverifyCommand } from "./commands/UnverifyCommand.js"
 import { VerifyCommand } from "./commands/VerifyCommand.js"
 import { VerifyEmbedCommand } from "./commands/VerifyEmbedCommand.js"
+import { LinkService } from "./LinkService.js"
+import { VerificationService } from "./VerificationService.js"
 
 type VerificationConfig = {
   unverifiedRole: string,
@@ -16,10 +17,8 @@ type VerificationConfig = {
 }
 
 export class Verification {
-  private insertUser: Statement
-  private deleteUser: Statement
-  private selectDiscordId: Statement
-  private selectMinecraftId: Statement
+  private linkService: LinkService;
+  private verificationService: VerificationService;
 
   constructor(
     client: Client<true>,
@@ -28,13 +27,9 @@ export class Verification {
     hypixelAPI: HypixelAPI,
     slashCommandManager: SlashCommandManager
   ) {
-    this.insertUser = db.prepare(`
-      INSERT INTO DiscordMembers (guildId, discordId, minecraftId) VALUES (:guildId, :discordId, :minecraftId)
-      ON CONFLICT (guildId, discordId) DO UPDATE SET minecraftId = excluded.minecraftId
-    `)
-    this.deleteUser = db.prepare(`DELETE FROM DiscordMembers WHERE discordId = :discordId AND guildId = :guildId`)
-    this.selectDiscordId = db.prepare(`SELECT discordId FROM DiscordMembers WHERE minecraftId = :minecraftId AND guildId = :guildId`)
-    this.selectMinecraftId = db.prepare(`SELECT minecraftId FROM DiscordMembers WHERE discordId = :discordId AND guildId = :guildId`)
+
+    this.verificationService = new VerificationService(db);
+    this.linkService = new LinkService(db);
 
     slashCommandManager.register(
       new ManualVerifyCommand(this, hypixelAPI),
@@ -53,15 +48,15 @@ export class Verification {
   }
 
   getMinecraft(guild: Guild, discordId: string) {
-    return (this.selectMinecraftId.get({ guildId: guild.id, discordId: discordId }) as any)?.minecraftId as string | undefined
+    return this.linkService.getMinecraftUuid(discordId)
   }
 
   getDiscord(guild: Guild, minecraftId: string) {
-    return (this.selectDiscordId.get({ guildId: guild.id, minecraftId: minecraftId }) as any)?.discordId as string | undefined
+    return this.linkService.getDiscordId(minecraftId)
   }
 
   isVerified(member: GuildMember) {
-    return this.getMinecraft(member.guild, member.id) != null
+    return this.verificationService.isVerified(member.guild.id, member.user.id)
   }
 
   async sync(member: GuildMember) {
@@ -74,18 +69,23 @@ export class Verification {
     }
   }
 
-  async verify(member: GuildMember, uuid?: string) {
-    try {
-      this.insertUser.run({ guildId: member.guild.id, discordId: member.id, minecraftId: uuid })
+  async verify(member: GuildMember) {
+    const didVerify = this.verificationService.verifyMember(member.guild.id, member.user.id)
+  }
+
+  async link(member: GuildMember, uuid: string) {
+    const didLink = this.linkService.linkMember(member.user.id, uuid)
+    if (didLink) {
       await this.setVerifiedRole(member)
-    } catch (e) {
+    } else {
       throw new Error("This Minecraft account is already linked to another Discord account. Please unlink the other account.")
     }
   }
 
   async unverify(guild: Guild, member: GuildMember | string) {
-    const memberId = (member instanceof GuildMember) ? member.id : member
-    this.deleteUser.run({ guildId: guild.id, discordId: memberId })
+    const memberId = (member instanceof GuildMember) ? member.user.id : member
+    this.verificationService.unverifyMember(guild.id, memberId)
+    this.linkService.unlinkMember(memberId)
     if (member instanceof GuildMember) {
       await this.setUnverifiedRole(member)
     }

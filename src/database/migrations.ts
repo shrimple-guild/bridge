@@ -71,6 +71,30 @@ export const migrations = {
           FOREIGN KEY (profileId) REFERENCES Profiles(id)
         );
       `
+    },
+    {
+      version: 4,
+      script: `
+        CREATE TABLE verified_members (
+          guild_id TEXT NOT NULL,
+          discord_id TEXT NOT NULL,
+          UNIQUE (guild_id, discord_id)
+        );
+
+        CREATE TABLE linked_members (
+          discord_id TEXT NOT NULL UNIQUE,
+          minecraft_id TEXT NOT NULL UNIQUE
+        );
+
+        INSERT INTO verified_members (guild_id, discord_id)
+        SELECT guildId, discordId
+        FROM DiscordMembers;
+
+        INSERT INTO linked_members (discord_id, minecraft_id)
+        SELECT discordId, minecraftId
+        FROM DiscordMembers
+        WHERE minecraftId IS NOT NULL;
+      `
     }
   ]
 }

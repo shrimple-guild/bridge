@@ -30,7 +30,7 @@ export class VerifyCommand implements SlashCommand {
         if (interaction.user.discriminator == "0") errorString += `**Due to the Discord username update, you may need to update your linked Discord username in-game.**`
         throw new Error(errorString)
       }
-      await this.verification.verify(interaction.member, uuid)
+      await this.verification.link(interaction.member, uuid)
       await interaction.followUp({ embeds: [statusEmbed("success", `Verified as \`${username}\`.`)] })
     } catch (e) {
       if (e instanceof Error) {
