@@ -65,7 +65,7 @@ export class Verification {
   }
 
   isVerified(member: GuildMember) {
-    return this.verificationService.isVerified(member.guild.id, member.user.id)
+    return this.linkService.isLinked(member.user.id) || this.verificationService.isVerified(member.guild.id, member.user.id)
   }
 
   async sync(member: GuildMember) {

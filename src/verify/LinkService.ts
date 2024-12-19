@@ -56,6 +56,16 @@ export class LinkService {
   }
 
   /**
+   * Returns if the Discord member represented by the specified ID is linked to a Minecraft account.
+   * 
+   * @param {string} discordId - the Discord ID of the member
+   * @returns true if the discordId is linked to a member
+   */
+  isLinked(discordId: string): boolean {
+    return this.getMinecraftUuid(discordId) != null
+  }
+
+  /**
    * Retrieves the Discord ID associated with a Minecraft account.
    * 
    * @param {string} minecraftId - The Minecraft UUID of the player
