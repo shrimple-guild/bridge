@@ -1,13 +1,14 @@
-import { AttachmentBuilder, ChatInputCommandInteraction, ColorResolvable, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { AttachmentBuilder, ButtonStyle, ChatInputCommandInteraction, ColorResolvable, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { statusEmbed } from "../../utils/discordUtils.js";
 import { Verification } from "../Verification.js";
 import { SlashCommand } from "../../discord/commands/SlashCommand.js";
+import { ActionRowBuilder, ButtonBuilder } from "@discordjs/builders";
 
 export class VerifyEmbedCommand implements SlashCommand {
   data = new SlashCommandBuilder()
-    .setName("verifyembed")
+    .setName("setlinkchannel")
     .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
-    .setDescription("Create an informational embed for a verification channel.")
+    .setDescription("Sets this channel to a link channel, creating a link embed.")
 
   constructor(private verification?: Verification) { }
 
@@ -15,11 +16,10 @@ export class VerifyEmbedCommand implements SlashCommand {
     try {
       await interaction.deferReply({ ephemeral: true })
       if (!this.verification) throw new Error("Improper configuration! Please report this to staff.")
-      const file = new AttachmentBuilder("./assets/verificationTutorial.mp4", { name: "attachment.mp4" })
       const embed = new EmbedBuilder()
-        .setTitle("Verification")
+        .setTitle("Link")
         .setDescription(`
-Welcome! To gain access to all channels, please use **/verify [IGN]** in this channel after linking your Minecraft account on Hypixel.
+Welcome! To gain access to all channels, please click the button below and enter your Minecraft IGN after linking your Minecraft account on Hypixel.
 
 If your account is not linked on Hypixel:
 1. Join the Hypixel minecraft server.
@@ -30,12 +30,16 @@ If your account is not linked on Hypixel:
 
 Alternatively, you can use the "/discord" command on the Hypixel server and link through their website.
 
-If you are having issues with **/verify [IGN]** and have attempted to link your account on Hypixel, feel free to contact staff and we can manually verify you. Thanks!
+If you are having issues **and** have attempted the steps listed above, please contact staff and we can manually verify you. Thanks!
 
-*Remember, this server will never require you to link your Microsoft account or request your Minecraft account information. Do not enter your information if you see this!*
+*Remember, we will never require you to link your Microsoft account or request your Minecraft account information. Do not enter this kind of information anywhere!*
 `)
         .setColor("DarkBlue")
-      await interaction.channel?.send({ embeds: [embed] })?.catch(e => console.error(e))
+        
+      const linkButton = new ButtonBuilder().setCustomId("button:link-mc-discord").setLabel("Link").setStyle(ButtonStyle.Primary)
+      const buttonRow = new ActionRowBuilder<ButtonBuilder>().addComponents(linkButton)
+        
+      await interaction.channel?.send({ embeds: [embed], components: [buttonRow]})?.catch(e => console.error(e))
       await interaction.followUp({ embeds: [statusEmbed("success", "Sent embed!")] }).catch(e => console.error(e))
     } catch (e) {
       if (e instanceof Error) {

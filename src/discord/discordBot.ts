@@ -10,6 +10,7 @@ import { HypixelAPI } from "../api/HypixelAPI.js";
 import { config } from "../utils/config.js";
 //@ts-ignore
 import { STuF } from "stuf";
+import { InteractionRegistry } from "./interactions/InteractionRegistry.js";
 
 export class DiscordBot {
   private urlRegex = /(?:https?:\/\/|www\.)[^\s\/$.?#].[^\s]*/g;
@@ -19,6 +20,7 @@ export class DiscordBot {
   constructor(
     readonly client: Client<true>,
     private slashCommands: SlashCommandManager,
+    private interactions: InteractionRegistry,
     private guildBridgeChannelId: string,
     private hypixelAPI: HypixelAPI,
     private logger?: LoggerCategory
@@ -30,9 +32,17 @@ export class DiscordBot {
     })
 
     this.client.on(Events.InteractionCreate, async (interaction) => {
-      if (!interaction.isChatInputCommand() || !interaction.inCachedGuild()) return
-      logger?.info(`Slash command used: ${interaction.commandName}`)
-      await this.slashCommands.onSlashCommandInteraction(interaction)
+      if (!interaction.inCachedGuild()) return
+
+      
+      if (interaction.isChatInputCommand()) {
+        logger?.info(`Slash command used: ${interaction.commandName}`)
+        await this.slashCommands.onSlashCommandInteraction(interaction)
+      } else if (interaction.isModalSubmit() || interaction.isMessageComponent()) {
+        logger?.info(`Interaction used: ${interaction.customId}`)
+        await this.interactions.onInteraction(interaction)
+      }
+      
     })
 
     this.client.on(Events.MessageCreate, async (message) => {
@@ -118,6 +128,7 @@ export class DiscordBot {
 export async function createDiscordBot(
   token: string,
   slashCommands: SlashCommandManager,
+  interactions: InteractionRegistry,
   guildBridgeChannelId: string,
   hypixelAPI: HypixelAPI,
   logger?: LoggerCategory
@@ -138,5 +149,5 @@ export async function createDiscordBot(
         resolve(readyClient)
       })
   })
-  return new DiscordBot(readyClient, slashCommands, guildBridgeChannelId, hypixelAPI, logger)
+  return new DiscordBot(readyClient, slashCommands, interactions, guildBridgeChannelId, hypixelAPI, logger)
 }

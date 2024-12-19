@@ -15,6 +15,7 @@ import { migrations } from "./database/migrations.js";
 import { postDisconnectEmbed } from "./utils/discordUtils.js";
 import { sleep } from "./utils/utils.js";
 import { GuildReqsCommand } from "./discord/commands/GuildReqsCommand.js";
+import { InteractionRegistry } from "./discord/interactions/InteractionRegistry.js";
 
 const logger = new Logger();
 
@@ -34,13 +35,17 @@ if (config.discord.guildRequirements) {
 	slashCommands.register(new GuildReqsCommand(hypixelAPI));
 }
 
+const interactions = new InteractionRegistry();
+
 const discord = await createDiscordBot(
 	config.discord.token,
 	slashCommands,
+  interactions,
 	config.discord.channel,
 	hypixelAPI,
 	logger.category("Discord")
 );
+
 
 if (config.discord.verification.channelId.length > 0) { // dont wanna bother with checking if i need to check a property, its length, or just the object but this should work
 	const verification = new Verification(
@@ -48,7 +53,8 @@ if (config.discord.verification.channelId.length > 0) { // dont wanna bother wit
 		database,
 		config.discord.verification,
 		hypixelAPI,
-		slashCommands
+		slashCommands,
+    interactions
 	);
 }
 

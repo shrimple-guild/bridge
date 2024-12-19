@@ -9,6 +9,9 @@ import { VerifyCommand } from "./commands/VerifyCommand.js"
 import { VerifyEmbedCommand } from "./commands/VerifyEmbedCommand.js"
 import { LinkService } from "./LinkService.js"
 import { VerificationService } from "./VerificationService.js"
+import { InteractionRegistry } from "../discord/interactions/InteractionRegistry.js"
+import { LinkButtonHandler } from "./interactions/LinkButtonHandler.js"
+import { LinkModalHandler } from "./interactions/LinkModalHandler.js"
 
 type VerificationConfig = {
   unverifiedRole: string,
@@ -25,7 +28,8 @@ export class Verification {
     db: Database,
     private config: VerificationConfig,
     hypixelAPI: HypixelAPI,
-    slashCommandManager: SlashCommandManager
+    slashCommandManager: SlashCommandManager,
+    interactionRegistry: InteractionRegistry
   ) {
 
     this.verificationService = new VerificationService(db);
@@ -37,6 +41,11 @@ export class Verification {
       new SyncCommand(this),
       new VerifyCommand(this, hypixelAPI),
       new VerifyEmbedCommand(this)
+    )
+
+    interactionRegistry.register(
+      new LinkButtonHandler(),
+      new LinkModalHandler(this, hypixelAPI),
     )
 
     client.on(Events.GuildMemberAdd, member => this.sync(member))
