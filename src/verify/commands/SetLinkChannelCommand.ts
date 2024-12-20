@@ -1,10 +1,10 @@
-import { AttachmentBuilder, ButtonStyle, ChatInputCommandInteraction, ColorResolvable, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from "discord.js";
+import { ButtonStyle, ChatInputCommandInteraction, ColorResolvable, EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { statusEmbed } from "../../utils/discordUtils.js";
 import { Verification } from "../Verification.js";
 import { SlashCommand } from "../../discord/commands/SlashCommand.js";
 import { ActionRowBuilder, ButtonBuilder } from "@discordjs/builders";
 
-export class VerifyEmbedCommand implements SlashCommand {
+export class SetLinkChannelCommand implements SlashCommand {
   data = new SlashCommandBuilder()
     .setName("setlinkchannel")
     .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
@@ -17,7 +17,7 @@ export class VerifyEmbedCommand implements SlashCommand {
       await interaction.deferReply({ ephemeral: true })
       if (!this.verification) throw new Error("Improper configuration! Please report this to staff.")
       const embed = new EmbedBuilder()
-        .setTitle("Link")
+        .setTitle("Link to Hypixel")
         .setDescription(`
 Welcome! To gain access to all channels, please click the button below and enter your Minecraft IGN after linking your Minecraft account on Hypixel.
 

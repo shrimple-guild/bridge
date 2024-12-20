@@ -8,7 +8,7 @@ export class ManualVerifyCommand implements SlashCommand {
   data = new SlashCommandBuilder()
   .setName("manualverify")
   .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
-  .setDescription("Manually verify someone in the server.")
+  .setDescription("Manually verify and optionally link someone in the server.")
   .addUserOption(option => 
     option
       .setRequired(true)

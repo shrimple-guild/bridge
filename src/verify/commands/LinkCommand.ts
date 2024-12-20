@@ -4,10 +4,10 @@ import { statusEmbed } from "../../utils/discordUtils.js";
 import { Verification } from "../Verification.js";
 import { SlashCommand } from "../../discord/commands/SlashCommand.js";
 
-export class VerifyCommand implements SlashCommand {
+export class LinkCommand implements SlashCommand {
   data = new SlashCommandBuilder()
-    .setName("verify")
-    .setDescription("Verify in this server using a linked Hypixel account.")
+    .setName("link")
+    .setDescription("Link your Hypixel account to your Minecraft account.")
     .addStringOption(option => 
       option
         .setRequired(true)

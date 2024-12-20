@@ -3,17 +3,17 @@ import { config } from "./utils/config.js"
 import { SlashCommand } from "./discord/commands/SlashCommand.js";
 import { ManualVerifyCommand } from "./verify/commands/ManualVerifyCommand.js";
 import { SyncCommand } from "./verify/commands/SyncCommand.js";
-import { UnverifyCommand } from "./verify/commands/UnverifyCommand.js";
-import { VerifyCommand } from "./verify/commands/VerifyCommand.js";
-import { VerifyEmbedCommand } from "./verify/commands/VerifyEmbedCommand.js";
+import { UnlinkCommand } from "./verify/commands/UnlinkCommand.js";
+import { LinkCommand } from "./verify/commands/LinkCommand.js";
+import { SetLinkChannelCommand } from "./verify/commands/SetLinkChannelCommand.js";
 import { GuildReqsCommand } from "./discord/commands/GuildReqsCommand.js";
 
 const slashCommands = [
 	new ManualVerifyCommand(),
-	new VerifyCommand(),
-	new UnverifyCommand(),
+	new LinkCommand(),
+	new UnlinkCommand(),
 	new SyncCommand(),
-	new VerifyEmbedCommand(),
+	new SetLinkChannelCommand(),
 	new GuildReqsCommand()
 ];
 

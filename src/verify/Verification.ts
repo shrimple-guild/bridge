@@ -4,9 +4,9 @@ import { Database } from "../database/database.js"
 import { SlashCommandManager } from "../discord/commands/SlashCommandManager.js"
 import { ManualVerifyCommand } from "./commands/ManualVerifyCommand.js"
 import { SyncCommand } from "./commands/SyncCommand.js"
-import { UnverifyCommand } from "./commands/UnverifyCommand.js"
-import { VerifyCommand } from "./commands/VerifyCommand.js"
-import { VerifyEmbedCommand } from "./commands/VerifyEmbedCommand.js"
+import { UnlinkCommand } from "./commands/UnlinkCommand.js"
+import { LinkCommand } from "./commands/LinkCommand.js"
+import { SetLinkChannelCommand } from "./commands/SetLinkChannelCommand.js"
 import { LinkService } from "./LinkService.js"
 import { VerificationService } from "./VerificationService.js"
 import { InteractionRegistry } from "../discord/interactions/InteractionRegistry.js"
@@ -16,7 +16,6 @@ import { LinkModalHandler } from "./interactions/LinkModalHandler.js"
 type VerificationConfig = {
   unverifiedRole: string,
   verifiedRole: string,
-  channelId: string
 }
 
 export class Verification {
@@ -37,10 +36,10 @@ export class Verification {
 
     slashCommandManager.register(
       new ManualVerifyCommand(this, hypixelAPI),
-      new UnverifyCommand(this),
+      new UnlinkCommand(this),
       new SyncCommand(this),
-      new VerifyCommand(this, hypixelAPI),
-      new VerifyEmbedCommand(this)
+      new LinkCommand(this, hypixelAPI),
+      new SetLinkChannelCommand(this)
     )
 
     interactionRegistry.register(
@@ -49,11 +48,6 @@ export class Verification {
     )
 
     client.on(Events.GuildMemberAdd, member => this.sync(member))
-    client.on(Events.MessageCreate, async (message) => {
-      if (message.channelId != this.config.channelId) return
-      if (message.member?.permissions?.has(PermissionFlagsBits.Administrator)) return
-      await message.delete()
-    })
   }
 
   getMinecraft(guild: Guild, discordId: string) {
@@ -80,12 +74,19 @@ export class Verification {
 
   async verify(member: GuildMember) {
     const didVerify = this.verificationService.verifyMember(member.guild.id, member.user.id)
+    return didVerify
+  }
+
+  async unlink(member: GuildMember) {
+    return this.linkService.unlinkMember(member.user.id);
   }
 
   async link(member: GuildMember, uuid: string) {
-    const didLink = this.linkService.linkMember(member.user.id, uuid)
-    if (didLink) {
+    const currentlyLinkedTo = this.linkService.getMinecraftUuid(member.user.id)
+
+    if (currentlyLinkedTo == uuid || this.linkService.linkMember(member.user.id, uuid)) {
       await this.setVerifiedRole(member)
+      return true;
     } else {
       throw new Error("This Minecraft account is already linked to another Discord account. Please unlink the other account.")
     }
