@@ -50,15 +50,15 @@ export class Verification {
     client.on(Events.GuildMemberAdd, member => this.sync(member))
   }
 
-  getMinecraft(guild: Guild, discordId: string) {
+  getMinecraft(guild: Guild, discordId: string): string | null {
     return this.linkService.getMinecraftUuid(discordId)
   }
 
-  getDiscord(guild: Guild, minecraftId: string) {
+  getDiscord(guild: Guild, minecraftId: string): string | null {
     return this.linkService.getDiscordId(minecraftId)
   }
 
-  isVerified(member: GuildMember) {
+  isVerified(member: GuildMember): boolean {
     return this.linkService.isLinked(member.user.id) || this.verificationService.isVerified(member.guild.id, member.user.id)
   }
 
@@ -72,16 +72,19 @@ export class Verification {
     }
   }
 
-  async verify(member: GuildMember) {
+  async verify(member: GuildMember): Promise<boolean> {
     const didVerify = this.verificationService.verifyMember(member.guild.id, member.user.id)
+    await this.sync(member)
     return didVerify
   }
 
-  async unlink(member: GuildMember) {
-    return this.linkService.unlinkMember(member.user.id);
+  async unlink(member: GuildMember): Promise<boolean> {
+    const didUnlink = this.linkService.unlinkMember(member.user.id);
+    await this.sync(member)
+    return didUnlink
   }
 
-  async link(member: GuildMember, uuid: string) {
+  async link(member: GuildMember, uuid: string): Promise<boolean> {
     const currentlyLinkedTo = this.linkService.getMinecraftUuid(member.user.id)
 
     if (currentlyLinkedTo == uuid || this.linkService.linkMember(member.user.id, uuid)) {
@@ -92,13 +95,14 @@ export class Verification {
     }
   }
 
-  async unverify(guild: Guild, member: GuildMember | string) {
+  async unverify(guild: Guild, member: GuildMember | string): Promise<boolean> {
     const memberId = (member instanceof GuildMember) ? member.user.id : member
-    this.verificationService.unverifyMember(guild.id, memberId)
+    const didUnverify = this.verificationService.unverifyMember(guild.id, memberId)
     this.linkService.unlinkMember(memberId)
     if (member instanceof GuildMember) {
       await this.setUnverifiedRole(member)
     }
+    return didUnverify
   }
 
   private nonVerificationRoles(guildMember: GuildMember) {
