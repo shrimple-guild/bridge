@@ -21,7 +21,6 @@ export class DiscordBot {
     readonly client: Client<true>,
     private slashCommands: SlashCommandManager,
     private interactions: InteractionRegistry,
-    private guildBridgeChannelId: string,
     private hypixelAPI: HypixelAPI,
     private logger?: LoggerCategory
   ) {
@@ -47,7 +46,7 @@ export class DiscordBot {
 
     this.client.on(Events.MessageCreate, async (message) => {
       if (!this.bridge || !message.inGuild() || message.author.bot) return
-      if (this.guildBridgeChannelId != message.channelId) return
+      if (this.bridge.getDiscordChannelId() != message.channelId) return
       let authorName;
       const author = message.member
       if (!author) return
@@ -87,7 +86,7 @@ export class DiscordBot {
   }
 
   async sendGuildChatEmbed(username: string, content: string, colorValue?: string, guildRank?: string) {
-    const channel = this.getTextChannel(this.guildBridgeChannelId)
+    const channel = this.getGuildBridgeChannel()
     if (!channel) return
     const imageAttachment = content.match(imageLinkRegex)?.at(0)
     const contentWithoutImage = content.replace(imageLinkRegex, "")
@@ -102,11 +101,16 @@ export class DiscordBot {
   }
 
   async sendSimpleEmbed(title: string, content: string, footer?: string) {
-    const channel = this.getTextChannel(this.guildBridgeChannelId)
+    const channel = this.getGuildBridgeChannel()
     if (!channel) return
     const embed = simpleEmbed(title, content, footer)
     await channel.send({ embeds: [embed] }).catch(e => this.logger?.error("Failed to send embed", e))
   }
+
+  private getGuildBridgeChannel(): TextChannel | undefined {
+    if (!this.bridge) return undefined
+    return this.getTextChannel(this.bridge.getDiscordChannelId())
+  } 
 
   private getTextChannel(channelId: string): TextChannel | undefined {
     const channel = this.client.channels.cache.get(channelId)
@@ -129,7 +133,6 @@ export async function createDiscordBot(
   token: string,
   slashCommands: SlashCommandManager,
   interactions: InteractionRegistry,
-  guildBridgeChannelId: string,
   hypixelAPI: HypixelAPI,
   logger?: LoggerCategory
 ) {
@@ -149,5 +152,5 @@ export async function createDiscordBot(
         resolve(readyClient)
       })
   })
-  return new DiscordBot(readyClient, slashCommands, interactions, guildBridgeChannelId, hypixelAPI, logger)
+  return new DiscordBot(readyClient, slashCommands, interactions, hypixelAPI, logger)
 }

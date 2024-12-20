@@ -9,12 +9,17 @@ export class Bridge {
 		public discord: DiscordBot,
 		private minecraft: MinecraftBot,
 		private commandManager: SimpleCommandManager,
-		private logger: LoggerCategory
+		private logger: LoggerCategory,
+    private discordChannelId: string
 	) {
 		minecraft.bridge = this;
 		discord.bridge = this;
 		commandManager.addBridgeCommands(this);
 	}
+
+  getDiscordChannelId() {
+    return this.discordChannelId
+  }
 
 	async onMinecraftChat(
 		username: string,

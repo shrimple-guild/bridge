@@ -1,7 +1,7 @@
 import { Verification } from "../verify/Verification.js"
 import { Database } from "../database/database.js"
 import { HypixelAPI } from "../api/HypixelAPI.js"
-import { createDiscordBot } from "../discord/discordBot.js"
+import { createDiscordBot } from "../discord/DiscordBot.js"
 import { SlashCommandManager } from "../discord/commands/SlashCommandManager.js"
 import { config } from "../utils/config.js"
 import { Logger } from "../utils/Logger.js"
@@ -22,7 +22,6 @@ const discord = await createDiscordBot(
   config.discord.token,
   slashCommands,
   interactions,
-  config.discord.channel,
   hypixelAPI,
   logger.category("Discord")
 )

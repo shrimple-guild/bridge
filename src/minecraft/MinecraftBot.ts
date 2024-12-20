@@ -163,7 +163,7 @@ export class MinecraftBot {
 	}
 
 	onChat(rawMessage: string, plainMessage: string) {
-		PatternManager.execute(this, rawMessage, plainMessage, this.logger);
+		void PatternManager.execute(this, rawMessage, plainMessage, this.logger);
 	}
 
 	quit() {

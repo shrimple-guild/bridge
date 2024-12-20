@@ -1,6 +1,6 @@
 import { Verification } from "./verify/Verification.js";
 import { HypixelAPI } from "./api/HypixelAPI.js";
-import { createDiscordBot } from "./discord/discordBot.js";
+import { createDiscordBot } from "./discord/DiscordBot.js";
 import { SlashCommandManager } from "./discord/commands/SlashCommandManager.js";
 import { config } from "./utils/config.js";
 import itemNames from "./data/itemNames.json" assert { type: "json" };
@@ -41,7 +41,6 @@ const discord = await createDiscordBot(
 	config.discord.token,
 	slashCommands,
   interactions,
-	config.discord.channel,
 	hypixelAPI,
 	logger.category("Discord")
 );
@@ -72,7 +71,8 @@ const bridge = new Bridge(
 	discord,
 	minecraft,
 	bridgeCommandManager,
-	logger.category("Bridge")
+	logger.category("Bridge"),
+  config.discord.channel
 );
 
 const rl = readline.createInterface({
