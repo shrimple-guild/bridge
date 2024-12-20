@@ -1,5 +1,5 @@
 import Database from 'better-sqlite3';
-import { VerificationService } from '../src/verify/VerificationService';
+import { VerificationService } from '../../verify/VerificationService.js';
 
 const db = new Database(":memory:")
 

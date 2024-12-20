@@ -1,6 +1,6 @@
 import { Interaction } from "discord.js";
-import { IInteractionHandler } from "./IInteractionHandler";
-import { statusEmbed } from "../../utils/discordUtils";
+import { IInteractionHandler } from "./IInteractionHandler.js";
+import { statusEmbed } from "../../utils/discordUtils.js";
 
 export class InteractionRegistry {
   private handlers: IInteractionHandler<any>[]

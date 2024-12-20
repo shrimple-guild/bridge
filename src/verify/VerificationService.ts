@@ -1,5 +1,5 @@
 import Database from "better-sqlite3";
-import { IDatabase } from "../database/IDatabase";
+import { IDatabase } from "../database/IDatabase.js";
 
 export class VerificationService {
 

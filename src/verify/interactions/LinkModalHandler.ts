@@ -1,9 +1,8 @@
-import { ButtonInteraction, CacheType, GuildMember, ModalSubmitInteraction, TextInputBuilder, TextInputStyle } from "discord.js";
-import { IInteractionHandler } from "../../discord/interactions/IInteractionHandler";
-import { ActionRowBuilder, ModalBuilder } from "@discordjs/builders";
-import { statusEmbed } from "../../utils/discordUtils";
-import { Verification } from "../Verification";
-import { HypixelAPI } from "../../api/HypixelAPI";
+import { CacheType, GuildMember, ModalSubmitInteraction } from "discord.js";
+import { IInteractionHandler } from "../../discord/interactions/IInteractionHandler.js";
+import { statusEmbed } from "../../utils/discordUtils.js";
+import { Verification } from "../Verification.js";
+import { HypixelAPI } from "../../api/HypixelAPI.js";
 
 export class LinkModalHandler implements IInteractionHandler<ModalSubmitInteraction> {
 

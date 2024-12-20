@@ -1,9 +1,6 @@
 import { ButtonInteraction, CacheType, GuildMember, TextInputBuilder, TextInputStyle } from "discord.js";
 import { IInteractionHandler } from "../../discord/interactions/IInteractionHandler";
 import { ActionRowBuilder, ModalBuilder } from "@discordjs/builders";
-import { statusEmbed } from "../../utils/discordUtils";
-import { Verification } from "../Verification";
-import { HypixelAPI } from "../../api/HypixelAPI";
 
 export class LinkButtonHandler implements IInteractionHandler<ButtonInteraction> {
 
