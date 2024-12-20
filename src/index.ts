@@ -1,6 +1,6 @@
 import { Verification } from "./verify/Verification.js";
 import { HypixelAPI } from "./api/HypixelAPI.js";
-import { createDiscordBot } from "./discord/DiscordBot.js";
+import { createDiscordBot } from "./discord/discordBot.js";
 import { SlashCommandManager } from "./discord/commands/SlashCommandManager.js";
 import { config } from "./utils/config.js";
 import itemNames from "./data/itemNames.json" assert { type: "json" };
