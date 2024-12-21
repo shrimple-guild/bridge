@@ -1,6 +1,6 @@
 import { Verification } from "./verify/Verification.js";
 import { HypixelAPI } from "./api/HypixelAPI.js";
-import { createDiscordBot } from "./discord/discordBot.js";
+import { createDiscordBot } from "./discord/DiscordBot.js";
 import { SlashCommandManager } from "./discord/commands/SlashCommandManager.js";
 import { config } from "./utils/config.js";
 import itemNames from "./data/itemNames.json" assert { type: "json" };
@@ -50,11 +50,18 @@ if (config.discord.verification.channelId.length > 0) { // dont wanna bother wit
 	const verification = new Verification(
 		discord.client,
 		database,
-		config.discord.verification,
 		hypixelAPI,
 		slashCommands,
     interactions
 	);
+
+  if (config.discord.verification.unverifiedRole) {
+    verification.setVerificationRoles(
+      config.discord.guild,
+      config.discord.verification.unverifiedRole,
+      config.discord.verification.verifiedRole
+    )
+  }  
 }
 
 const bridgeCommandManager = new SimpleCommandManager(

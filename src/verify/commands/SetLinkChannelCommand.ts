@@ -5,17 +5,18 @@ import { SlashCommand } from "../../discord/commands/SlashCommand.js";
 import { ActionRowBuilder, ButtonBuilder } from "@discordjs/builders";
 
 export class SetLinkChannelCommand implements SlashCommand {
-  data = new SlashCommandBuilder()
+  name = "setlinkchannel"
+  
+  static data = new SlashCommandBuilder()
     .setName("setlinkchannel")
     .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
     .setDescription("Sets this channel to a link channel, creating a link embed.")
 
-  constructor(private verification?: Verification) { }
+  constructor(private verification: Verification) { }
 
   async execute(interaction: ChatInputCommandInteraction<"cached">) {
     try {
       await interaction.deferReply({ ephemeral: true })
-      if (!this.verification) throw new Error("Improper configuration! Please report this to staff.")
       const embed = new EmbedBuilder()
         .setTitle("Link to Hypixel")
         .setDescription(`

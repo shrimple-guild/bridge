@@ -1,5 +1,5 @@
 import { SimpleCommandManager } from "./commands/SimpleCommandManager.js";
-import { DiscordBot } from "../discord/discordBot.js";
+import { DiscordBot } from "../discord/DiscordBot.js";
 import { MinecraftBot } from "../minecraft/MinecraftBot.js";
 import { sleep } from "../utils/utils.js";
 import { LoggerCategory } from "../utils/Logger.js";

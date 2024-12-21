@@ -9,7 +9,7 @@ export class SlashCommandManager {
     }
 
     async onSlashCommandInteraction(interaction: ChatInputCommandInteraction<"cached">) {
-      const command = this.commands.find(command => command.data.name === interaction.commandName)
+      const command = this.commands.find(command => command.name === interaction.commandName)
       if (!command) {
         console.error(`No command matching ${interaction.commandName} was found.`);
         return

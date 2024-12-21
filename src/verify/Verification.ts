@@ -12,11 +12,7 @@ import { VerificationService } from "./VerificationService.js"
 import { InteractionRegistry } from "../discord/interactions/InteractionRegistry.js"
 import { LinkButtonHandler } from "./interactions/LinkButtonHandler.js"
 import { LinkModalHandler } from "./interactions/LinkModalHandler.js"
-
-type VerificationConfig = {
-  unverifiedRole: string,
-  verifiedRole: string,
-}
+import { SetVerificationRolesCommand } from "./commands/SetVerificationRolesCommand.js"
 
 export class Verification {
   private linkService: LinkService;
@@ -25,7 +21,6 @@ export class Verification {
   constructor(
     client: Client<true>,
     db: Database,
-    private config: VerificationConfig,
     hypixelAPI: HypixelAPI,
     slashCommandManager: SlashCommandManager,
     interactionRegistry: InteractionRegistry
@@ -39,7 +34,8 @@ export class Verification {
       new UnlinkCommand(this),
       new SyncCommand(this),
       new LinkCommand(this, hypixelAPI),
-      new SetLinkChannelCommand(this)
+      new SetLinkChannelCommand(this),
+      new SetVerificationRolesCommand(this)
     )
 
     interactionRegistry.register(
@@ -62,25 +58,23 @@ export class Verification {
     return this.linkService.isLinked(member.user.id) || this.verificationService.isVerified(member.guild.id, member.user.id)
   }
 
+  setVerificationRoles(guildId: string, unverified: string, verified: string ) {
+    this.verificationService.setVerificationRoles(guildId, unverified, verified)
+  }
+
   async sync(member: GuildMember) {
-    if (member.user.bot) {
-      await member.roles.set(this.nonVerificationRoles(member))
-    } else if (this.isVerified(member)) {
-      await this.setVerifiedRole(member)
-    } else {
-      await this.setUnverifiedRole(member)
-    }
+    await this.verificationService.sync(member)
   }
 
   async verify(member: GuildMember): Promise<boolean> {
     const didVerify = this.verificationService.verifyMember(member.guild.id, member.user.id)
-    await this.sync(member)
+    await this.verificationService.setVerifiedRole(member, "manual")
     return didVerify
   }
 
   async unlink(member: GuildMember): Promise<boolean> {
     const didUnlink = this.linkService.unlinkMember(member.user.id);
-    await this.sync(member)
+    await this.verificationService.sync(member)
     return didUnlink
   }
 
@@ -88,7 +82,7 @@ export class Verification {
     const currentlyLinkedTo = this.linkService.getMinecraftUuid(member.user.id)
 
     if (currentlyLinkedTo == uuid || this.linkService.linkMember(member.user.id, uuid)) {
-      await this.setVerifiedRole(member)
+      await this.verificationService.setVerifiedRole(member)
       return true;
     } else {
       throw new Error("This Minecraft account is already linked to another Discord account. Please unlink the other account.")
@@ -100,24 +94,9 @@ export class Verification {
     const didUnverify = this.verificationService.unverifyMember(guild.id, memberId)
     this.linkService.unlinkMember(memberId)
     if (member instanceof GuildMember) {
-      await this.setUnverifiedRole(member)
+      await this.verificationService.setUnverifiedRole(member)
     }
     return didUnverify
-  }
-
-  private nonVerificationRoles(guildMember: GuildMember) {
-    const roles = guildMember.roles.cache.map(role => role.id)
-    return roles.filter(role => ![this.config.unverifiedRole, this.config.verifiedRole].includes(role))
-  }
-
-  private async setVerifiedRole(guildMember: GuildMember, reason?: string) {
-    const otherRoles = this.nonVerificationRoles(guildMember)
-    await guildMember.roles.set([this.config.verifiedRole, ...otherRoles], reason)
-  }
-
-  private async setUnverifiedRole(guildMember: GuildMember, reason?: string) {
-    const otherRoles = this.nonVerificationRoles(guildMember)
-    await guildMember.roles.set([this.config.unverifiedRole, ...otherRoles], reason)
   }
 }
 
