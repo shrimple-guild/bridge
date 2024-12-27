@@ -64,8 +64,8 @@ const bridgeCommandManager = new SimpleCommandManager(
 
 const minecraft = new MinecraftBot(
 	config.minecraft.username,
-	config.minecraft.privilegedUsers,
-	logger.category("Minecraft")
+	logger.category("Minecraft"),
+	config.minecraft.privilegedUsers
 );
 const bridge = new Bridge(
 	discord,

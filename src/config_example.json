@@ -1,6 +1,8 @@
 {
   "minecraft": {
     "username": "ExampleIGN",
+    "host": "localhost",
+    "port": 25565,
     "privilegedUsers": [
       "TrustedMCUser1",
       "TrustedMCUser2"
@@ -26,6 +28,13 @@
     "prefix": "_",
     "apiKey": "uuid",
     "hypixelGuild": "guildId"
+  },
+  "proxy": {
+    "host": "localhost",
+    "port": 1080,
+    "type": 5,
+    "userId": "username",
+    "password": "password"
   },
   "roles": [
     {
