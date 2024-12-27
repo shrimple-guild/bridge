@@ -79,7 +79,7 @@ export class MinecraftBot {
 			host: config.minecraft.host,
 			port: config.minecraft.port,
 			username: username,
-			chatLengthLimit: 100,
+			chatLengthLimit: 256,
 			auth: "microsoft",
 			version: "1.8.9",
 			checkTimeoutInterval: 10000,
