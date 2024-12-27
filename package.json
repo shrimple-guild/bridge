@@ -14,7 +14,15 @@
 		"test": "jest"
 	},
 	"jest": {
-		"preset": "ts-jest"
+		"preset": "ts-jest",
+    "testPathIgnorePatterns": ["dist"],
+    "extensionsToTreatAsEsm": [".ts"],
+    "transform": {
+      "\\.[jt]s$": ["ts-jest", { "useESM": true }]
+    },
+    "moduleNameMapper": {
+      "(.+)\\.js": "$1"
+    }
 	},
 	"repository": {
 		"type": "git",

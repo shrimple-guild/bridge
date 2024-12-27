@@ -95,6 +95,16 @@ export const migrations = {
         FROM DiscordMembers
         WHERE minecraftId IS NOT NULL;
       `
+    },
+    {
+      version: 5,
+      script: `
+        CREATE TABLE guild_settings (
+          guild_id TEXT PRIMARY KEY NOT NULL,
+          verified_role TEXT,
+          unverified_role TEXT
+        );
+      `
     }
   ]
 }

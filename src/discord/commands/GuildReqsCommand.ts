@@ -7,7 +7,9 @@ import { EmbedBuilder } from "@discordjs/builders";
 import { formatNumber, titleCase } from "../../utils/utils.js";
 
 export class GuildReqsCommand implements SlashCommand {
-	data = new SlashCommandBuilder()
+  name = "guildrequirements"
+  
+	static data = new SlashCommandBuilder()
 		.setName("guildrequirements")
 		.setDescription("Check whether you meet guild requirements.")
 		.addStringOption((option) =>

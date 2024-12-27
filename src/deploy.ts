@@ -1,4 +1,4 @@
-import { REST, Routes } from "discord.js";
+import { REST, Routes, SlashCommandOptionsOnlyBuilder } from "discord.js";
 import { config } from "./utils/config.js"
 import { SlashCommand } from "./discord/commands/SlashCommand.js";
 import { ManualVerifyCommand } from "./verify/commands/ManualVerifyCommand.js";
@@ -7,14 +7,16 @@ import { UnlinkCommand } from "./verify/commands/UnlinkCommand.js";
 import { LinkCommand } from "./verify/commands/LinkCommand.js";
 import { SetLinkChannelCommand } from "./verify/commands/SetLinkChannelCommand.js";
 import { GuildReqsCommand } from "./discord/commands/GuildReqsCommand.js";
+import { SetVerificationRolesCommand } from "./verify/commands/SetVerificationRolesCommand.js";
 
 const slashCommands = [
-	new ManualVerifyCommand(),
-	new LinkCommand(),
-	new UnlinkCommand(),
-	new SyncCommand(),
-	new SetLinkChannelCommand(),
-	new GuildReqsCommand()
+	ManualVerifyCommand.data,
+	LinkCommand.data,
+	UnlinkCommand.data,
+	SyncCommand.data,
+	SetLinkChannelCommand.data,
+	GuildReqsCommand.data,
+  SetVerificationRolesCommand.data
 ];
 
 await loadCommands(
@@ -25,12 +27,12 @@ await loadCommands(
 );
 
 async function loadCommands(
-	commands: SlashCommand[],
+	commands: SlashCommandOptionsOnlyBuilder[],
 	token: string,
 	clientId: string,
 	guildId: string
 ) {
-	const commandJsonData = commands.map((command) => command.data.toJSON());
+	const commandJsonData = commands.map((command) => command.toJSON());
 	const rest = new REST({ version: "10" }).setToken(token);
 	try {
 		console.log(

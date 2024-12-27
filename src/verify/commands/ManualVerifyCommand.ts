@@ -5,7 +5,9 @@ import { SlashCommand } from "../../discord/commands/SlashCommand.js";
 import { HypixelAPI } from "../../api/HypixelAPI.js";
 
 export class ManualVerifyCommand implements SlashCommand {
-  data = new SlashCommandBuilder()
+  name = "manualverify"
+
+  static data = new SlashCommandBuilder()
   .setName("manualverify")
   .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
   .setDescription("Manually verify and optionally link someone in the server.")
@@ -20,12 +22,11 @@ export class ManualVerifyCommand implements SlashCommand {
       .setName("username")
       .setDescription("The Minecraft username of the user"))
 
-  constructor(private verification?: Verification, private hypixelAPI?: HypixelAPI) {}
+  constructor(private verification: Verification, private hypixelAPI: HypixelAPI) {}
   
   async execute(interaction: ChatInputCommandInteraction<"cached">) {
     try {
       await interaction.deferReply({ ephemeral: true })
-      if (!this.verification || !this.hypixelAPI) throw new Error("Improper configuration! Please report this to staff.")
       const member = interaction.options.getMember("user")
       const username = interaction.options.getString("username", false)
       if (!member) throw new Error("Couldn't find this member! Weird!")

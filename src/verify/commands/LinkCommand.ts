@@ -5,7 +5,9 @@ import { Verification } from "../Verification.js";
 import { SlashCommand } from "../../discord/commands/SlashCommand.js";
 
 export class LinkCommand implements SlashCommand {
-  data = new SlashCommandBuilder()
+  name = "link"
+
+  static data = new SlashCommandBuilder()
     .setName("link")
     .setDescription("Link your Hypixel account to your Minecraft account.")
     .addStringOption(option => 
@@ -14,12 +16,11 @@ export class LinkCommand implements SlashCommand {
         .setName("username")
         .setDescription("Your Minecraft username")) 
 
-  constructor(private verification?: Verification, private hypixelAPI?: HypixelAPI) {}
+  constructor(private verification: Verification, private hypixelAPI: HypixelAPI) {}
   
   async execute(interaction: ChatInputCommandInteraction<"cached">) {
     try {
       await interaction.deferReply({ ephemeral: true })
-      if (!this.verification || !this.hypixelAPI) throw new Error("Improper configuration! Please report this to staff.")
       const username = interaction.options.getString("username", true)
       const uuid = await this.hypixelAPI.mojang.fetchUuid(username)
       const player = await this.hypixelAPI.fetchPlayer(uuid)
