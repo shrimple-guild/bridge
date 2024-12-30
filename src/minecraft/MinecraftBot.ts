@@ -1,13 +1,15 @@
-import AsyncLock from "async-lock";
 import mineflayer from "mineflayer";
 import { Bridge } from "../bridge/Bridge.js";
-import { sleep } from "../utils/utils.js";
+import { sleep, stripColorCodes } from "../utils/utils.js";
 import { PatternManager } from "./PatternManager.js";
 import { LoggerCategory } from "../utils/Logger.js";
 import { config } from "../utils/config.js";
 import pThrottle from "p-throttle";
-import { ChatMessage } from "prismarine-chat";
 import { gListData } from "../bridge/commands/bridgeCommands/GuildStatusCommands.js";
+import { SocksClient } from "socks";
+import { Client } from "minecraft-protocol";
+import { connect } from "net";
+import { resolveSrv, resolve as resolveDns } from "dns";
 
 export class MinecraftBot {
 	bridge?: Bridge;
@@ -19,14 +21,14 @@ export class MinecraftBot {
 	private chatDelay = 1000;
 	private throttle = pThrottle({
 		strict: true,
-		interval: 1000,
+		interval: this.chatDelay,
 		limit: 1
 	});
 
 	constructor(
 		readonly username: string,
-		private privilegedUsers?: string[],
-		private logger?: LoggerCategory
+		private logger: LoggerCategory,
+		private privilegedUsers?: string[]
 	) {
 		this.bot = this.connect(username);
 	}
@@ -35,19 +37,56 @@ export class MinecraftBot {
 		return this.status == "online";
 	}
 
+	private async resolveDns(hostname: string, thePort: number) {
+		return new Promise<{ host: string; port: number }>((resolve, reject) => {
+			resolveSrv("_minecraft._tcp." + hostname, (err, addresses) => {
+				if (err || !addresses?.length) {
+					resolveDns(hostname, (err, addresses) => {
+						if (err || !addresses?.length) {
+							reject("Ruh roh! Could not resolve hostname.");
+						} else {
+							resolve({ host: addresses[0], port: thePort });
+						}
+					});
+				} else {
+					resolve({ host: addresses[0].name, port: addresses[0].port });
+				}
+			});
+		});
+	}
+
+	private connectProxied = async (client: Client) => {
+		SocksClient.createConnection({
+			proxy: config.proxy,
+			command: "connect",
+			destination: await this.resolveDns(config.minecraft.host, config.minecraft.port)
+		}, (err, info) => {
+			if (err) {
+				this.logger.error("Failed to connect to proxy. Connecting directly.");
+				client.setSocket(connect(config.minecraft.port, config.minecraft.host));
+			} else {
+				this.logger.info("Connected to proxy.");
+				client.setSocket(info!.socket);
+				client.emit("connect");
+			}
+		})
+	}
+
 	connect(username: string) {
-		this.logger?.info("Connecting...");
+		this.logger.info("Connecting...");
 		const bot = mineflayer.createBot({
-			host: "mc.hypixel.net",
-			port: 25565,
+			connect: config.proxy ? this.connectProxied : undefined,
+			host: config.minecraft.host,
+			port: config.minecraft.port,
 			username: username,
 			chatLengthLimit: 256,
 			auth: "microsoft",
-			version: "1.17.1",
-			checkTimeoutInterval: 10000
+			version: "1.8.9",
+			checkTimeoutInterval: 10000,
 		});
 		bot.on("message", (raw) => this.onChat(raw.toMotd(), raw.toString()));
 		bot.on("end", (reason) => this.onEnd(reason));
+		bot.on("kicked", (reason) => this.logger.error(`Kicked: ${reason}`));
 		bot.once("spawn", () => this.onSpawn());
 		this.bot = bot;
 		return bot;
@@ -78,7 +117,7 @@ export class MinecraftBot {
 	}
 
 	async setOnline() {
-		this.logger?.info("Bot online.");
+		this.logger.info("Bot online.");
 		this.status = "online";
 		this.retries = 0;
 		await this.bridge?.onBotJoin();
@@ -126,7 +165,7 @@ export class MinecraftBot {
 	}
 
 	async onEnd(reason: string) {
-		this.logger?.warn(`Disconnected (reason: ${reason}).`);
+		this.logger.warn(`Disconnected (reason: ${reason}).`);
 		if (this.status == "online") await this.bridge?.onBotLeave(reason);
 		this.status = "offline";
 		if (reason != "disconnect.quitting") {
@@ -144,7 +183,7 @@ export class MinecraftBot {
 			}
 			this.retries++;
 			if (this.retries > 10) {
-				this.logger?.error("Failed to connect after 10 attempts. Quitting.");
+				this.logger.error("Failed to connect after 10 attempts. Quitting.");
 				process.exit(1);
 			}
 		}

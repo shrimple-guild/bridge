@@ -10,6 +10,8 @@ export type GuildRole = {
 type Config = {
     minecraft: {
         username: string;
+        host: string;
+        port: number;
         privilegedUsers: string[];
     };
     discord: {
@@ -31,6 +33,13 @@ type Config = {
         apiKey: string;
         hypixelGuild: string;
     };
+    proxy: {
+        host: string;
+        port: number;
+        type: 4 | 5;
+        userId: string;
+        password: string;
+    }
     roles: {
         hypixelTag: string;
         discord: string;
