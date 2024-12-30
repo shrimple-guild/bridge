@@ -28,11 +28,13 @@ import { BoopCommand } from "./bridgeCommands/BoopCommand.js";
 import { antiSpamProtString } from "../../utils/utils.js";
 import { BooCommand } from "./bridgeCommands/BooCommand.js";
 import { GListCommand, GOnlineCommand, GResetCommand } from "./bridgeCommands/GuildStatusCommands.js";
+import { TimeoutCommand } from "./bridgeCommands/TimeoutCommand.js";
+import { LinkService } from "../../verify/LinkService.js";
 
 export class SimpleCommandManager {
   commands: SimpleCommand[]
 
-  constructor(private hypixelAPI: HypixelAPI, private logger?: LoggerCategory, public prefix?: string) {
+  constructor(private hypixelAPI: HypixelAPI, private linkService: LinkService, private logger?: LoggerCategory, public prefix?: string) {
     this.commands = [
       new AuctionCommand(),
       new BazaarCommand(hypixelAPI),
@@ -63,7 +65,8 @@ export class SimpleCommandManager {
       new BoopCommand(bridge),
       new GListCommand(bridge),
       new GOnlineCommand(bridge),
-      new GResetCommand(bridge)
+      new GResetCommand(bridge),
+      new TimeoutCommand(bridge, this.hypixelAPI, this.linkService),
     )
     if (new Date().getMonth() === 9 /*Starts at 0*/) {
       this.commands.push(new BooCommand(bridge))

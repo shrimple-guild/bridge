@@ -3,14 +3,15 @@ import { DiscordBot } from "../discord/DiscordBot.js";
 import { MinecraftBot } from "../minecraft/MinecraftBot.js";
 import { sleep } from "../utils/utils.js";
 import { LoggerCategory } from "../utils/Logger.js";
+import { Snowflake } from "discord.js";
 
 export class Bridge {
 	constructor(
 		public discord: DiscordBot,
 		private minecraft: MinecraftBot,
 		private commandManager: SimpleCommandManager,
-		private logger: LoggerCategory,
-    private discordChannelId: string
+		private discordGuildId: Snowflake,
+    	private discordChannelId: Snowflake
 	) {
 		minecraft.bridge = this;
 		discord.bridge = this;
@@ -89,6 +90,13 @@ export class Bridge {
 			this.minecraft.username,
 			"✅ Bot online."
 		);
+	}
+
+	async muteAndTimeout(durationSeconds: number, username: string, discordId: string | null) {
+		this.minecraft.chat(`/g mute ${username} ${durationSeconds}s`)
+		if (discordId != null) {
+			await this.discord.timeout(discordId, this.discordGuildId, durationSeconds)
+		}
 	}
 
 	async quit() {

@@ -1,5 +1,5 @@
 import { EmbedBuilder } from "@discordjs/builders";
-import { ChannelType, Client, Events, GatewayIntentBits, GuildMember, Message, TextChannel } from "discord.js";
+import { ChannelType, Client, Events, GatewayIntentBits, GuildMember, Message, Snowflake, TextChannel } from "discord.js";
 import { SlashCommandManager } from "./commands/SlashCommandManager.js";
 import { Bridge } from "../bridge/Bridge.js";
 import { simpleEmbed } from "../utils/discordUtils.js";
@@ -76,6 +76,23 @@ export class DiscordBot {
       logger?.info(`Discord chat: ${authorName}${replyAuthor ? ` to ${replyAuthor}` : ""}: ${content}`)
       await this.bridge.onDiscordChat(authorName, content, this.isStaff(author), replyAuthor)
     })
+  }
+
+  async timeout(memberId: Snowflake, guildId: string, durationSeconds: number) {
+    await this.timeoutInternal(memberId, guildId, durationSeconds)
+  }
+
+  async removeTimeout(memberId: Snowflake, guildId: string) {
+    await this.timeoutInternal(memberId, guildId, null)
+  }
+
+  private async timeoutInternal(memberId: Snowflake, guildId: string, durationSeconds: number | null) {
+    const guild = await this.client.guilds.fetch(guildId)
+    if (!guild) return
+    const member = await guild.members.fetch(memberId)
+    if (!member) return
+    const durationMs = durationSeconds ? durationSeconds * 1000 : null
+    await member.timeout(durationMs)
   }
 
   private isStaff(member: GuildMember) {

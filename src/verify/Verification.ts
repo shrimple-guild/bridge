@@ -23,11 +23,12 @@ export class Verification {
     db: Database,
     hypixelAPI: HypixelAPI,
     slashCommandManager: SlashCommandManager,
-    interactionRegistry: InteractionRegistry
+    interactionRegistry: InteractionRegistry,
+    linkService: LinkService
   ) {
 
     this.verificationService = new VerificationService(db);
-    this.linkService = new LinkService(db);
+    this.linkService = linkService;
 
     slashCommandManager.register(
       new ManualVerifyCommand(this, hypixelAPI),

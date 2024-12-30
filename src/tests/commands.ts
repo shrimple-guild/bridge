@@ -2,11 +2,11 @@ import { HypixelAPI } from "../api/HypixelAPI.js";
 import { SimpleCommandManager } from "../bridge/commands/SimpleCommandManager.js";
 import { Logger } from "../utils/Logger.js";
 import readline from "readline"
-
 import { config } from "../utils/config.js"
 import itemNames from "../data/itemNames.json" assert { type: "json" }
 import { Database } from "../database/database.js";
 import { migrations } from "../database/migrations.js";
+import { LinkService } from "../verify/LinkService.js";
 const { apiKey } = config.bridge
 
 
@@ -17,11 +17,12 @@ const rl = readline.createInterface({
 
 const logger = new Logger()
 const database = await Database.create("./src/database", migrations)
+const linkService = new LinkService(database)
 
 const testAPI = new HypixelAPI(apiKey, database, logger.category("HypixelAPI"))
 await testAPI.init(itemNames)
 
-const commandManager = new SimpleCommandManager(testAPI)
+const commandManager = new SimpleCommandManager(testAPI, linkService)
 
 const results = await Promise.all([
   commandManager.execute("_bz grand", false, false), 

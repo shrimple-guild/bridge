@@ -16,6 +16,7 @@ import { postDisconnectEmbed } from "./utils/discordUtils.js";
 import { sleep } from "./utils/utils.js";
 import { GuildReqsCommand } from "./discord/commands/GuildReqsCommand.js";
 import { InteractionRegistry } from "./discord/interactions/InteractionRegistry.js";
+import { LinkService } from "./verify/LinkService.js";
 
 const logger = new Logger();
 
@@ -36,15 +37,15 @@ if (config.discord.guildRequirements) {
 }
 
 const interactions = new InteractionRegistry();
+const linkService = new LinkService(database);
 
 const discord = await createDiscordBot(
 	config.discord.token,
 	slashCommands,
-  interactions,
+  	interactions,
 	hypixelAPI,
 	logger.category("Discord")
 );
-
 
 if (config.discord.verification.channelId.length > 0) { // dont wanna bother with checking if i need to check a property, its length, or just the object but this should work
 	const verification = new Verification(
@@ -52,7 +53,8 @@ if (config.discord.verification.channelId.length > 0) { // dont wanna bother wit
 		database,
 		hypixelAPI,
 		slashCommands,
-    interactions
+    	interactions,
+		linkService
 	);
 
   if (config.discord.verification.unverifiedRole) {
@@ -66,6 +68,7 @@ if (config.discord.verification.channelId.length > 0) { // dont wanna bother wit
 
 const bridgeCommandManager = new SimpleCommandManager(
 	hypixelAPI,
+	linkService,
 	logger.category("Commands")
 );
 
@@ -74,12 +77,14 @@ const minecraft = new MinecraftBot(
 	config.minecraft.privilegedUsers,
 	logger.category("Minecraft")
 );
+
+// TODO: add a higher level Guild class that manages guild-level services (bridge, verification, etc)
 const bridge = new Bridge(
 	discord,
 	minecraft,
 	bridgeCommandManager,
-	logger.category("Bridge"),
-  config.discord.channel
+	config.discord.guild,
+  	config.discord.channel,
 );
 
 const rl = readline.createInterface({

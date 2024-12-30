@@ -7,14 +7,16 @@ import { config } from "../utils/config.js"
 import { Logger } from "../utils/Logger.js"
 import { migrations } from "../database/migrations.js"
 import { InteractionRegistry } from "../discord/interactions/InteractionRegistry.js"
+import { LinkService } from "../verify/LinkService.js"
 
 const logger = new Logger()
 const database = await Database.create("./src/database", migrations)
 
+const linkService = new LinkService(database)
+
 const hypixelAPI = new HypixelAPI(config.bridge.apiKey, database, logger.category("HypixelAPI"))
 const slashCommands = new SlashCommandManager()
 const interactions = new InteractionRegistry()
-
 
 const discordStaffRoles = config.roles.filter(role => role.isStaff).map(role => role.discord)
 
@@ -32,7 +34,8 @@ if (config.discord.verification.channelId.length > 0) { // dont wanna bother wit
     database,
     hypixelAPI,
     slashCommands,
-    interactions
+    interactions,
+    linkService
   );
 
   if (config.discord.verification.unverifiedRole) {
