@@ -1,6 +1,7 @@
 import { ChatInputCommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { SlashCommand } from "../../discord/commands/SlashCommand";
 import { AutoRoles } from "../AutoRoles";
+import { simpleEmbed, statusEmbed } from "../../utils/discordUtils";
 
 export class SetAutoRoleCommand implements SlashCommand {
     name = "setautorolecommand"
@@ -20,12 +21,8 @@ export class SetAutoRoleCommand implements SlashCommand {
 				.setRequired(true)
 				.setName("requirement")
 				.setDescription("The requirement to grant this role.")
-                .setChoices(
-                    { name: "Max Fishing Bestiary", value: "max_fishing_bestiary" },
-                    { name: "1B Fishing XP ", value: "fishing_xp_1" },
-                    { name: "2.5B Fishing XP ", value: "fishing_xp_2" }
-                )
-		);
+                .setChoices(AutoRoles.ROLE_NAMES)
+		)
 
     constructor(private manager: AutoRoles) {}
 
@@ -34,5 +31,10 @@ export class SetAutoRoleCommand implements SlashCommand {
         const requirementType = interaction.options.getString("requirement", true)
         const roleId = interaction.options.getRole("role", true).id
         this.manager.setRole(guildId, roleId, requirementType)
+        const requirementName = AutoRoles.getRoleName(requirementType)
+        await interaction.reply({
+            embeds: [statusEmbed("success", `Set role <@&${roleId}> with requirement **${requirementName}`)],
+            ephemeral: true
+        })
     }
 }
