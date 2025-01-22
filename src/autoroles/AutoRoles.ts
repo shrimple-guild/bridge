@@ -6,7 +6,7 @@ import { SetAutoRoleCommand } from "./commands/SetAutoRoleCommand";
 import { UpdateRolesCommand } from "./commands/UpdateRolesCommand";
 import { IDatabase } from "../database/IDatabase";
 import { FishingBestiaryRole } from "./roles/FishingBestiaryRole";
-import { FishingXpRole } from "./roles/FishingXPRole";
+import { FishingXpRole } from "./roles/FishingXpRole";
 import { HypixelAPI } from "../api/HypixelAPI";
 import { LinkService } from "../verify/LinkService";
 import { AutoRole } from "./roles/AutoRole";
@@ -29,7 +29,7 @@ export class AutoRoles {
             new ForceUpdateRolesCommand(),
             new UpdateRolesCommand(),
             new RoleInfoCommand(),
-            new SetAutoRoleCommand()
+            new SetAutoRoleCommand(this)
         )
     }
 
@@ -55,7 +55,7 @@ export class AutoRoles {
         }))
     }
 
-    async updateRoles(member: GuildMember) {
+    async updateRoles(member: GuildMember): Promise<string[]> {
         const guild = member.guild
         const autoRoles = this.getRoles(guild.id)
         const uuid = this.linkService.getMinecraftUuid(member.id)
@@ -64,8 +64,19 @@ export class AutoRoles {
         }
         const allAutoRoles = autoRoles.map(role => role.roleId)
         const memberRoles = member.roles.cache.map(role => role.id)
+        const profiles = await this.hypixelAPI.fetchProfiles(uuid)
+        const newAutoRoles = autoRoles.map(roles => {
+            if (roles.role.meetsRequirement(profiles)) {
+                return roles.roleId
+            } else {
+                return null
+            }
+        }).filter(role => role != null) as Snowflake[]
 
-
+        const newRoles = memberRoles.filter(role => allAutoRoles.includes(role))
+        newRoles.push(...newAutoRoles)
+        await member.roles.set(newRoles)
+        return newAutoRoles
     }
 
     // when a update roles command is executed, it should figure out which roles are enabled for that guild.
