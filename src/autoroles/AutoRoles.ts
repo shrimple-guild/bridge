@@ -1,6 +1,5 @@
 import { GuildMember, Role, Snowflake } from "discord.js";
 import { SlashCommandManager } from "../discord/commands/SlashCommandManager";
-import { ForceUpdateRolesCommand } from "./commands/ForceUpdateRolesCommand";
 import { RoleInfoCommand } from "./commands/RoleInfoCommand";
 import { SetAutoRoleCommand } from "./commands/SetAutoRoleCommand";
 import { UpdateRolesCommand } from "./commands/UpdateRolesCommand";
@@ -32,7 +31,6 @@ export class AutoRoles {
         private linkService: LinkService
     ) {
         slashCommandManager.register(
-            new ForceUpdateRolesCommand(this),
             new UpdateRolesCommand(this),
             new RoleInfoCommand(this),
             new SetAutoRoleCommand(this)
