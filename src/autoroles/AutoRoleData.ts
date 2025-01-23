@@ -7,7 +7,7 @@ import { TrophyRequirement } from "./roles/TrophyRequirement";
 export const AutoRoleData = {
     roles: {
         "max_fishing_bestiary": new FishingBestiaryRequirement(),
-        "fishing_xp_1": new FishingXpRequirement(100e6),
+        "fishing_xp_1": new FishingXpRequirement(1e9),
         "fishing_xp_2": new FishingXpRequirement(2.5e9),
         "ink_collection": new CollectionRequirement("ink sac", 5e6),
         "dia_trophy_hunter": new TrophyRequirement("diamond")
