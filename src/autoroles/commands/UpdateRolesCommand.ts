@@ -23,10 +23,13 @@ export class UpdateRolesCommand implements SlashCommand {
                     ephemeral: true
                 })
             }
+            console.error(e)
             return
         }
         const roleData = newAchievementRoles.map(role => `<@&${role}>`).join(", ")
-        const roleMessage = `Successfully updated! You now have the following achievement roles: ${roleData}`
+        let roleMessage = roleData.length > 0 
+            ? `Successfully updated! You now have the following achievement roles: ${roleData}` 
+            : "Updated, but no roles to give. Check **/roleinfo** for available roles."
         await interaction.reply({
             embeds: [simpleEmbed("Updated roles", roleMessage)],
             ephemeral: true

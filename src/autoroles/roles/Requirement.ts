@@ -1,5 +1,5 @@
 import { SkyblockProfiles } from "../../api/SkyblockProfiles";
 
-export interface AutoRole {
+export interface Requirement {
     meetsRequirement: (profiles: SkyblockProfiles) => boolean
 }

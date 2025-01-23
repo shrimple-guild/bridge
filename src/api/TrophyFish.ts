@@ -23,7 +23,7 @@ export const trophyFishNames = Object.values(fishNameMap)
 
 type TrophyFishName = typeof fishNameMap[keyof typeof fishNameMap]
 
-type TrophyFishTier = "bronze" | "silver" | "gold" | "diamond"
+export type TrophyFishTier = "bronze" | "silver" | "gold" | "diamond"
 
 export class TrophyFish {
   readonly fish: Record<TrophyFishName, Fish>

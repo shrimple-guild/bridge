@@ -8,6 +8,9 @@ import { LinkCommand } from "./verify/commands/LinkCommand.js";
 import { SetLinkChannelCommand } from "./verify/commands/SetLinkChannelCommand.js";
 import { GuildReqsCommand } from "./discord/commands/GuildReqsCommand.js";
 import { SetVerificationRolesCommand } from "./verify/commands/SetVerificationRolesCommand.js";
+import { RoleInfoCommand } from "./autoroles/commands/RoleInfoCommand.js";
+import { SetAutoRoleCommand } from "./autoroles/commands/SetAutoRoleCommand.js";
+import { UpdateRolesCommand } from "./autoroles/commands/UpdateRolesCommand.js";
 
 const slashCommands = [
 	ManualVerifyCommand.data,
@@ -16,7 +19,10 @@ const slashCommands = [
 	SyncCommand.data,
 	SetLinkChannelCommand.data,
 	GuildReqsCommand.data,
-  SetVerificationRolesCommand.data
+  	SetVerificationRolesCommand.data,
+	RoleInfoCommand.data,
+	SetAutoRoleCommand.data,
+	UpdateRolesCommand.data,
 ];
 
 await loadCommands(

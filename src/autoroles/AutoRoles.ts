@@ -4,25 +4,13 @@ import { RoleInfoCommand } from "./commands/RoleInfoCommand";
 import { SetAutoRoleCommand } from "./commands/SetAutoRoleCommand";
 import { UpdateRolesCommand } from "./commands/UpdateRolesCommand";
 import { IDatabase } from "../database/IDatabase";
-import { FishingBestiaryRole } from "./roles/FishingBestiaryRole";
-import { FishingXpRole } from "./roles/FishingXpRole";
 import { HypixelAPI } from "../api/HypixelAPI";
 import { LinkService } from "../verify/LinkService";
-import { AutoRole as Requirement } from "./roles/AutoRole";
+import { Requirement } from "./roles/Requirement";
+import { AutoRoleData } from "./AutoRoleData";
+
 
 export class AutoRoles {
-
-    static ROLES: { [key: string]: Requirement } = {
-        "max_fishing_bestiary": new FishingBestiaryRole(),
-        "fishing_xp_1": new FishingXpRole(1e9),
-        "fishing_xp_2": new FishingXpRole(2.5e9)
-    }
-
-    static ROLE_NAMES = [
-        { name: "Max Fishing Bestiary", value: "max_fishing_bestiary" },
-        { name: "1B Fishing XP ", value: "fishing_xp_1" },
-        { name: "2.5B Fishing XP ", value: "fishing_xp_2" }
-    ]
 
     constructor(
         slashCommandManager: SlashCommandManager, 
@@ -38,27 +26,27 @@ export class AutoRoles {
     }
 
     static getRoleName(value: string): string {
-        return this.ROLE_NAMES.find(role => value == role.value)!.name
+        return AutoRoleData.roleNames.find(role => value == role.value)!.name
     }
 
     setRole(guildId: Snowflake, roleId: Snowflake, roleType: string) {
         const stmt = this.db.prepare(`
-            INSERT OR REPLACE INTO guild_roles (guild_id, role_type, role_id)
+            INSERT OR REPLACE INTO guild_roles (guild_id, requirement, role_id)
             VALUES (?, ?, ?)
         `)
         stmt.run([guildId, roleType, roleId])
     }
 
     getRoles(guildId: Snowflake): DiscordAutoRole[] {
-        const stmt = this.db.prepare<[string], { role_type: string, role_id: Snowflake }>(`
-            SELECT role_type, role_id
+        const stmt = this.db.prepare<[string], { requirement: string, role_id: Snowflake }>(`
+            SELECT requirement, role_id
             FROM guild_roles
             WHERE guild_id = ?
         `)
         const result = stmt.all(guildId);
         return result.map(role => ({
-            requirement: AutoRoles.ROLES[role.role_type],
-            name: AutoRoles.getRoleName(role.role_type),
+            requirement: AutoRoleData.roles[role.requirement],
+            name: AutoRoles.getRoleName(role.requirement),
             roleId: role.role_id
         }))
     }
@@ -81,7 +69,7 @@ export class AutoRoles {
             }
         }).filter(role => role != null) as Snowflake[]
 
-        const newRoles = memberRoles.filter(role => allAutoRoles.includes(role))
+        const newRoles = memberRoles.filter(role => !allAutoRoles.includes(role))
         newRoles.push(...newAutoRoles)
         await member.roles.set(newRoles)
         return newAutoRoles

@@ -1,10 +1,11 @@
 import { ChatInputCommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
 import { SlashCommand } from "../../discord/commands/SlashCommand";
+import { statusEmbed } from "../../utils/discordUtils";
+import { AutoRoleData } from "../AutoRoleData";
 import { AutoRoles } from "../AutoRoles";
-import { simpleEmbed, statusEmbed } from "../../utils/discordUtils";
 
 export class SetAutoRoleCommand implements SlashCommand {
-    name = "setautorolecommand"
+    name = "setautorole"
 
     static data = new SlashCommandBuilder()
 		.setName("setautorole")
@@ -21,7 +22,7 @@ export class SetAutoRoleCommand implements SlashCommand {
 				.setRequired(true)
 				.setName("requirement")
 				.setDescription("The requirement to grant this role.")
-                .setChoices(AutoRoles.ROLE_NAMES)
+                .setChoices(AutoRoleData.roleNames)
 		)
 
     constructor(private manager: AutoRoles) {}
@@ -33,7 +34,7 @@ export class SetAutoRoleCommand implements SlashCommand {
         this.manager.setRole(guildId, roleId, requirementType)
         const requirementName = AutoRoles.getRoleName(requirementType)
         await interaction.reply({
-            embeds: [statusEmbed("success", `Set role <@&${roleId}> with requirement **${requirementName}`)],
+            embeds: [statusEmbed("success", `Set role <@&${roleId}> with requirement **${requirementName}**.`)],
             ephemeral: true
         })
     }

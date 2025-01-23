@@ -15,7 +15,7 @@ export class RoleInfoCommand implements SlashCommand {
     async execute(interaction: ChatInputCommandInteraction<"cached">) {
         const activeRoles = this.manager.getRoles(interaction.guildId)
         const roleData = activeRoles.map(role => {
-            return `- **${role.name}** - <@&${role.name}>`
+            return `- **${role.name}** - <@&${role.roleId}>`
         }).join("\n")
         const roleInfo = `Achievement roles available:\n\n${roleData}`
         await interaction.reply({
