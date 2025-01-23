@@ -56,7 +56,7 @@ export class Logger {
   private sendQueue() {
     if (this.loggerWebhookClient) {
       this.loggerWebhookClient.send({
-        content: `\`\`\`ansi\n${this.queueBuffer}\`\`\``
+        content: `\`\`\`ansi\n${this.queueBuffer.replaceAll("`", "")}\`\`\``
       }).catch(e => undefined)
     }
     this.queueBuffer = ""
