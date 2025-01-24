@@ -7,7 +7,7 @@ import { config } from "../utils/config.js"
 import { Logger } from "../utils/Logger.js"
 import { migrations } from "../database/migrations.js"
 import { InteractionRegistry } from "../discord/interactions/InteractionRegistry.js"
-import { AutoRoles } from "../autoroles/AutoRoles.js"
+import { Achievements } from "../achievements/Achievements.js"
 import { LinkService } from "../verify/LinkService.js"
 
 const logger = new Logger()
@@ -31,7 +31,7 @@ const discord = await createDiscordBot(
   logger.category("Discord")
 )
 
-const autoRoles = new AutoRoles(
+const autoRoles = new Achievements(
   slashCommands,
   database,
   hypixelAPI,

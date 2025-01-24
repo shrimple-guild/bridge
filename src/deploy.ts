@@ -8,9 +8,9 @@ import { LinkCommand } from "./verify/commands/LinkCommand.js";
 import { SetLinkChannelCommand } from "./verify/commands/SetLinkChannelCommand.js";
 import { GuildReqsCommand } from "./discord/commands/GuildReqsCommand.js";
 import { SetVerificationRolesCommand } from "./verify/commands/SetVerificationRolesCommand.js";
-import { RoleInfoCommand } from "./autoroles/commands/RoleInfoCommand.js";
-import { SetAutoRoleCommand } from "./autoroles/commands/SetAutoRoleCommand.js";
-import { UpdateRolesCommand } from "./autoroles/commands/UpdateRolesCommand.js";
+import { RoleInfoCommand } from "./achievements/commands/RoleInfoCommand.js";
+import { SetAutoRoleCommand } from "./achievements/commands/AchievementSettingsCommand.js";
+import { AchievementsCommand } from "./achievements/commands/AchievementsCommand.js";
 
 const slashCommands = [
 	ManualVerifyCommand.data,
@@ -22,7 +22,7 @@ const slashCommands = [
   	SetVerificationRolesCommand.data,
 	RoleInfoCommand.data,
 	SetAutoRoleCommand.data,
-	UpdateRolesCommand.data,
+	AchievementsCommand.data,
 ];
 
 await loadCommands(

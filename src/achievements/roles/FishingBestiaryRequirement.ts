@@ -49,7 +49,8 @@ const requiredMobs = [
     "grinch",
     "nutcracker",
     "reindrake",
-    "yeti"
+    "yeti",
+    "mithril grubber"
 ]
 
 export class FishingBestiaryRequirement implements Requirement {

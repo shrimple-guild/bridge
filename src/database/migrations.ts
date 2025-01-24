@@ -109,10 +109,10 @@ export const migrations = {
     {
       version: 6,
       script: `
-        CREATE TABLE guild_roles (
+        CREATE TABLE achievement_roles (
           guild_id TEXT NOT NULL,
           requirement TEXT NOT NULL,
-          role_id TEXT NOT NULL,
+          role_id TEXT NOT NULL UNIQUE,
           PRIMARY KEY (guild_id, requirement)
         );
       `

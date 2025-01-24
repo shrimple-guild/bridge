@@ -1,16 +1,15 @@
-import { GuildMember, Role, Snowflake } from "discord.js";
+import { GuildMember, Snowflake } from "discord.js";
 import { SlashCommandManager } from "../discord/commands/SlashCommandManager";
-import { RoleInfoCommand } from "./commands/RoleInfoCommand";
-import { SetAutoRoleCommand } from "./commands/SetAutoRoleCommand";
-import { UpdateRolesCommand } from "./commands/UpdateRolesCommand";
+import { SetAutoRoleCommand } from "./commands/AchievementSettingsCommand";
+import { AchievementsCommand } from "./commands/AchievementsCommand";
 import { IDatabase } from "../database/IDatabase";
 import { HypixelAPI } from "../api/HypixelAPI";
 import { LinkService } from "../verify/LinkService";
 import { Requirement } from "./roles/Requirement";
-import { AutoRoleData } from "./AutoRoleData";
+import { AchievementsData } from "./AutoRoleData";
 
 
-export class AutoRoles {
+export class Achievements {
 
     constructor(
         slashCommandManager: SlashCommandManager, 
@@ -19,41 +18,47 @@ export class AutoRoles {
         private linkService: LinkService
     ) {
         slashCommandManager.register(
-            new UpdateRolesCommand(this),
-            new RoleInfoCommand(this),
+            new AchievementsCommand(this),
             new SetAutoRoleCommand(this)
         )
     }
 
-    static getRoleName(value: string): string {
-        return AutoRoleData.roleNames.find(role => value == role.value)!.name
+    static getAchievementName(value: string): string {
+        return AchievementsData.achievementNames.find(role => value == role.value)!.name
     }
 
-    setRole(guildId: Snowflake, roleId: Snowflake, roleType: string) {
+    addOrUpdateAchievement(guildId: Snowflake, roleId: Snowflake, roleType: string) {
         const stmt = this.db.prepare(`
-            INSERT OR REPLACE INTO guild_roles (guild_id, requirement, role_id)
+            INSERT OR REPLACE INTO achievement_roles (guild_id, requirement, role_id)
             VALUES (?, ?, ?)
         `)
         stmt.run([guildId, roleType, roleId])
     }
 
-    getRoles(guildId: Snowflake): DiscordAutoRole[] {
+    deleteAchievement(guildId: Snowflake, roleType: string) {
+        const stmt = this.db.prepare(`
+            DELETE FROM achievement_roles WHERE guild_id = ? AND requirement = ?
+        `)
+        stmt.run([guildId, roleType])
+    }
+
+    getAchievements(guildId: Snowflake): AchievementRole[] {
         const stmt = this.db.prepare<[string], { requirement: string, role_id: Snowflake }>(`
             SELECT requirement, role_id
-            FROM guild_roles
+            FROM achievement_roles
             WHERE guild_id = ?
         `)
         const result = stmt.all(guildId);
         return result.map(role => ({
-            requirement: AutoRoleData.roles[role.requirement],
-            name: AutoRoles.getRoleName(role.requirement),
+            requirement: AchievementsData.achievements[role.requirement],
+            name: Achievements.getAchievementName(role.requirement),
             roleId: role.role_id
         }))
     }
 
     async updateRoles(member: GuildMember): Promise<string[]> {
         const guild = member.guild
-        const autoRoles = this.getRoles(guild.id)
+        const autoRoles = this.getAchievements(guild.id)
         const uuid = this.linkService.getMinecraftUuid(member.id)
         if (uuid == null) {
             throw new Error("Not linked to a Minecraft account! Use /link to link your account, or contact staff if you need assistance.")
@@ -76,7 +81,7 @@ export class AutoRoles {
     }
 }
 
-export type DiscordAutoRole = { 
+export type AchievementRole = { 
     roleId: Snowflake, 
     name: string,
     requirement: Requirement 

@@ -18,7 +18,7 @@ import { GuildReqsCommand } from "./discord/commands/GuildReqsCommand.js";
 import { InteractionRegistry } from "./discord/interactions/InteractionRegistry.js";
 import { LinkService } from "./verify/LinkService.js";
 import { link } from "fs";
-import { AutoRoles } from "./autoroles/AutoRoles.js";
+import { Achievements } from "./achievements/Achievements.js";
 
 const logger = new Logger();
 
@@ -51,7 +51,7 @@ const discord = await createDiscordBot(
 	logger.category("Discord")
 );
 
-const autoRoles = new AutoRoles(
+const autoRoles = new Achievements(
 	slashCommands,
 	database,
 	hypixelAPI,
