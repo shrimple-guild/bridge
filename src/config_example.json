@@ -53,5 +53,6 @@
       "sbLevel": 0,
       "overflowFishingXp": 0
     }
-  ]
+  ],
+  "achievementRoles": true
 }

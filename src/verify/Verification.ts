@@ -15,7 +15,6 @@ import { LinkModalHandler } from "./interactions/LinkModalHandler.js"
 import { SetVerificationRolesCommand } from "./commands/SetVerificationRolesCommand.js"
 
 export class Verification {
-  private linkService: LinkService;
   private verificationService: VerificationService;
 
   constructor(
@@ -23,11 +22,11 @@ export class Verification {
     db: Database,
     hypixelAPI: HypixelAPI,
     slashCommandManager: SlashCommandManager,
-    interactionRegistry: InteractionRegistry
+    interactionRegistry: InteractionRegistry,
+    private linkService: LinkService
   ) {
 
     this.verificationService = new VerificationService(db);
-    this.linkService = new LinkService(db);
 
     slashCommandManager.register(
       new ManualVerifyCommand(this, hypixelAPI),

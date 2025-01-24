@@ -105,6 +105,17 @@ export const migrations = {
           unverified_role TEXT
         );
       `
+    },
+    {
+      version: 6,
+      script: `
+        CREATE TABLE achievement_roles (
+          guild_id TEXT NOT NULL,
+          requirement TEXT NOT NULL,
+          role_id TEXT NOT NULL UNIQUE,
+          PRIMARY KEY (guild_id, requirement)
+        );
+      `
     }
   ]
 }
