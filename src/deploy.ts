@@ -1,4 +1,4 @@
-import { REST, Routes, SlashCommandOptionsOnlyBuilder } from "discord.js";
+import { REST, Routes, SlashCommandOptionsOnlyBuilder, SlashCommandSubcommandsOnlyBuilder } from "discord.js";
 import { config } from "./utils/config.js"
 import { SlashCommand } from "./discord/commands/SlashCommand.js";
 import { ManualVerifyCommand } from "./verify/commands/ManualVerifyCommand.js";
@@ -8,8 +8,7 @@ import { LinkCommand } from "./verify/commands/LinkCommand.js";
 import { SetLinkChannelCommand } from "./verify/commands/SetLinkChannelCommand.js";
 import { GuildReqsCommand } from "./discord/commands/GuildReqsCommand.js";
 import { SetVerificationRolesCommand } from "./verify/commands/SetVerificationRolesCommand.js";
-import { RoleInfoCommand } from "./achievements/commands/RoleInfoCommand.js";
-import { SetAutoRoleCommand } from "./achievements/commands/AchievementSettingsCommand.js";
+import { AchievementSettingsCommand } from "./achievements/commands/AchievementSettingsCommand.js";
 import { AchievementsCommand } from "./achievements/commands/AchievementsCommand.js";
 
 const slashCommands = [
@@ -20,8 +19,7 @@ const slashCommands = [
 	SetLinkChannelCommand.data,
 	GuildReqsCommand.data,
   	SetVerificationRolesCommand.data,
-	RoleInfoCommand.data,
-	SetAutoRoleCommand.data,
+	AchievementSettingsCommand.data,
 	AchievementsCommand.data,
 ];
 
@@ -33,7 +31,7 @@ await loadCommands(
 );
 
 async function loadCommands(
-	commands: SlashCommandOptionsOnlyBuilder[],
+	commands: (SlashCommandOptionsOnlyBuilder | SlashCommandSubcommandsOnlyBuilder)[],
 	token: string,
 	clientId: string,
 	guildId: string

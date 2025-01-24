@@ -1,6 +1,6 @@
 import { GuildMember, Snowflake } from "discord.js";
 import { SlashCommandManager } from "../discord/commands/SlashCommandManager";
-import { SetAutoRoleCommand } from "./commands/AchievementSettingsCommand";
+import { AchievementSettingsCommand } from "./commands/AchievementSettingsCommand";
 import { AchievementsCommand } from "./commands/AchievementsCommand";
 import { IDatabase } from "../database/IDatabase";
 import { HypixelAPI } from "../api/HypixelAPI";
@@ -19,7 +19,7 @@ export class Achievements {
     ) {
         slashCommandManager.register(
             new AchievementsCommand(this),
-            new SetAutoRoleCommand(this)
+            new AchievementSettingsCommand(this)
         )
     }
 

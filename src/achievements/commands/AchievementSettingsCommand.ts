@@ -4,7 +4,7 @@ import { statusEmbed } from "../../utils/discordUtils";
 import { AchievementsData } from "../AutoRoleData";
 import { Achievements } from "../Achievements";
 
-export class SetAutoRoleCommand implements SlashCommand {
+export class AchievementSettingsCommand implements SlashCommand {
     name = "achievementsettings"
 
     static data = new SlashCommandBuilder()
