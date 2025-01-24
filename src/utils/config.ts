@@ -50,6 +50,7 @@ type Config = {
         sbLevel: number;
         overflowFishingXp: number;
     }[];
+    achievementRoles?: boolean
 };
 
 export let config = JSON.parse(await fs.readFile("./src/config.json", "utf-8")) as Config;
