@@ -1,8 +1,8 @@
 import { ChatInputCommandInteraction, PermissionsBitField, SlashCommandBuilder } from "discord.js";
-import { SlashCommand } from "../../discord/commands/SlashCommand";
-import { statusEmbed } from "../../utils/discordUtils";
-import { AchievementsData } from "../AutoRoleData";
-import { Achievements } from "../Achievements";
+import { SlashCommand } from "../../discord/commands/SlashCommand.js";
+import { statusEmbed } from "../../utils/discordUtils.js";
+import { AchievementsData } from "../AutoRoleData.js";
+import { Achievements } from "../Achievements.js";
 
 export class AchievementSettingsCommand implements SlashCommand {
     name = "achievementsettings"

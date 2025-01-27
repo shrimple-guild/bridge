@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { SlashCommand } from "../../discord/commands/SlashCommand";
-import { Achievements } from "../Achievements";
-import { simpleEmbed, statusEmbed } from "../../utils/discordUtils";
+import { SlashCommand } from "../../discord/commands/SlashCommand.js";
+import { Achievements } from "../Achievements.js";
+import { simpleEmbed, statusEmbed } from "../../utils/discordUtils.js";
 
 export class AchievementsCommand implements SlashCommand {
     name = "achievements"
