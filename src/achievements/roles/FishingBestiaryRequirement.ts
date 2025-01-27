@@ -58,7 +58,7 @@ export class FishingBestiaryRequirement implements Requirement {
         return profiles.profiles.some(profile => {
             return requiredMobs.every(mob => {
                 const mobData = profile.bestiary.getByMob(mob)
-                if (!mobData) throw new Error(`Mob ${mob} doesn't exist! Please report this to appable!`)
+                if (!mobData) return false
                 return mobData.kills >= mobData.cap
             })
         })
