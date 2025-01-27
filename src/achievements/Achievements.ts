@@ -1,12 +1,12 @@
 import { GuildMember, Snowflake } from "discord.js";
-import { SlashCommandManager } from "../discord/commands/SlashCommandManager";
-import { AchievementSettingsCommand } from "./commands/AchievementSettingsCommand";
-import { AchievementsCommand } from "./commands/AchievementsCommand";
-import { IDatabase } from "../database/IDatabase";
-import { HypixelAPI } from "../api/HypixelAPI";
-import { LinkService } from "../verify/LinkService";
-import { Requirement } from "./roles/Requirement";
-import { AchievementsData } from "./AutoRoleData";
+import { SlashCommandManager } from "../discord/commands/SlashCommandManager.js";
+import { AchievementSettingsCommand } from "./commands/AchievementSettingsCommand.js";
+import { AchievementsCommand } from "./commands/AchievementsCommand.js";
+import { IDatabase } from "../database/IDatabase.js";
+import { HypixelAPI } from "../api/HypixelAPI.js";
+import { LinkService } from "../verify/LinkService.js";
+import { Requirement } from "./roles/Requirement.js";
+import { AchievementsData } from "./AutoRoleData.js";
 
 
 export class Achievements {
