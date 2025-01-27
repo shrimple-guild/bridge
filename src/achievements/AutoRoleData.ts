@@ -1,8 +1,8 @@
-import { CollectionRequirement } from "./roles/CollectionRequirement";
-import { FishingBestiaryRequirement } from "./roles/FishingBestiaryRequirement";
-import { FishingXpRequirement } from "./roles/FishingXpRequirement";
-import { Requirement } from "./roles/Requirement";
-import { TrophyRequirement } from "./roles/TrophyRequirement";
+import { CollectionRequirement } from "./roles/CollectionRequirement.js";
+import { FishingBestiaryRequirement } from "./roles/FishingBestiaryRequirement.js";
+import { FishingXpRequirement } from "./roles/FishingXpRequirement.js";
+import { Requirement } from "./roles/Requirement.js";
+import { TrophyRequirement } from "./roles/TrophyRequirement.js";
 
 export const AchievementsData = {
     achievements: {
