@@ -16,6 +16,8 @@ export const AchievementsData = {
     achievementNames: [
         { name: "Max Fishing Bestiary", value: "max_fishing_bestiary" },
         { name: "1B Fishing XP ", value: "fishing_xp_1" },
-        { name: "2.5B Fishing XP ", value: "fishing_xp_2" }
+        { name: "2.5B Fishing XP ", value: "fishing_xp_2" },
+        { name: "5M Ink Collection ", value: "ink_collection" },
+        { name: "Diamond Trophy Hunter", value: "dia_trophy_hunter" }
     ]
 }
