@@ -56,6 +56,7 @@ export class Achievements {
         }))
     }
 
+    // TODO: return an object of added/removed roles so that the update message can be more informative
     async updateRoles(member: GuildMember): Promise<string[]> {
         const guild = member.guild
         const autoRoles = this.getAchievements(guild.id)

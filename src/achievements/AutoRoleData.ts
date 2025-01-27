@@ -5,6 +5,7 @@ import { Requirement } from "./roles/Requirement.js";
 import { TrophyRequirement } from "./roles/TrophyRequirement.js";
 
 export const AchievementsData = {
+    // keys are discord customId; must redeploy commands if these are changed
     achievements: {
         "max_fishing_bestiary": new FishingBestiaryRequirement(),
         "fishing_xp_1": new FishingXpRequirement(1e9),
@@ -13,6 +14,7 @@ export const AchievementsData = {
         "dia_trophy_hunter": new TrophyRequirement("diamond")
     } as { [key: string]: Requirement },
 
+    // values are discord customId; must redeploy commands if these are changed
     achievementNames: [
         { name: "Max Fishing Bestiary", value: "max_fishing_bestiary" },
         { name: "1B Fishing XP ", value: "fishing_xp_1" },
