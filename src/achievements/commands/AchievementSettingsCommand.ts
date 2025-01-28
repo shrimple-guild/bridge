@@ -60,7 +60,7 @@ export class AchievementSettingsCommand implements SlashCommand {
         const requirementName = Achievements.getAchievementName(requirementType)
         await interaction.reply({
             embeds: [statusEmbed("success", `Set role <@&${roleId}> with requirement **${requirementName}**.`)],
-            ephemeral: true
+            ephemeral: false
         })
     }
 
@@ -71,7 +71,7 @@ export class AchievementSettingsCommand implements SlashCommand {
         const requirementName = Achievements.getAchievementName(requirementType)
         await interaction.reply({
             embeds: [statusEmbed("success", `Removed achievement **${requirementName}**.`)],
-            ephemeral: true
+            ephemeral: false
         })
     }
 }

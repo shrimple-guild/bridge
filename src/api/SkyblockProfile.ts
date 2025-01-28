@@ -43,6 +43,8 @@ export class SkyblockProfile {
 		this.trophyFish = new TrophyFish(this.memberRaw);
 		this.kuudra = new Kuudra(this.memberRaw);
 		this.mobs = new Mobs(this.memberRaw);
+		
+		// TODO make sure an instance always exists (this may be undefined on old profiles)
 		this.bestiary = new Bestiary(this.memberRaw);
 		this.collections = new Collections(this.memberRaw, api);
 		this.farmingWeight = farmingWeight(raw, uuid);

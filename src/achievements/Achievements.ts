@@ -57,7 +57,7 @@ export class Achievements {
     }
 
     // TODO: return an object of added/removed roles so that the update message can be more informative
-    async updateRoles(member: GuildMember): Promise<string[]> {
+    async updateRoles(member: GuildMember): Promise<RoleChanges> {
         const guild = member.guild
         const autoRoles = this.getAchievements(guild.id)
         const uuid = this.linkService.getMinecraftUuid(member.id)
@@ -67,6 +67,7 @@ export class Achievements {
         const allAutoRoles = autoRoles.map(role => role.roleId)
         const memberRoles = member.roles.cache.map(role => role.id)
         const profiles = await this.hypixelAPI.fetchProfiles(uuid)
+        const oldAutoRules = memberRoles.filter(role => allAutoRoles.includes(role))
         const newAutoRoles = autoRoles.map(roles => {
             if (roles.requirement.meetsRequirement(profiles)) {
                 return roles.roleId
@@ -75,10 +76,17 @@ export class Achievements {
             }
         }).filter(role => role != null) as Snowflake[]
 
+        const addedAchievementRoles = newAutoRoles.filter(role => !oldAutoRules.includes(role));
+        const removedAchievementRoles = oldAutoRules.filter(role => !newAutoRoles.includes(role));
+
         const newRoles = memberRoles.filter(role => !allAutoRoles.includes(role))
         newRoles.push(...newAutoRoles)
         await member.roles.set(newRoles)
-        return newAutoRoles
+        return {
+            changed: (addedAchievementRoles.length > 0) || (removedAchievementRoles.length > 0),
+            added: addedAchievementRoles,
+            removed: removedAchievementRoles,
+        }
     }
 }
 
@@ -86,4 +94,10 @@ export type AchievementRole = {
     roleId: Snowflake, 
     name: string,
     requirement: Requirement 
+}
+
+export type RoleChanges = {
+    changed: boolean
+    added: string[]
+    removed: string[]
 }
