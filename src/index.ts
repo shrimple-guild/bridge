@@ -16,6 +16,9 @@ import { postDisconnectEmbed } from "./utils/discordUtils.js";
 import { sleep } from "./utils/utils.js";
 import { GuildReqsCommand } from "./discord/commands/GuildReqsCommand.js";
 import { InteractionRegistry } from "./discord/interactions/InteractionRegistry.js";
+import { LinkService } from "./verify/LinkService.js";
+import { link } from "fs";
+import { Achievements } from "./achievements/Achievements.js";
 
 const logger = new Logger();
 
@@ -27,9 +30,12 @@ const hypixelAPI = new HypixelAPI(
 	config.bridge.apiKey,
 	database,
 	logger.category("HypixelAPI")
-);
+)
+
 await hypixelAPI.init(itemNames);
 const slashCommands = new SlashCommandManager();
+const linkService = new LinkService(database)
+
 
 if (config.discord.guildRequirements) {
 	slashCommands.register(new GuildReqsCommand(hypixelAPI));
@@ -40,11 +46,17 @@ const interactions = new InteractionRegistry();
 const discord = await createDiscordBot(
 	config.discord.token,
 	slashCommands,
-  interactions,
+  	interactions,
 	hypixelAPI,
 	logger.category("Discord")
 );
 
+const autoRoles = new Achievements(
+	slashCommands,
+	database,
+	hypixelAPI,
+	linkService
+)
 
 if (config.discord.verification.channelId.length > 0) { // dont wanna bother with checking if i need to check a property, its length, or just the object but this should work
 	const verification = new Verification(
@@ -52,7 +64,8 @@ if (config.discord.verification.channelId.length > 0) { // dont wanna bother wit
 		database,
 		hypixelAPI,
 		slashCommands,
-    interactions
+    	interactions,
+		linkService
 	);
 
   if (config.discord.verification.unverifiedRole) {

@@ -1,6 +1,5 @@
-import { REST, Routes, SlashCommandOptionsOnlyBuilder } from "discord.js";
+import { REST, RESTPostAPIChatInputApplicationCommandsJSONBody, Routes, SlashCommandOptionsOnlyBuilder, SlashCommandSubcommandsOnlyBuilder } from "discord.js";
 import { config } from "./utils/config.js"
-import { SlashCommand } from "./discord/commands/SlashCommand.js";
 import { ManualVerifyCommand } from "./verify/commands/ManualVerifyCommand.js";
 import { SyncCommand } from "./verify/commands/SyncCommand.js";
 import { UnlinkCommand } from "./verify/commands/UnlinkCommand.js";
@@ -8,16 +7,26 @@ import { LinkCommand } from "./verify/commands/LinkCommand.js";
 import { SetLinkChannelCommand } from "./verify/commands/SetLinkChannelCommand.js";
 import { GuildReqsCommand } from "./discord/commands/GuildReqsCommand.js";
 import { SetVerificationRolesCommand } from "./verify/commands/SetVerificationRolesCommand.js";
+import { AchievementSettingsCommand } from "./achievements/commands/AchievementSettingsCommand.js";
+import { AchievementsCommand } from "./achievements/commands/AchievementsCommand.js";
 
-const slashCommands = [
+type Command = {
+	toJSON: () => RESTPostAPIChatInputApplicationCommandsJSONBody
+}
+
+const slashCommands: Command[] = [
 	ManualVerifyCommand.data,
 	LinkCommand.data,
 	UnlinkCommand.data,
 	SyncCommand.data,
 	SetLinkChannelCommand.data,
 	GuildReqsCommand.data,
-  SetVerificationRolesCommand.data
+  	SetVerificationRolesCommand.data,
 ];
+
+if (config.achievementRoles) {
+	slashCommands.push(AchievementSettingsCommand.data, AchievementsCommand.data,)
+}
 
 await loadCommands(
 	slashCommands,
@@ -27,7 +36,7 @@ await loadCommands(
 );
 
 async function loadCommands(
-	commands: SlashCommandOptionsOnlyBuilder[],
+	commands: Command[],
 	token: string,
 	clientId: string,
 	guildId: string
