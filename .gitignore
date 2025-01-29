@@ -112,4 +112,3 @@ src/database/backups/*
 !src/database/backups/.gitkeep
 config*.json
 !config_example.json
-yarn.lock
