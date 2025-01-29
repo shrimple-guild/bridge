@@ -20,7 +20,7 @@ export class LinkService {
    */
   linkMember(discordId: string, minecraftId: string): boolean {
     const stmt = this.db.prepare(`
-      INSERT OR IGNORE INTO linked_members (discord_id, minecraft_id) VALUES (?, ?)
+      INSERT OR REPLACE INTO linked_members (discord_id, minecraft_id) VALUES (?, ?)
     `);
     const result = stmt.run(discordId, minecraftId);
     return result.changes > 0;
