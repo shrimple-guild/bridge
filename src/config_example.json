@@ -54,5 +54,6 @@
       "overflowFishingXp": 0
     }
   ],
+  "linking": true,
   "achievementRoles": true
 }

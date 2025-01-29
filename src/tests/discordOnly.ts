@@ -19,7 +19,6 @@ const slashCommands = new SlashCommandManager()
 const interactions = new InteractionRegistry()
 
 
-const linkService = new LinkService(database)
 
 const discordStaffRoles = config.roles.filter(role => role.isStaff).map(role => role.discord)
 
@@ -31,29 +30,40 @@ const discord = await createDiscordBot(
   logger.category("Discord")
 )
 
-const autoRoles = new Achievements(
-  slashCommands,
-  database,
-  hypixelAPI,
-  linkService
-)
+if (config.linking) {
+  const linkService = new LinkService(database)
 
-if (config.discord.verification.channelId.length > 0) { // dont wanna bother with checking if i need to check a property, its length, or just the object but this should work
-  const verification = new Verification(
-    discord.client,
-    database,
-    hypixelAPI,
-    slashCommands,
-    interactions,
-    linkService
-  );
-
-  if (config.discord.verification.unverifiedRole) {
+  if (config.discord.verification.channelId.length > 0) { 
+    // dont wanna bother with checking if i need to check a property, its length, or just the object but this should work
+    const verification = new Verification(
+      discord.client,
+      database,
+      hypixelAPI,
+      slashCommands,
+      interactions,
+      linkService
+    );
+  
+    if (config.discord.verification.unverifiedRole) {
     verification.setVerificationRoles(
       config.discord.guild,
       config.discord.verification.unverifiedRole,
       config.discord.verification.verifiedRole
     )
+    }  
   }
+
+  const autoRoles = new Achievements(
+    slashCommands,
+    database,
+    hypixelAPI,
+    linkService
+  )
 }
+
+console.log(`
+  Starting bot with discord ID ${discord.client.user.id}.
+  - Registered ${slashCommands.commands.length} slash commands.
+  - Minecraft bot: ${config.minecraft.username}.
+`)
 

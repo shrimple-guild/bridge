@@ -17,7 +17,6 @@ import { sleep } from "./utils/utils.js";
 import { GuildReqsCommand } from "./discord/commands/GuildReqsCommand.js";
 import { InteractionRegistry } from "./discord/interactions/InteractionRegistry.js";
 import { LinkService } from "./verify/LinkService.js";
-import { link } from "fs";
 import { Achievements } from "./achievements/Achievements.js";
 
 const logger = new Logger();
@@ -34,8 +33,6 @@ const hypixelAPI = new HypixelAPI(
 
 await hypixelAPI.init(itemNames);
 const slashCommands = new SlashCommandManager();
-const linkService = new LinkService(database)
-
 
 if (config.discord.guildRequirements) {
 	slashCommands.register(new GuildReqsCommand(hypixelAPI));
@@ -51,31 +48,43 @@ const discord = await createDiscordBot(
 	logger.category("Discord")
 );
 
-const autoRoles = new Achievements(
-	slashCommands,
-	database,
-	hypixelAPI,
-	linkService
-)
+if (config.linking) {
+	const linkService = new LinkService(database)
 
-if (config.discord.verification.channelId.length > 0) { // dont wanna bother with checking if i need to check a property, its length, or just the object but this should work
-	const verification = new Verification(
-		discord.client,
+	if (config.discord.verification.channelId.length > 0) { 
+		// dont wanna bother with checking if i need to check a property, its length, or just the object but this should work
+		const verification = new Verification(
+			discord.client,
+			database,
+			hypixelAPI,
+			slashCommands,
+			interactions,
+			linkService
+		);
+	
+		// TODO remove this, replace with smple boolean
+		if (config.discord.verification.unverifiedRole) {
+			verification.setVerificationRoles(
+			config.discord.guild,
+			config.discord.verification.unverifiedRole,
+			config.discord.verification.verifiedRole
+			)
+		}  
+	}
+
+	const autoRoles = new Achievements(
+		slashCommands,
 		database,
 		hypixelAPI,
-		slashCommands,
-    	interactions,
 		linkService
-	);
-
-  if (config.discord.verification.unverifiedRole) {
-    verification.setVerificationRoles(
-      config.discord.guild,
-      config.discord.verification.unverifiedRole,
-      config.discord.verification.verifiedRole
-    )
-  }  
+	)
 }
+
+await general.info(`
+	Starting bot with discord ID ${discord.client.user.id}.
+	- Registered ${slashCommands.commands.length} slash commands.
+	- Minecraft bot: ${config.minecraft.username}.
+`)
 
 const bridgeCommandManager = new SimpleCommandManager(
 	hypixelAPI,

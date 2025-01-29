@@ -50,6 +50,7 @@ type Config = {
         sbLevel: number;
         overflowFishingXp: number;
     }[];
+    linking?: boolean
     achievementRoles?: boolean
 };
 

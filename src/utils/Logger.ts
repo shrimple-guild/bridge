@@ -19,9 +19,9 @@ export class Logger {
     return {
       error: (content: string, error?: any) => {
         if (error instanceof Error) {
-          this.log(category, `${content}\n${error.stack ?? "No stack available"}`, 31)
+          void this.log(category, `${content}\n${error.stack ?? "No stack available"}`, 31)
         } else {
-          this.log(category, content, 31)
+          void this.log(category, content, 31)
         }
       },
       info: (content: string) => this.log(category, content, 32),
