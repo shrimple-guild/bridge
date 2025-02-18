@@ -34,5 +34,5 @@ type ElectionResponse = {
     success: boolean;
     lastUpdated: number;
     mayor: Mayor;
-    current: Election;
+    current?: Election;
 };

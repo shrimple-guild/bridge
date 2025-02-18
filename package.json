@@ -7,7 +7,7 @@
 	"scripts": {
 		"dev": "env-cmd --silent nodemon --esm ./src/index.ts",
 		"discord": "node --import tsx --enable-source-maps ./src/tests/discordOnly.ts",
-		"commands-only": "node --import tsx --enable-source-maps ./src/tests/commands.ts",
+		"election-test": "node --import tsx --enable-source-maps ./src/tests/electionTest.ts",
 		"deploy": "node --import tsx --enable-source-maps ./src/deploy.ts",
 		"start": "node --enable-source-maps .",
 		"prestart": "tsc --build",
