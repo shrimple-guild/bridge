@@ -14,7 +14,7 @@ type Candidate = {
 type Minister = {
     key: string;
     name: string;
-    perk: Perk[];
+    perk: Perk;
 };
 
 type Election = {
