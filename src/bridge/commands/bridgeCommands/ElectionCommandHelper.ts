@@ -25,12 +25,13 @@ class ElectionCommandHelper {
         const perks: Perk[] = mayor.perks ?? [mayor.perk]
         const allMayorPerks = mayorPerks[name]
         const mayorPerkCount = Object.keys(allMayorPerks).length
+        let perkSummary;
         if (mayorPerkCount == perks.length) {
-        return `${name} (${perks.length} perk)`
+          perkSummary = "all perks"
         } else {
-        const perkSummary = perks.map(perk => allMayorPerks[perk.name]).join(", ")
-        return `${name} (${perkSummary})`
+          perkSummary = perks.map(perk => allMayorPerks[perk.name]).join(",")
         }
+        return `${name}[${perkSummary}]`
     }
 
     private getNextSpecials() {
@@ -45,25 +46,32 @@ class ElectionCommandHelper {
         const nextElection = this.nextRecurringEvent(this.skyblockEpoch, this.electionOver, this.year)
         const currentMayor = this.mayorNameWithPerks(electionData.mayor)
         const currentMinister = this.mayorNameWithPerks(electionData.mayor.minister)
+
+        const currentSummary = `Current: ${currentMayor}+${currentMinister}`
+
         const candidates = electionData.current?.candidates || []
         const sortedCandidates = candidates.sort((a, b) => (b.votes || 0) - (a.votes || 0))
-        let nextMayor;
-        let nextMinister;
+        let nextSummary = "Next: ";
         if (sortedCandidates && sortedCandidates.some((candidate) => candidate.votes)) {
-            nextMayor = this.mayorNameWithPerks(sortedCandidates[0])
-            nextMinister = this.mayorNameWithPerks(sortedCandidates[1])
+            let nextMayor = this.mayorNameWithPerks(sortedCandidates[0])
+            let nextMinister = this.mayorNameWithPerks(sortedCandidates[1])
+            if (nextMayor && nextMinister) {
+              nextSummary = `${nextMayor}+${nextMinister} `
+            } else {
+              nextSummary = "unknown";
+            }
         }
-        let nextSummary = (nextMayor && nextMinister) ? `: ${nextMayor} with ${nextMinister} ` : " "
-        let nextSpecials = this.getNextSpecials()
-        let nextSpecial = nextSpecials.sort((a, b) => a.time - b.time)[0]
-        let res = `Mayor: ${currentMayor} with ${currentMinister}. Next${nextSummary}`
-        res += `in ${this.humanizer.humanize(nextElection, { largest: 2, delimiter: " " })}. `
-        return `${res}Next special: ${titleCase(nextSpecial.name)}, in ${this.humanizer.humanize(nextSpecial.time, { largest: 2, delimiter: " " })}.`
+
+        let response = `${currentSummary}. ${nextSummary}. `
+        response += `in ${this.humanizer.humanize(nextElection, { largest: 2, delimiter: " " })}. `
+
+        let nextSpecial = this.getNextSpecials().sort((a, b) => a.time - b.time)[0]
+        response += `Next special: ${titleCase(nextSpecial.name)}, in ${this.humanizer.humanize(nextSpecial.time, { largest: 2, delimiter: " " })}.`
+        return response;
     }
 
     getSpecial(mayorQuery: string) {
-        let nextSpecials = this.getNextSpecials()
-        let nextSpecial = nextSpecials.sort((a, b) => jaroDistance(mayorQuery, b.name) - jaroDistance(mayorQuery, a.name))[0]
+        let nextSpecial = this.getNextSpecials().sort((a, b) => jaroDistance(mayorQuery, b.name) - jaroDistance(mayorQuery, a.name))[0]
         return `${titleCase(nextSpecial.name)} is in ${this.humanizer.humanize(nextSpecial.time, { largest: 3, delimiter: " " })}.`
     }
 }
