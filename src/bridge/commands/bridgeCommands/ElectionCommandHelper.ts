@@ -29,7 +29,7 @@ class ElectionCommandHelper {
         if (mayorPerkCount == perks.length) {
           perkSummary = "all perks"
         } else {
-          perkSummary = perks.map(perk => allMayorPerks[perk.name]).join(",")
+          perkSummary = perks.map(perk => allMayorPerks[perk.name]).join(", ")
         }
         return `${name}[${perkSummary}]`
     }
@@ -51,19 +51,21 @@ class ElectionCommandHelper {
 
         const candidates = electionData.current?.candidates || []
         const sortedCandidates = candidates.sort((a, b) => (b.votes || 0) - (a.votes || 0))
+        
         let nextSummary = "Next: ";
         if (sortedCandidates && sortedCandidates.some((candidate) => candidate.votes)) {
             let nextMayor = this.mayorNameWithPerks(sortedCandidates[0])
             let nextMinister = this.mayorNameWithPerks(sortedCandidates[1])
             if (nextMayor && nextMinister) {
-              nextSummary = `${nextMayor}+${nextMinister} `
+              nextSummary += `${nextMayor}+${nextMinister} `
             } else {
-              nextSummary = "unknown";
+              nextSummary += "unknown";
             }
         }
 
+        nextSummary += `in ${this.humanizer.humanize(nextElection, { largest: 2, delimiter: " " })}`
+
         let response = `${currentSummary}. ${nextSummary}. `
-        response += `in ${this.humanizer.humanize(nextElection, { largest: 2, delimiter: " " })}. `
 
         let nextSpecial = this.getNextSpecials().sort((a, b) => a.time - b.time)[0]
         response += `Next special: ${titleCase(nextSpecial.name)}, in ${this.humanizer.humanize(nextSpecial.time, { largest: 2, delimiter: " " })}.`
@@ -72,7 +74,7 @@ class ElectionCommandHelper {
 
     getSpecial(mayorQuery: string) {
         let nextSpecial = this.getNextSpecials().sort((a, b) => jaroDistance(mayorQuery, b.name) - jaroDistance(mayorQuery, a.name))[0]
-        return `${titleCase(nextSpecial.name)} is in ${this.humanizer.humanize(nextSpecial.time, { largest: 3, delimiter: " " })}.`
+        return `${titleCase(nextSpecial.name)} in ${this.humanizer.humanize(nextSpecial.time, { largest: 3, delimiter: " " })}.`
     }
 }
 
