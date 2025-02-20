@@ -14,7 +14,7 @@ type Candidate = {
 type Minister = {
     key: string;
     name: string;
-    perk: Perk[];
+    perk: Perk;
 };
 
 type Election = {
@@ -34,5 +34,5 @@ type ElectionResponse = {
     success: boolean;
     lastUpdated: number;
     mayor: Mayor;
-    current: Election;
+    current?: Election;
 };
