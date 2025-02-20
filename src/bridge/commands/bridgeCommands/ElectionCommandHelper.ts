@@ -47,17 +47,17 @@ class ElectionCommandHelper {
         const currentMayor = this.mayorNameWithPerks(electionData.mayor)
         const currentMinister = this.mayorNameWithPerks(electionData.mayor.minister)
 
-        const currentSummary = `Current: ${currentMayor}+${currentMinister}`
+        const currentSummary = `Current: ${currentMayor} + ${currentMinister}`
 
         const candidates = electionData.current?.candidates || []
         const sortedCandidates = candidates.sort((a, b) => (b.votes || 0) - (a.votes || 0))
-        
+
         let nextSummary = "Next: ";
         if (sortedCandidates && sortedCandidates.some((candidate) => candidate.votes)) {
             let nextMayor = this.mayorNameWithPerks(sortedCandidates[0])
             let nextMinister = this.mayorNameWithPerks(sortedCandidates[1])
             if (nextMayor && nextMinister) {
-              nextSummary += `${nextMayor}+${nextMinister} `
+              nextSummary += `${nextMayor} + ${nextMinister} `
             } else {
               nextSummary += "unknown";
             }
