@@ -67,12 +67,13 @@ export class Auction {
     tryFindClosest(auctions: AuctionItem[], item: string) {
         const split = item.split(" ");
         const filtered = auctions.filter(auction => {
-            return split.some(part => auction.displayName.toLowerCase().includes(part.toLowerCase()));
+            const name = auction.displayName ?? auction.item_name;
+            return split.some(part => name.toLowerCase().includes(part.toLowerCase()));
         });
         if (filtered.length > 0) {
             return filtered[0];
         } else {
-            return auctions.sort((a, b) => jaroDistance(a.displayName, item) - jaroDistance(b.displayName, item))[0];
+            return auctions.sort((a, b) => jaroDistance(a.displayName ?? a.item_name, item) - jaroDistance(b.displayName ?? b.item_name, item))[0];
         }
     }
 

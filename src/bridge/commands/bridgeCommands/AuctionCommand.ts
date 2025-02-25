@@ -26,7 +26,7 @@ export class AuctionCommand extends SimpleCommand {
   }
 
   parseFlags(input: string) {
-    const regex = /(?:^|\s)-([A-Za-z]+):([A-Za-z0-9]+)(?=\s|$)/g;
+    const regex = /(?:^|\s)-([A-Za-z]+):([A-Za-z0-9 ]+)(?=\s|$)/g;
     const flags: Record<string, string> = {};
     let match;
     while ((match = regex.exec(input)) !== null) {
