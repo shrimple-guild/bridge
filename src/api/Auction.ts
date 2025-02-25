@@ -121,7 +121,7 @@ export class Auction {
         const response = await this.fetchAuction();
         this.lastUpdated = response.lastUpdated;
         const totalPages = response.totalPages;
-        let promises = new Array<Promise<AuctionResponse>>(totalPages);
+        let promises = new Array<Promise<AuctionResponse>>(totalPages - 1);
         for (let i = 1; i < totalPages; i++) {
             promises.push(this.fetchAuction(i));
         }
@@ -132,6 +132,7 @@ export class Auction {
         response.auctions = response.auctions.filter(auction => auction.bin && !auction.claimed);
         response.auctions.sort((a, b) => a.starting_bid - b.starting_bid);
         response.auctions.forEach(auction => this.fixRepoItem(auction));
+        this.lastItems = response.auctions;
     }
 
     private async fetchAuction(page: number = 0): Promise<AuctionResponse> {
