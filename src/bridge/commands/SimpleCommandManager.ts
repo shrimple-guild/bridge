@@ -34,7 +34,7 @@ export class SimpleCommandManager {
 
   constructor(private hypixelAPI: HypixelAPI, private logger?: LoggerCategory, public prefix?: string) {
     this.commands = [
-      new AuctionCommand(),
+      new AuctionCommand(hypixelAPI),
       new BazaarCommand(hypixelAPI),
       new CataCommand(hypixelAPI),
       new EightballCommand(),

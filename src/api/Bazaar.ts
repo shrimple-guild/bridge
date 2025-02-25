@@ -40,7 +40,7 @@ export class Bazaar {
           lastUpdated = data.lastUpdated
           return productList.map(productData => ({
             id: productData.product_id,
-            name: this.skyblockItems.itemName(productData.product_id),
+            name: this.skyblockItems.itemById(productData.product_id),
             sellSummary: productData.sell_summary.map((summary: any) => ({
               amount: summary.amount,
               pricePerUnit: summary.pricePerUnit,

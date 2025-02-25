@@ -1,5 +1,6 @@
 import { Database } from "../database/database.js";
 import { LoggerCategory } from "../utils/Logger.js";
+import { Auction } from "./Auction.js";
 import { Bazaar } from "./Bazaar.js";
 import { CollectionCategory } from "./CollectionTypes.js";
 import { FarmingContests } from "./FarmingContests.js";
@@ -16,6 +17,7 @@ export class HypixelAPI {
 	readonly mojang: MojangAPI;
 	contests?: FarmingContests;
 	bazaar?: Bazaar;
+	auction?: Auction;
 	collections?: CollectionCategory[]
 
 	constructor(
@@ -29,6 +31,7 @@ export class HypixelAPI {
 	async init(specifiedNames?: SpecifiedNames) {
 		const items = await SkyblockItems.create(this, specifiedNames);
 		this.bazaar = new Bazaar(this, items, this.logger);
+		this.auction = new Auction(this, items, this.logger);
 		this.contests = await FarmingContests.create(this.logger);
 		this.collections = await this.fetchCollections();
 		this.logger.info("Hypixel API initialized.");
@@ -92,7 +95,7 @@ export class HypixelAPI {
 
 	async fetchHypixel(
 		endpoint: string,
-		parameters: { [key: string]: string } = {}
+		parameters: { [key: string]: any } = {}
 	): Promise<HypixelResponse> {
 		let url = new URL("https://api.hypixel.net");
 		url.pathname = `/v2${endpoint}`;

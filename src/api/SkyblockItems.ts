@@ -11,6 +11,7 @@ export type SpecifiedNames = {
 export class SkyblockItems {
 
   private idToName: {[key: string]: string} = {}
+  private itemNames: string[] = []
 
   private constructor(private hypixelAPI: HypixelAPI, private specifiedNames?: SpecifiedNames) {}
 
@@ -24,14 +25,14 @@ export class SkyblockItems {
     const { data } = await this.hypixelAPI.fetchHypixel("/resources/skyblock/items")
     const itemList = data.items as any[]
     this.idToName = Object.fromEntries(itemList.map(item => ([item.id, item.name])))
+    this.itemNames = Object.values(this.idToName)
   }
 
-  itemName(id: string) {
+  itemById(id: string) {
     return this.specifiedNames?.[id]?.name ?? this.idToName[id] ?? titleCase(id)
   }
+
+  itemByName(name: string) {
+    return this.itemNames.find(itemName => name.toLowerCase().includes(itemName.toLowerCase()))
+  }
 }
-
-
-
-
-
