@@ -134,7 +134,7 @@ export class Auction {
         response.auctions.forEach(auction => this.fixRepoItem(auction));
     }
 
-    private async fetchAuction(page?: number): Promise<AuctionResponse> {
+    private async fetchAuction(page: number = 0): Promise<AuctionResponse> {
         const { data } = await this.hypixelApi.fetchHypixel("/skyblock/auctions", {
             page: page
         });
