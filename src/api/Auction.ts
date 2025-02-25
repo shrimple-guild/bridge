@@ -53,6 +53,8 @@ export class Auction {
     // -s:stars(0-10, normal+master)
     // -t:tooltip_part,... (will romanize)
     async getClosestAuctionProduct(item: string, flags: Record<string, string>) {
+        this.logger.info(`Searching for auction item "${item}"...`);
+        this.logger.info(`Flags: ${JSON.stringify(flags)}`);
         const items = await this.getAuctionItems();
         const exactMatch = await this.tryFindExact(items, item, flags);
         if (exactMatch) {
