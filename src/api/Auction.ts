@@ -113,6 +113,7 @@ export class Auction {
     async getAuctionItems() {
         const updatedCheck = await this.fetchAuction();
         if (this.lastUpdated !== updatedCheck.lastUpdated) {
+            this.logger.info("Fetching auction data...");
             await this.fetchAuctionItems();
         }
         return this.lastItems ?? [];
