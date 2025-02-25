@@ -20,7 +20,8 @@ export class AuctionCommand extends SimpleCommand {
       cleaned = cleaned.replace(`-${flag[0]}:${flag[1]}`, "").trim()
     }
     const item = await this.hypixelAPI.auction.getClosestAuctionProduct(cleaned, flags)
-    const name = item.reforge ? `${item.reforge} ${item.displayName}` : item.displayName
+    let name = item.reforge ? `${item.reforge} ${item.displayName}` : item.displayName
+    if (item.starCount) name = `${name} (${item.starCount}✪)`
     return `Lowest BIN for ${name} is ${formatter.format(item.starting_bid)}`
   }
 
