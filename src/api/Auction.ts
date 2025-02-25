@@ -123,7 +123,7 @@ export class Auction {
         const totalPages = response.totalPages;
         let promises = new Array<Promise<AuctionResponse>>(totalPages - 1);
         for (let i = 1; i < totalPages; i++) {
-            promises.push(this.fetchAuction(i));
+            promises[i - 1] = this.fetchAuction(i);
         }
         const responses = await Promise.all(promises);
         response.auctions.push(...responses.flatMap(res => res.auctions));
