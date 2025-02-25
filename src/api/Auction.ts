@@ -71,7 +71,7 @@ export class Auction {
         const filtered = auctions.filter(auction => {
             const name = auction.displayName ?? auction.item_name;
             return split.some(part => name.toLowerCase().includes(part.toLowerCase()));
-        });
+        }).sort((a, b) => );
         if (filtered.length > 0) {
             return filtered[0];
         } else {
@@ -148,7 +148,7 @@ export class Auction {
 
     private fixRepoItem(item: AuctionItem) {
         //Handle special reforges
-        item.item_name = item.item_name.replace("Not So", "Light").replace("Extremely", "Heavy").replace("Very", "Wise");
+        item.item_name = item.item_name.replace("Not So", "Light").replace("Extremely", "Heavy").replace("Very", "Wise").replace(/\W/g, '');
         item.item_lore = stripColorCodes(item.item_lore)
 
         const clean = item.item_name.split(" ").filter(part => !part.startsWith(star)).join(" ");
