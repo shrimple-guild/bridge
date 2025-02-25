@@ -1,8 +1,8 @@
 import { romanize } from "romans";
-import { LoggerCategory } from "../utils/Logger";
-import { isInteger, jaroDistance, stripColorCodes } from "../utils/utils";
-import { HypixelAPI } from "./HypixelAPI";
-import { SkyblockItems } from "./SkyblockItems";
+import { LoggerCategory } from "../utils/Logger.js";
+import { isInteger, jaroDistance, stripColorCodes } from "../utils/utils.js";
+import { HypixelAPI } from "./HypixelAPI.js";
+import { SkyblockItems } from "./SkyblockItems.js";
 
 const star = '✪';
 const masterStars = ['➊', '➋', '➌', '➍', '➎'];
