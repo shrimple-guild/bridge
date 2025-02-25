@@ -5,7 +5,6 @@ import { PatternManager } from "./PatternManager.js";
 import { LoggerCategory } from "../utils/Logger.js";
 import { config } from "../utils/config.js";
 import pThrottle from "p-throttle";
-import { gListData } from "../bridge/commands/bridgeCommands/GuildStatusCommands.js";
 import { SocksClient } from "socks";
 import { Client } from "minecraft-protocol";
 import { connect } from "net";
@@ -191,10 +190,6 @@ export class MinecraftBot {
 
 	async onSpawn() {
 		this.chatRaw("/limbo");
-		// set values for gListData
-		gListData.clear();
-		gListData.listening = true;
-		this.chatRaw("/g list");
 	}
 
 	isPrivileged(username: string) {

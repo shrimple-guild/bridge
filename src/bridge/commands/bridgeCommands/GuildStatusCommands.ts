@@ -40,6 +40,24 @@ class GListData {
     this.totalMembers = 0
     this.onlineMembers = 0
   }
+
+  async done() {
+    const startTime = Date.now()
+    while (this.listening) {
+      if (Date.now() - startTime > 3000) {
+        this.listening = false
+        throw new Error("Refreshing glist data timed out.")
+      }
+      await new Promise(resolve => setTimeout(resolve, 100))
+    }
+  }
+
+  async resetData(bridge: Bridge) {
+    gListData.clear()
+    gListData.listening = true
+    bridge.chatMinecraftRaw("/g list")
+    await gListData.done()
+  }
 }
 
 export const gListData = new GListData();
@@ -53,7 +71,9 @@ export class GListCommand extends SimpleCommand {
   }
 
   async execute(args: string[]) {
-    if (!this.bridge) this.error("Bridge not configured, cannot use command!")
+    if (!this.bridge) this.error("Bridge not configured, cannot use command!");
+
+    await gListData.resetData(this.bridge);
 
     let embedMessage = "";
 
@@ -88,6 +108,8 @@ export class GOnlineCommand extends SimpleCommand {
   async execute(args: string[]) {
     if (!this.bridge) this.error("Bridge not configured, cannot use command!");
 
+    await gListData.resetData(this.bridge);
+
     let embedMessage = "";
 
     const onlineMembers = gListData.members.filter(m => m.online)
@@ -108,24 +130,6 @@ export class GOnlineCommand extends SimpleCommand {
 
     this.bridge!.discord.sendSimpleEmbed("Guild Online", embedMessage)
     return "Sent online guild members to bridge channel."
-  }
-}
-
-export class GResetCommand extends SimpleCommand {
-  aliases = ["resetglist"]
-  discordOnly = true
-
-  constructor(private bridge?: Bridge) {
-    super()
-  }
-
-  async execute(args: string[]) {
-    if (!this.bridge) this.error("Bridge not configured, cannot use command!");
-
-    gListData.clear()
-    gListData.listening = true
-    this.bridge.chatMinecraftRaw("/g list")
-    return "Guild list data reset."
   }
 }
 
