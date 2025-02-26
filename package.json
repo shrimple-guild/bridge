@@ -8,6 +8,7 @@
 		"dev": "env-cmd --silent nodemon --esm ./src/index.ts",
 		"discord": "node --import tsx --enable-source-maps ./src/tests/discordOnly.ts",
 		"election-test": "node --import tsx --enable-source-maps ./src/tests/electionTest.ts",
+		"auctions-test": "node --import tsx --enable-source-maps ./src/tests/auctionsTest.ts",
 		"deploy": "node --import tsx --enable-source-maps ./src/deploy.ts",
 		"start": "node --enable-source-maps .",
 		"prestart": "tsc --build",

@@ -11,7 +11,7 @@ import { MojangAPI } from "./MojangAPI.js";
 import { SkyblockItems, SpecifiedNames } from "./SkyblockItems.js";
 import { SkyblockProfiles } from "./SkyblockProfiles.js";
 
-const maxRequestTime = 3;
+const maxRequestTime = 10;
 
 export class HypixelAPI {
 	readonly mojang: MojangAPI;

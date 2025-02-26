@@ -12,12 +12,21 @@ export class Database implements IDatabase {
 
   private database: db.Database
   private backupsPath: string
+  private isInMemory: boolean
   
   private constructor(directory: string, private migrationData: Migration) {
-    this.backupsPath = `${directory}/backups`
-    if (!existsSync(this.backupsPath)) mkdirSync(this.backupsPath)
-    const databaseExists = existsSync(`${directory}/main.db`)
-    this.database = new db(`${directory}/main.db`)
+    let databaseExists = false
+    if (directory != ":memory:") {
+      this.backupsPath = `${directory}/backups`
+      if (!existsSync(this.backupsPath)) mkdirSync(this.backupsPath)
+      databaseExists = existsSync(`${directory}/main.db`)
+      this.database = new db(`${directory}/main.db`)
+      this.isInMemory = false
+    } else {
+      this.backupsPath = ""
+      this.database = new db(":memory:")
+      this.isInMemory = true
+    }
     if (!databaseExists) {
       const initial = migrationData.init.script
       this.withTransaction(() => this.exec(initial))
@@ -54,7 +63,9 @@ export class Database implements IDatabase {
     const migrations = this.migrationData.migrations
     const highestVersion = Math.max(...migrations.map(migration => migration.version))
     if (this.version == highestVersion) return
-    await this.database.backup(`${this.backupsPath}/main_${this.version}_${Date.now()}.db`)
+    if (!this.isInMemory) {
+      await this.database.backup(`${this.backupsPath}/main_${this.version}_${Date.now()}.db`)
+    }
     this.withTransaction(() => {
       for (let newVersion = this.version + 1; newVersion <= highestVersion; newVersion++) {
         const migration = migrations.find(migration => migration.version == newVersion) 
