@@ -104,6 +104,7 @@ export class Auction {
                 }
                 return true;
             }
+            return false;
         });
         if (filtered.length > 0) {
             return filtered[0];
