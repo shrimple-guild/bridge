@@ -57,13 +57,13 @@ class ElectionCommandHelper {
             let nextMayor = this.mayorNameWithPerks(sortedCandidates[0])
             let nextMinister = this.mayorNameWithPerks(sortedCandidates[1])
             if (nextMayor && nextMinister) {
-              nextSummary += `${nextMayor} + ${nextMinister} `
-            } else {
-              nextSummary += "unknown";
+              nextSummary += `${nextMayor} + ${nextMinister}`
             }
+        } else {
+          nextSummary += "unknown";
         }
 
-        nextSummary += `in ${this.humanizer.humanize(nextElection, { largest: 2, delimiter: " " })}`
+        nextSummary += ` in ${this.humanizer.humanize(nextElection, { largest: 2, delimiter: " " })}`
 
         let response = `${currentSummary}. ${nextSummary}. `
 
