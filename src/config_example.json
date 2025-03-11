@@ -55,5 +55,6 @@
     }
   ],
   "linking": true,
-  "achievementRoles": true
+  "achievementRoles": true,
+  "marketApiUrl": "http://example-market-api.com"
 }

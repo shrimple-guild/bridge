@@ -3,7 +3,6 @@ import { HypixelAPI } from "./api/HypixelAPI.js";
 import { createDiscordBot } from "./discord/DiscordBot.js";
 import { SlashCommandManager } from "./discord/commands/SlashCommandManager.js";
 import { config } from "./utils/config.js";
-import itemNames from "./data/itemNames.json" assert { type: "json" };
 import { MinecraftBot } from "./minecraft/MinecraftBot.js";
 import { Bridge } from "./bridge/Bridge.js";
 import { SimpleCommandManager } from "./bridge/commands/SimpleCommandManager.js";
@@ -18,10 +17,11 @@ import { GuildReqsCommand } from "./discord/commands/GuildReqsCommand.js";
 import { InteractionRegistry } from "./discord/interactions/InteractionRegistry.js";
 import { LinkService } from "./verify/LinkService.js";
 import { Achievements } from "./achievements/Achievements.js";
+import { MarketApi } from "./api/MarketApi.js";
 
 const logger = new Logger();
 
-export const general = logger.category("General");
+const general = logger.category("General");
 
 const database = await Database.create("./src/database", migrations);
 
@@ -31,7 +31,9 @@ const hypixelAPI = new HypixelAPI(
 	logger.category("HypixelAPI")
 )
 
-await hypixelAPI.init(itemNames);
+const marketApi = new MarketApi("http://localhost:8081")
+
+await hypixelAPI.init();
 const slashCommands = new SlashCommandManager();
 
 if (config.discord.guildRequirements) {
@@ -88,6 +90,7 @@ await general.info(`
 
 const bridgeCommandManager = new SimpleCommandManager(
 	hypixelAPI,
+	marketApi,
 	logger.category("Commands")
 );
 

@@ -51,7 +51,8 @@ type Config = {
         overflowFishingXp: number;
     }[];
     linking?: boolean
-    achievementRoles?: boolean
+    achievementRoles?: boolean,
+    marketApiUrl: string;
 };
 
 export let config = JSON.parse(await fs.readFile("./src/config.json", "utf-8")) as Config;
