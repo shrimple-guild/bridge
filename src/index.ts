@@ -31,7 +31,7 @@ const hypixelAPI = new HypixelAPI(
 	logger.category("HypixelAPI")
 )
 
-const marketApi = new MarketApi("http://localhost:8081")
+const marketApi = new MarketApi(config.marketApiUrl)
 
 await hypixelAPI.init();
 const slashCommands = new SlashCommandManager();
