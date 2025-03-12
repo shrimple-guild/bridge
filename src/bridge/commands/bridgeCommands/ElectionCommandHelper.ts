@@ -124,7 +124,7 @@ const mayorPerks: Record<string, Record<string, string>> = {
   },
   "Paul": {
     "Marauder": "cheaper chest",
-    "EZPZ": "ezpz",
+    "EZPZ": "ézpz",
     "Benediction": "blessing",
   }
 };
