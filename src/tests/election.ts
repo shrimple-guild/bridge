@@ -1,4 +1,4 @@
-{
+export const sampleElection = {
 	"success": true,
 	"lastUpdated": 1739864862948,
 	"mayor": {
