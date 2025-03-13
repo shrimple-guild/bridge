@@ -19,13 +19,13 @@ import { InteractionRegistry } from "./discord/interactions/InteractionRegistry.
 import { LinkService } from "./verify/LinkService.js"
 import { Achievements } from "./achievements/Achievements.js"
 
-const logger = new Logger()
 
-export const general = logger.category("General")
+
+export const general = Logger.category("General")
 
 const database = await Database.create("./src/database", migrations)
 
-const hypixelAPI = new HypixelAPI(config.bridge.apiKey, database, logger.category("HypixelAPI"))
+const hypixelAPI = new HypixelAPI(config.bridge.apiKey, database, Logger.category("HypixelAPI"))
 
 await hypixelAPI.init(itemNames)
 const slashCommands = new SlashCommandManager()
@@ -41,7 +41,7 @@ const discord = await createDiscordBot(
 	slashCommands,
 	interactions,
 	hypixelAPI,
-	logger.category("Discord")
+	Logger.category("Discord")
 )
 
 if (config.linking) {
@@ -77,18 +77,18 @@ await general.info(`
 	- Minecraft bot: ${config.minecraft.username}.
 `)
 
-const bridgeCommandManager = new SimpleCommandManager(hypixelAPI, logger.category("Commands"))
+const bridgeCommandManager = new SimpleCommandManager(hypixelAPI, Logger.category("Commands"))
 
 const minecraft = new MinecraftBot(
 	config.minecraft.username,
-	logger.category("Minecraft"),
+	Logger.category("Minecraft"),
 	config.minecraft.privilegedUsers
 )
 const bridge = new Bridge(
 	discord,
 	minecraft,
 	bridgeCommandManager,
-	logger.category("Bridge"),
+	Logger.category("Bridge"),
 	config.discord.channel
 )
 

@@ -1,3 +1,4 @@
+import fuzzysort from "fuzzysort"
 import { stripColorCodes } from "../utils/utils.js"
 import { bestiary as neuBestiaryData, TypeData } from "./BestiaryRepoNEU.js"
 
@@ -64,14 +65,8 @@ export class Bestiary {
 	}
 
 	getByMob(mob: string) {
-		for (const island of this.data) {
-			const found = island.mobs.find(
-				(m) =>
-					m.name.toLowerCase() === mob.toLowerCase() ||
-					m.name.toLowerCase().includes(mob.toLowerCase())
-			)
-			if (found) return found
-		}
-		return undefined
+		const mobs = this.data.flatMap(islandData => islandData.mobs)
+		const searchResult = fuzzysort.go(mob, mobs, { key: "name"})
+		return searchResult.at(0)?.obj
 	}
 }

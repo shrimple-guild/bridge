@@ -8,7 +8,7 @@ export type LoggerCategory = {
 	debug: (content: string) => void
 }
 
-export class Logger {
+class WebhookLogger {
 	private loggerWebhookClient?: WebhookClient = config.discord.loggerWebhook
 		? new WebhookClient({ url: config.discord.loggerWebhook })
 		: undefined
@@ -70,3 +70,5 @@ export class Logger {
 		this.queueBuffer = ""
 	}
 }
+
+export const Logger = new WebhookLogger()

@@ -14,10 +14,9 @@ const rl = readline.createInterface({
 	output: process.stdout
 } as any)
 
-const logger = new Logger()
 const database = await Database.create("./src/database", migrations)
 
-const testAPI = new HypixelAPI(apiKey, database, logger.category("HypixelAPI"))
+const testAPI = new HypixelAPI(apiKey, database, Logger.category("HypixelAPI"))
 await testAPI.init(itemNames)
 
 const commandManager = new SimpleCommandManager(testAPI)

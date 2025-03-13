@@ -5,7 +5,9 @@ import { GuildRole, config } from "../../../utils/config.js"
 import { SkyblockProfile } from "../../../api/SkyblockProfile.js"
 import { formatNumber, sleep } from "../../../utils/utils.js"
 import { HypixelGuildMember } from "../../../api/HypixelGuildMember.js"
-import { general } from "../../../index.js"
+import { Logger } from "../../../utils/Logger.js"
+
+const logger = Logger.category("Role Update")
 
 export class UpdateRoleCommand extends SimpleCommand {
 	aliases = ["update"]
@@ -39,7 +41,7 @@ export class UpdateRoleCommand extends SimpleCommand {
 						try {
 							await this.updateMember(member)
 						} catch (e) {
-							general.error(`Failed to update role for member: ${member.uuid}`, e)
+							logger.error(`Failed to update role for member: ${member.uuid}`, e)
 						}
 						await sleep(2000)
 					}
@@ -75,7 +77,7 @@ export class UpdateRoleCommand extends SimpleCommand {
 		if (roleUpToDate) return
 		if (!config.guildRoles.find((role) => role.name == currentRole)) return
 
-		general.info(`Updating role for ${member.uuid} to ${role.name}.`)
+		void logger.info(`Updating role for ${member.uuid} to ${role.name}.`)
 		await this.bridge!.chatMinecraftRaw(`/g setrank ${member.uuid} ${role.name}`)
 	}
 
@@ -119,7 +121,7 @@ export class UpdateRoleCommand extends SimpleCommand {
 			return `Role is already up to date! Missing ${formatNumber(fishXp, 2, true)} Fishing XP and ${sbLvl} Skyblock Levels for ${nextRole.name}.`
 		}
 
-		general.info(`Updating role for ${username} to ${role.name}.`)
+		void logger.info(`Updating role for ${username} to ${role.name}.`)
 		await this.bridge!.chatMinecraftRaw(`/g setrank ${username} ${role.name}`)
 		return "Role updated!"
 	}

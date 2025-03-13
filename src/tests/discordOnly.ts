@@ -10,10 +10,9 @@ import { InteractionRegistry } from "../discord/interactions/InteractionRegistry
 import { Achievements } from "../achievements/Achievements.js"
 import { LinkService } from "../verify/LinkService.js"
 
-const logger = new Logger()
 const database = await Database.create("./src/database", migrations)
 
-const hypixelAPI = new HypixelAPI(config.bridge.apiKey, database, logger.category("HypixelAPI"))
+const hypixelAPI = new HypixelAPI(config.bridge.apiKey, database, Logger.category("HypixelAPI"))
 await hypixelAPI.init()
 const slashCommands = new SlashCommandManager()
 const interactions = new InteractionRegistry()
@@ -25,7 +24,7 @@ const discord = await createDiscordBot(
 	slashCommands,
 	interactions,
 	hypixelAPI,
-	logger.category("Discord")
+	Logger.category("Discord")
 )
 
 if (config.linking) {
