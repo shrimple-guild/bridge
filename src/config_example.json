@@ -1,60 +1,54 @@
 {
-  "minecraft": {
-    "username": "ExampleIGN",
-    "host": "localhost",
-    "port": 25565,
-    "privilegedUsers": [
-      "TrustedMCUser1",
-      "TrustedMCUser2"
-    ]
-  },
-  "discord": {
-    "token": "token",
-    "client": "snowflake",
-    "guild": "snowflake",
-    "channel": "snowflake",
-    "shutdownWebhook": "snowflake",
-    "loggerWebhook": "snowflake",
-    "verification": {
-      "unverifiedRole": "snowflake",
-      "verifiedRole": "snowflake"
-    },
-    "staffRoles": [
-      "snowflake1",
-      "snowflake2"
-    ]
-  },
-  "bridge": {
-    "prefix": "_",
-    "apiKey": "uuid",
-    "hypixelGuild": "guildId"
-  },
-  "proxy": {
-    "host": "localhost",
-    "port": 1080,
-    "type": 5,
-    "userId": "username",
-    "password": "password"
-  },
-  "roles": [
-    {
-      "hypixelTag": "in-game role tag",
-      "discord": "snowflake",
-      "isStaff": true
-    },
-    {
-      "hypixelTag": "in-game role tag",
-      "discord": "snowflake",
-      "isStaff": false
-    }
-  ],
-  "joinRequirements": [
-    {
-      "sbLevel": 0,
-      "overflowFishingXp": 0
-    }
-  ],
-  "linking": true,
-  "achievementRoles": true,
-  "marketApiUrl": "http://example-market-api.com"
+	"minecraft": {
+		"username": "ExampleIGN",
+		"host": "localhost",
+		"port": 25565,
+		"privilegedUsers": ["TrustedMCUser1", "TrustedMCUser2"]
+	},
+	"discord": {
+		"token": "token",
+		"client": "snowflake",
+		"guild": "snowflake",
+		"channel": "snowflake",
+		"shutdownWebhook": "snowflake",
+		"loggerWebhook": "snowflake",
+		"verification": {
+			"unverifiedRole": "snowflake",
+			"verifiedRole": "snowflake"
+		},
+		"staffRoles": ["snowflake1", "snowflake2"]
+	},
+	"bridge": {
+		"prefix": "_",
+		"apiKey": "uuid",
+		"hypixelGuild": "guildId"
+	},
+	"proxy": {
+		"host": "localhost",
+		"port": 1080,
+		"type": 5,
+		"userId": "username",
+		"password": "password"
+	},
+	"roles": [
+		{
+			"hypixelTag": "in-game role tag",
+			"discord": "snowflake",
+			"isStaff": true
+		},
+		{
+			"hypixelTag": "in-game role tag",
+			"discord": "snowflake",
+			"isStaff": false
+		}
+	],
+	"joinRequirements": [
+		{
+			"sbLevel": 0,
+			"overflowFishingXp": 0
+		}
+	],
+	"linking": true,
+	"achievementRoles": true,
+	"marketApiUrl": "http://example-market-api.com"
 }

@@ -19,7 +19,6 @@ import { LinkService } from "./verify/LinkService.js"
 import { Achievements } from "./achievements/Achievements.js"
 import { MarketApi } from "./api/MarketApi.js"
 
-
 export const general = Logger.category("General")
 
 const database = await Database.create("./src/database", migrations)
@@ -28,7 +27,6 @@ const hypixelAPI = new HypixelAPI(config.bridge.apiKey, database, Logger.categor
 await hypixelAPI.init()
 
 const marketApi = new MarketApi(config.marketApiUrl)
-
 
 const slashCommands = new SlashCommandManager()
 
@@ -79,7 +77,11 @@ await general.info(`
 	- Minecraft bot: ${config.minecraft.username}.
 `)
 
-const bridgeCommandManager = new SimpleCommandManager(hypixelAPI, marketApi, Logger.category("Commands"))
+const bridgeCommandManager = new SimpleCommandManager(
+	hypixelAPI,
+	marketApi,
+	Logger.category("Commands")
+)
 
 const minecraft = new MinecraftBot(
 	config.minecraft.username,
