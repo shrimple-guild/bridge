@@ -1,5 +1,5 @@
-import { SkyblockProfiles } from "../../api/SkyblockProfiles";
+import { SkyblockProfiles } from "../../api/SkyblockProfiles"
 
 export interface Requirement {
-    meetsRequirement: (profiles: SkyblockProfiles) => boolean
+	meetsRequirement: (profiles: SkyblockProfiles) => boolean
 }

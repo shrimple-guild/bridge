@@ -1,11 +1,11 @@
-import fs from "fs/promises";
+import fs from "fs/promises"
 
 export type GuildRole = {
-    name: string;
-    sbLevel: number;
-    fishingXp: number;
-    priority: number;
-};
+	name: string
+	sbLevel: number
+	fishingXp: number
+	priority: number
+}
 
 type Config = {
     minecraft: {
@@ -55,4 +55,4 @@ type Config = {
     marketApiUrl: string;
 };
 
-export let config = JSON.parse(await fs.readFile("./src/config.json", "utf-8")) as Config;
+export let config = JSON.parse(await fs.readFile("./src/config.json", "utf-8")) as Config

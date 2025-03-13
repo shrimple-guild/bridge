@@ -10,55 +10,47 @@ import { InteractionRegistry } from "../discord/interactions/InteractionRegistry
 import { Achievements } from "../achievements/Achievements.js"
 import { LinkService } from "../verify/LinkService.js"
 
-const logger = new Logger()
 const database = await Database.create("./src/database", migrations)
 
-const hypixelAPI = new HypixelAPI(config.bridge.apiKey, database, logger.category("HypixelAPI"))
+const hypixelAPI = new HypixelAPI(config.bridge.apiKey, database, Logger.category("HypixelAPI"))
 await hypixelAPI.init()
 const slashCommands = new SlashCommandManager()
 const interactions = new InteractionRegistry()
 
-
-
-const discordStaffRoles = config.roles.filter(role => role.isStaff).map(role => role.discord)
+const discordStaffRoles = config.roles.filter((role) => role.isStaff).map((role) => role.discord)
 
 const discord = await createDiscordBot(
-  config.discord.token,
-  slashCommands,
-  interactions,
-  hypixelAPI,
-  logger.category("Discord")
+	config.discord.token,
+	slashCommands,
+	interactions,
+	hypixelAPI,
+	Logger.category("Discord")
 )
 
 if (config.linking) {
-  const linkService = new LinkService(database)
+	const linkService = new LinkService(database)
 
-  if (config.discord.verification.channelId.length > 0) { 
-    // dont wanna bother with checking if i need to check a property, its length, or just the object but this should work
-    const verification = new Verification(
-      discord.client,
-      database,
-      hypixelAPI,
-      slashCommands,
-      interactions,
-      linkService
-    );
-  
-    if (config.discord.verification.unverifiedRole) {
-    verification.setVerificationRoles(
-      config.discord.guild,
-      config.discord.verification.unverifiedRole,
-      config.discord.verification.verifiedRole
-    )
-    }  
-  }
+	if (config.discord.verification.channelId.length > 0) {
+		// dont wanna bother with checking if i need to check a property, its length, or just the object but this should work
+		const verification = new Verification(
+			discord.client,
+			database,
+			hypixelAPI,
+			slashCommands,
+			interactions,
+			linkService
+		)
 
-  const autoRoles = new Achievements(
-    slashCommands,
-    database,
-    hypixelAPI,
-    linkService
-  )
+		if (config.discord.verification.unverifiedRole) {
+			verification.setVerificationRoles(
+				config.discord.guild,
+				config.discord.verification.unverifiedRole,
+				config.discord.verification.verifiedRole
+			)
+		}
+	}
+
+	const autoRoles = new Achievements(slashCommands, database, hypixelAPI, linkService)
 }
 
 console.log(`
@@ -66,4 +58,3 @@ console.log(`
   - Registered ${slashCommands.commands.length} slash commands.
   - Minecraft bot: ${config.minecraft.username}.
 `)
-

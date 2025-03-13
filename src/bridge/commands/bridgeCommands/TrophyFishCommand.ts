@@ -4,54 +4,58 @@ import { HypixelAPI } from "../../../api/HypixelAPI.js"
 import { trophyFishNames } from "../../../api/TrophyFish.js"
 
 export class TrophyFishCommand extends SimpleCommand {
-    aliases = ["tfish", "trophy", "trophyfish"]
-    usage = "<player:[profile|bingo|main]> [fish|noobf]"
+	aliases = ["tfish", "trophy", "trophyfish"]
+	usage = "<player:[profile|bingo|main]> [fish|noobf]"
 
-    constructor(private hypixelAPI: HypixelAPI) {
-      super()
-    }
+	constructor(private hypixelAPI: HypixelAPI) {
+		super()
+	}
 
-    async execute(args: string[]) {
-      if (args.length < 1) this.throwUsageError()
-      const playerArg = args.shift()!.split(":")
-      const playerName = playerArg[0]
-      const profileArg = playerArg[1]?.toLowerCase()
-      let fish = args?.join(" ")
-      let message
-      const uuid = await this.hypixelAPI.mojang.fetchUuid(playerName)
-      const profiles = await this.hypixelAPI.fetchProfiles(uuid)
-      const profile = profiles.getByQuery(profileArg)
-      const cuteName = profile.cuteName
-      const trophyFish = profile.trophyFish
-      if (fish && fish != "noobf") {
-        const fishMatch = this.guessFish(fish)
-        if (!fishMatch) this.error("Invalid fish.")
-        const name = fishMatch
-        const fishData = trophyFish.get(name)
-        message = `${name} caught for ${playerName} (${cuteName}): `
-        message += `Total ${titleCase(name)}: ${fishData.total} | Bronze: ${fishData.bronze} | Silver: ${fishData.silver} | Gold: ${fishData.gold} | Diamond: ${fishData.diamond}`
-      } else {
-        message = `Trophy fish for ${playerName} (${cuteName}): `
-        const noObfString = fish == "noobf" ? `${trophyFish.totalNoObf} (w/o Obf 1)` : trophyFish.total
-        message += `Total: ${noObfString} | `
-        message += `Bronze: ${trophyFish.unlocked("bronze")}/18 | Silver: ${trophyFish.unlocked("silver")}/18 | Gold: ${trophyFish.unlocked("gold")}/18 | Diamond: ${trophyFish.unlocked("diamond")}/18`
-      }
-      return message
-    }
+	async execute(args: string[]) {
+		if (args.length < 1) this.throwUsageError()
+		const playerArg = args.shift()!.split(":")
+		const playerName = playerArg[0]
+		const profileArg = playerArg[1]?.toLowerCase()
+		let fish = args?.join(" ")
+		let message
+		const uuid = await this.hypixelAPI.mojang.fetchUuid(playerName)
+		const profiles = await this.hypixelAPI.fetchProfiles(uuid)
+		const profile = profiles.getByQuery(profileArg)
+		const cuteName = profile.cuteName
+		const trophyFish = profile.trophyFish
+		if (fish && fish != "noobf") {
+			const fishMatch = this.guessFish(fish)
+			if (!fishMatch) this.error("Invalid fish.")
+			const name = fishMatch
+			const fishData = trophyFish.get(name)
+			message = `${name} caught for ${playerName} (${cuteName}): `
+			message += `Total ${titleCase(name)}: ${fishData.total} | Bronze: ${fishData.bronze} | Silver: ${fishData.silver} | Gold: ${fishData.gold} | Diamond: ${fishData.diamond}`
+		} else {
+			message = `Trophy fish for ${playerName} (${cuteName}): `
+			const noObfString =
+				fish == "noobf" ? `${trophyFish.totalNoObf} (w/o Obf 1)` : trophyFish.total
+			message += `Total: ${noObfString} | `
+			message += `Bronze: ${trophyFish.unlocked("bronze")}/18 | Silver: ${trophyFish.unlocked("silver")}/18 | Gold: ${trophyFish.unlocked("gold")}/18 | Diamond: ${trophyFish.unlocked("diamond")}/18`
+		}
+		return message
+	}
 
-    guessFish(input: string) {
-      let phrase = input.toLowerCase().trim().split(" ")
-      let bestMatches = trophyFishNames.filter(name => {
-        return phrase.some((phrase) => name.toLowerCase().includes(phrase))
-      })
-      let bestMatch
-      if (bestMatches.length > 1) {
-        bestMatch = bestMatches.sort((a, b) => {
-          return phrase.filter(phrase => b.toLowerCase().includes(phrase)).length - phrase.filter(phrase => a.toLowerCase().includes(phrase)).length
-        })[0]
-      } else if (bestMatches.length === 1) {
-        bestMatch = bestMatches[0]
-      }
-      return bestMatch
-    }
-} 
+	guessFish(input: string) {
+		let phrase = input.toLowerCase().trim().split(" ")
+		let bestMatches = trophyFishNames.filter((name) => {
+			return phrase.some((phrase) => name.toLowerCase().includes(phrase))
+		})
+		let bestMatch
+		if (bestMatches.length > 1) {
+			bestMatch = bestMatches.sort((a, b) => {
+				return (
+					phrase.filter((phrase) => b.toLowerCase().includes(phrase)).length -
+					phrase.filter((phrase) => a.toLowerCase().includes(phrase)).length
+				)
+			})[0]
+		} else if (bestMatches.length === 1) {
+			bestMatch = bestMatches[0]
+		}
+		return bestMatch
+	}
+}

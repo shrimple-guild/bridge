@@ -15,88 +15,90 @@ import { LinkModalHandler } from "./interactions/LinkModalHandler.js"
 import { SetVerificationRolesCommand } from "./commands/SetVerificationRolesCommand.js"
 
 export class Verification {
-  private verificationService: VerificationService;
+	private verificationService: VerificationService
 
-  constructor(
-    client: Client<true>,
-    db: Database,
-    hypixelAPI: HypixelAPI,
-    slashCommandManager: SlashCommandManager,
-    interactionRegistry: InteractionRegistry,
-    private linkService: LinkService
-  ) {
+	constructor(
+		client: Client<true>,
+		db: Database,
+		hypixelAPI: HypixelAPI,
+		slashCommandManager: SlashCommandManager,
+		interactionRegistry: InteractionRegistry,
+		private linkService: LinkService
+	) {
+		this.verificationService = new VerificationService(db)
 
-    this.verificationService = new VerificationService(db);
+		slashCommandManager.register(
+			new ManualVerifyCommand(this, hypixelAPI),
+			new UnlinkCommand(this),
+			new SyncCommand(this),
+			new LinkCommand(this, hypixelAPI),
+			new SetLinkChannelCommand(this),
+			new SetVerificationRolesCommand(this)
+		)
 
-    slashCommandManager.register(
-      new ManualVerifyCommand(this, hypixelAPI),
-      new UnlinkCommand(this),
-      new SyncCommand(this),
-      new LinkCommand(this, hypixelAPI),
-      new SetLinkChannelCommand(this),
-      new SetVerificationRolesCommand(this)
-    )
+		interactionRegistry.register(
+			new LinkButtonHandler(),
+			new LinkModalHandler(this, hypixelAPI)
+		)
 
-    interactionRegistry.register(
-      new LinkButtonHandler(),
-      new LinkModalHandler(this, hypixelAPI),
-    )
+		client.on(Events.GuildMemberAdd, (member) => this.sync(member))
+	}
 
-    client.on(Events.GuildMemberAdd, member => this.sync(member))
-  }
+	getMinecraft(guild: Guild, discordId: string): string | null {
+		return this.linkService.getMinecraftUuid(discordId)
+	}
 
-  getMinecraft(guild: Guild, discordId: string): string | null {
-    return this.linkService.getMinecraftUuid(discordId)
-  }
+	getDiscord(guild: Guild, minecraftId: string): string | null {
+		return this.linkService.getDiscordId(minecraftId)
+	}
 
-  getDiscord(guild: Guild, minecraftId: string): string | null {
-    return this.linkService.getDiscordId(minecraftId)
-  }
+	isVerified(member: GuildMember): boolean {
+		return (
+			this.linkService.isLinked(member.user.id) ||
+			this.verificationService.isVerified(member.guild.id, member.user.id)
+		)
+	}
 
-  isVerified(member: GuildMember): boolean {
-    return this.linkService.isLinked(member.user.id) || this.verificationService.isVerified(member.guild.id, member.user.id)
-  }
+	setVerificationRoles(guildId: string, unverified: string, verified: string) {
+		this.verificationService.setVerificationRoles(guildId, unverified, verified)
+	}
 
-  setVerificationRoles(guildId: string, unverified: string, verified: string ) {
-    this.verificationService.setVerificationRoles(guildId, unverified, verified)
-  }
+	async sync(member: GuildMember) {
+		await this.verificationService.sync(member)
+	}
 
-  async sync(member: GuildMember) {
-    await this.verificationService.sync(member)
-  }
+	async verify(member: GuildMember): Promise<boolean> {
+		const didVerify = this.verificationService.verifyMember(member.guild.id, member.user.id)
+		await this.verificationService.setVerifiedRole(member, "manual")
+		return didVerify
+	}
 
-  async verify(member: GuildMember): Promise<boolean> {
-    const didVerify = this.verificationService.verifyMember(member.guild.id, member.user.id)
-    await this.verificationService.setVerifiedRole(member, "manual")
-    return didVerify
-  }
+	async unlink(member: GuildMember): Promise<boolean> {
+		const didUnlink = this.linkService.unlinkMember(member.user.id)
+		await this.verificationService.sync(member)
+		return didUnlink
+	}
 
-  async unlink(member: GuildMember): Promise<boolean> {
-    const didUnlink = this.linkService.unlinkMember(member.user.id);
-    await this.verificationService.sync(member)
-    return didUnlink
-  }
+	async link(member: GuildMember, uuid: string): Promise<boolean> {
+		const currentlyLinkedTo = this.linkService.getMinecraftUuid(member.user.id)
 
-  async link(member: GuildMember, uuid: string): Promise<boolean> {
-    const currentlyLinkedTo = this.linkService.getMinecraftUuid(member.user.id)
+		if (currentlyLinkedTo == uuid || this.linkService.linkMember(member.user.id, uuid)) {
+			await this.verificationService.setVerifiedRole(member)
+			return true
+		} else {
+			throw new Error(
+				"This Minecraft account is already linked to another Discord account. Please unlink the other account."
+			)
+		}
+	}
 
-    if (currentlyLinkedTo == uuid || this.linkService.linkMember(member.user.id, uuid)) {
-      await this.verificationService.setVerifiedRole(member)
-      return true;
-    } else {
-      throw new Error("This Minecraft account is already linked to another Discord account. Please unlink the other account.")
-    }
-  }
-
-  async unverify(guild: Guild, member: GuildMember | string): Promise<boolean> {
-    const memberId = (member instanceof GuildMember) ? member.user.id : member
-    const didUnverify = this.verificationService.unverifyMember(guild.id, memberId)
-    this.linkService.unlinkMember(memberId)
-    if (member instanceof GuildMember) {
-      await this.verificationService.setUnverifiedRole(member)
-    }
-    return didUnverify
-  }
+	async unverify(guild: Guild, member: GuildMember | string): Promise<boolean> {
+		const memberId = member instanceof GuildMember ? member.user.id : member
+		const didUnverify = this.verificationService.unverifyMember(guild.id, memberId)
+		this.linkService.unlinkMember(memberId)
+		if (member instanceof GuildMember) {
+			await this.verificationService.setUnverifiedRole(member)
+		}
+		return didUnverify
+	}
 }
-
-

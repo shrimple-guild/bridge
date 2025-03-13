@@ -1,5 +1,5 @@
-import { Pattern } from "./Pattern";
-import { config } from "../../utils/config.js";
+import { Pattern } from "./Pattern"
+import { config } from "../../utils/config.js"
 
 export const guildRankGift: Pattern = {
 	name: "guildRankGift",
@@ -9,6 +9,6 @@ export const guildRankGift: Pattern = {
 		await bot.sendToBridge(
 			config.minecraft.username,
 			`**${groups.giftee} was gifted MVP++ by ${groups.gifter}!**`
-		);
+		)
 	}
-};
+}
