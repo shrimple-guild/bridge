@@ -1,17 +1,17 @@
-import { config } from "../../../utils/config.js";
+import { config } from "../../../utils/config.js"
 
 export abstract class SimpleCommand {
-    usage?: string;
-    discordOnly?: boolean;
-    
-    abstract aliases: (string | undefined)[];
-    abstract execute(args: string[], isStaff?: boolean, username?: string): Promise<string | void>;
+	usage?: string
+	discordOnly?: boolean
 
-    error(message: string): never {
-        throw new Error(message);
-    }
+	abstract aliases: (string | undefined)[]
+	abstract execute(args: string[], isStaff?: boolean, username?: string): Promise<string | void>
 
-    throwUsageError(): never {
-        this.error(`Usage: ${config.bridge.prefix}${this.aliases[0]} ${this.usage ?? ""}`);
-    }
+	error(message: string): never {
+		throw new Error(message)
+	}
+
+	throwUsageError(): never {
+		this.error(`Usage: ${config.bridge.prefix}${this.aliases[0]} ${this.usage ?? ""}`)
+	}
 }

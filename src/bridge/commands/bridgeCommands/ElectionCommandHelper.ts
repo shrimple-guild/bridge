@@ -1,7 +1,4 @@
-import {
-	HumanizeDurationLanguage,
-	HumanizeDuration
-} from "humanize-duration-ts"
+import { HumanizeDurationLanguage, HumanizeDuration } from "humanize-duration-ts"
 import { jaroDistance, titleCase } from "../../../utils/utils.js"
 
 class ElectionCommandHelper {
@@ -14,11 +11,7 @@ class ElectionCommandHelper {
 
 	constructor() {}
 
-	private nextRecurringEvent(
-		epoch: number,
-		offset: number,
-		interval: number
-	) {
+	private nextRecurringEvent(epoch: number, offset: number, interval: number) {
 		return interval - ((Date.now() - (epoch + offset)) % interval)
 	}
 
@@ -27,16 +20,12 @@ class ElectionCommandHelper {
 		// @ts-ignore
 		const perks: Perk[] = mayor.perks ?? [mayor.perk]
 		const allMayorPerks = mayorPerks[name]
-		const mayorPerkCount = allMayorPerks
-			? Object.keys(allMayorPerks).length
-			: 0
+		const mayorPerkCount = allMayorPerks ? Object.keys(allMayorPerks).length : 0
 		let perkSummary
 		if (mayorPerkCount == perks.length) {
 			perkSummary = "all perks"
 		} else {
-			perkSummary = perks
-				.map((perk) => getPerkShortName(mayor, perk))
-				.join(", ")
+			perkSummary = perks.map((perk) => getPerkShortName(mayor, perk)).join(", ")
 		}
 		return `${name}[${perkSummary}]`
 	}
@@ -45,11 +34,7 @@ class ElectionCommandHelper {
 		return [
 			{
 				name: "scorpius",
-				time: this.nextRecurringEvent(
-					this.skyblockEpoch,
-					this.electionOver,
-					this.year * 24
-				)
+				time: this.nextRecurringEvent(this.skyblockEpoch, this.electionOver, this.year * 24)
 			},
 			{
 				name: "derpy",
@@ -77,22 +62,15 @@ class ElectionCommandHelper {
 			this.year
 		)
 		const currentMayor = this.mayorNameWithPerks(electionData.mayor)
-		const currentMinister = this.mayorNameWithPerks(
-			electionData.mayor.minister
-		)
+		const currentMinister = this.mayorNameWithPerks(electionData.mayor.minister)
 
 		const currentSummary = `Current: ${currentMayor} + ${currentMinister}`
 
 		const candidates = electionData.current?.candidates || []
-		const sortedCandidates = candidates.sort(
-			(a, b) => (b.votes || 0) - (a.votes || 0)
-		)
+		const sortedCandidates = candidates.sort((a, b) => (b.votes || 0) - (a.votes || 0))
 
 		let nextSummary = "Next: "
-		if (
-			sortedCandidates &&
-			sortedCandidates.some((candidate) => candidate.votes)
-		) {
+		if (sortedCandidates && sortedCandidates.some((candidate) => candidate.votes)) {
 			let nextMayor = this.mayorNameWithPerks(sortedCandidates[0])
 			let nextMinister = this.mayorNameWithPerks(sortedCandidates[1])
 			if (nextMayor && nextMinister) {
@@ -106,33 +84,25 @@ class ElectionCommandHelper {
 
 		let response = `${currentSummary}. ${nextSummary}. `
 
-		let nextSpecial = this.getNextSpecials().sort(
-			(a, b) => a.time - b.time
-		)[0]
+		let nextSpecial = this.getNextSpecials().sort((a, b) => a.time - b.time)[0]
 		response += `Next special: ${titleCase(nextSpecial.name)}, in ${this.humanizer.humanize(nextSpecial.time, { largest: 2, delimiter: " " })}.`
 		return response
 	}
 
 	getSpecial(mayorQuery: string) {
 		let nextSpecial = this.getNextSpecials().sort(
-			(a, b) =>
-				jaroDistance(mayorQuery, b.name) -
-				jaroDistance(mayorQuery, a.name)
+			(a, b) => jaroDistance(mayorQuery, b.name) - jaroDistance(mayorQuery, a.name)
 		)[0]
 		return `${titleCase(nextSpecial.name)} in ${this.humanizer.humanize(nextSpecial.time, { largest: 3, delimiter: " " })}.`
 	}
 }
 
-function getPerkShortName(
-	mayor: Mayor | Candidate | Minister,
-	perk: Perk
-): string {
+function getPerkShortName(mayor: Mayor | Candidate | Minister, perk: Perk): string {
 	const mayorName = mayor.name
 	if (mayorName == "Foxy" && perk.name == "Extra Event") {
-		const matcher =
-			/Schedules an extra §[\da-f]([\w\s]+) §7event during the year./.exec(
-				perk.description
-			)
+		const matcher = /Schedules an extra §[\da-f]([\w\s]+) §7event during the year./.exec(
+			perk.description
+		)
 		if (matcher) {
 			return extraEventShortNames[matcher[1]] ?? matcher[1].toLowerCase()
 		} else {
@@ -154,17 +124,14 @@ const extraEventShortNames: Record<string, string | undefined> = {
 	"Fishing Festival": "sharki"
 }
 
-const mayorPerks: Record<
-	string,
-	Record<string, string | undefined> | undefined
-> = {
+const mayorPerks: Record<string, Record<string, string | undefined> | undefined> = {
 	Aatrox: {
 		"SLASHED Pricing": "cheaper slayers",
 		"Slayer XP Buff": "slayer xp",
-		Pathfinder: "rare drops"
+		"Pathfinder": "rare drops"
 	},
 	Cole: {
-		Prospection: "minions",
+		"Prospection": "minions",
 		"Mining XP Buff": "wisdom",
 		"Mining Fiesta": "fiesta",
 		"Molten Forge": "forge"
@@ -183,7 +150,7 @@ const mayorPerks: Record<
 	},
 	Finnegan: {
 		"Pelt-pocalypse": "pelts",
-		GOATed: "contests",
+		"GOATed": "contests",
 		"Blooming Business": "new visitors",
 		"Pest Eradicator": "pests"
 	},

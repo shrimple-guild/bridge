@@ -1,41 +1,41 @@
 {
-  "ESSENCE_DRAGON": {
-    "name": "Dragon Essence"
-  },
-  "ESSENCE_ICE": {
-    "name": "Ice Essence"
-  },
-  "ESSENCE_GOLD": {
-    "name": "Gold Essence"
-  },
-  "ESSENCE_SPIDER": {
-    "name": "Spider Essence"
-  },
-  "ESSENCE_CRISMON": {
-    "name": "Crimson Essence"
-  },
-  "ESSENCE_DIAMOND": {
-    "name": "Diamond Essence"
-  },
-  "ESSENCE_WITHER": {
-    "name": "Wither Essence"
-  },
-  "ESSENCE_UNDEAD": {
-    "name": "Undead Essence"
-  },
-  "ENCHANTMENT_ULTIMATE_REITERATE_1": {
-    "name": "Enchantment Ultimate Duplex 1"
-  },
-  "ENCHANTMENT_ULTIMATE_REITERATE_2": {
-    "name": "Enchantment Ultimate Duplex 2"
-  },
-  "ENCHANTMENT_ULTIMATE_REITERATE_3": {
-    "name": "Enchantment Ultimate Duplex 3"
-  },
-  "ENCHANTMENT_ULTIMATE_REITERATE_4": {
-    "name": "Enchantment Ultimate Duplex 4"
-  },
-  "ENCHANTMENT_ULTIMATE_REITERATE_5": {
-    "name": "Enchantment Ultimate Duplex 5"
-  }
+	"ESSENCE_DRAGON": {
+		"name": "Dragon Essence"
+	},
+	"ESSENCE_ICE": {
+		"name": "Ice Essence"
+	},
+	"ESSENCE_GOLD": {
+		"name": "Gold Essence"
+	},
+	"ESSENCE_SPIDER": {
+		"name": "Spider Essence"
+	},
+	"ESSENCE_CRISMON": {
+		"name": "Crimson Essence"
+	},
+	"ESSENCE_DIAMOND": {
+		"name": "Diamond Essence"
+	},
+	"ESSENCE_WITHER": {
+		"name": "Wither Essence"
+	},
+	"ESSENCE_UNDEAD": {
+		"name": "Undead Essence"
+	},
+	"ENCHANTMENT_ULTIMATE_REITERATE_1": {
+		"name": "Enchantment Ultimate Duplex 1"
+	},
+	"ENCHANTMENT_ULTIMATE_REITERATE_2": {
+		"name": "Enchantment Ultimate Duplex 2"
+	},
+	"ENCHANTMENT_ULTIMATE_REITERATE_3": {
+		"name": "Enchantment Ultimate Duplex 3"
+	},
+	"ENCHANTMENT_ULTIMATE_REITERATE_4": {
+		"name": "Enchantment Ultimate Duplex 4"
+	},
+	"ENCHANTMENT_ULTIMATE_REITERATE_5": {
+		"name": "Enchantment Ultimate Duplex 5"
+	}
 }

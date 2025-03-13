@@ -1,17 +1,17 @@
 export const migrations = {
-  init: {
-    script: `
+	init: {
+		script: `
       CREATE TABLE Members (
         username TEXT PRIMARY KEY,
         skin TEXT NOT NULL,
         lastUpdated INTEGER NOT NULL
       );
     `
-  },
-  migrations: [
-    {
-      version: 1,
-      script: `
+	},
+	migrations: [
+		{
+			version: 1,
+			script: `
         ALTER TABLE Members RENAME TO MembersOld;
   
         CREATE TABLE Members (
@@ -28,10 +28,10 @@ export const migrations = {
   
         DROP TABLE MembersOld;
       `
-    },
-    {
-      version: 2,
-      script: `
+		},
+		{
+			version: 2,
+			script: `
         CREATE TABLE DiscordMembers (
           guildId TEXT NOT NULL,
           discordId TEXT NOT NULL,
@@ -39,10 +39,10 @@ export const migrations = {
           PRIMARY KEY (guildId, discordId)
         );
       `
-    },
-    {
-      version: 3,
-      script: `
+		},
+		{
+			version: 3,
+			script: `
         CREATE TABLE Players (
           id TEXT PRIMARY KEY,
           guildId TEXT,
@@ -71,10 +71,10 @@ export const migrations = {
           FOREIGN KEY (profileId) REFERENCES Profiles(id)
         );
       `
-    },
-    {
-      version: 4,
-      script: `
+		},
+		{
+			version: 4,
+			script: `
         CREATE TABLE verified_members (
           guild_id TEXT NOT NULL,
           discord_id TEXT NOT NULL,
@@ -95,20 +95,20 @@ export const migrations = {
         FROM DiscordMembers
         WHERE minecraftId IS NOT NULL;
       `
-    },
-    {
-      version: 5,
-      script: `
+		},
+		{
+			version: 5,
+			script: `
         CREATE TABLE guild_settings (
           guild_id TEXT PRIMARY KEY NOT NULL,
           verified_role TEXT,
           unverified_role TEXT
         );
       `
-    },
-    {
-      version: 6,
-      script: `
+		},
+		{
+			version: 6,
+			script: `
         CREATE TABLE achievement_roles (
           guild_id TEXT NOT NULL,
           requirement TEXT NOT NULL,
@@ -116,6 +116,6 @@ export const migrations = {
           PRIMARY KEY (guild_id, requirement)
         );
       `
-    }
-  ]
+		}
+	]
 }

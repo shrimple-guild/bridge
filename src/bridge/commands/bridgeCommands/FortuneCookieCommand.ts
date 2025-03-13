@@ -1,8 +1,8 @@
-import { randItem } from "../../../utils/utils.js";
-import { SimpleCommand } from "./Command.js";
+import { randItem } from "../../../utils/utils.js"
+import { SimpleCommand } from "./Command.js"
 
 export class FortuneCookieCommand extends SimpleCommand {
-	aliases = ["fc", "cookie"];
+	aliases = ["fc", "cookie"]
 
 	fortunes = [
 		"Your perseverance will lead to great achievements.",
@@ -26,18 +26,18 @@ export class FortuneCookieCommand extends SimpleCommand {
 		"The riches of the End will reveal themselves to you in due time.",
 		"Your combat prowess will be legendary.",
 		"Hard work in mining will uncover rare ores and precious gems.",
-        "We do not care about your networth.",
+		"We do not care about your networth.",
 		"Your enchanting abilities will bring forth expensive enchantments.",
 		"A wise adventurer knows the value of teamwork in dungeons.",
 		"A dragon pet awaits you in the nest.",
 		"Your fishing skills will reel in valuable rewards.",
 		"A generous heart will attract good trades and friendships.",
 		"The secrets of the Fairy Souls will be revealed to you.",
-        "Help! I'm trapped in Minikloon's basement!",
-        "Nobody cares about your complaints."
-	];
+		"Help! I'm trapped in Minikloon's basement!",
+		"Nobody cares about your complaints."
+	]
 
 	async execute(args: string[]) {
-		return randItem(this.fortunes);
+		return randItem(this.fortunes)
 	}
 }
