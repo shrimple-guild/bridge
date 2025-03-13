@@ -3,7 +3,6 @@ import { HypixelAPI } from "./api/HypixelAPI.js"
 import { createDiscordBot } from "./discord/DiscordBot.js"
 import { SlashCommandManager } from "./discord/commands/SlashCommandManager.js"
 import { config } from "./utils/config.js"
-import itemNames from "./data/itemNames.json" assert { type: "json" }
 import { MinecraftBot } from "./minecraft/MinecraftBot.js"
 import { Bridge } from "./bridge/Bridge.js"
 import { SimpleCommandManager } from "./bridge/commands/SimpleCommandManager.js"
@@ -18,7 +17,7 @@ import { GuildReqsCommand } from "./discord/commands/GuildReqsCommand.js"
 import { InteractionRegistry } from "./discord/interactions/InteractionRegistry.js"
 import { LinkService } from "./verify/LinkService.js"
 import { Achievements } from "./achievements/Achievements.js"
-
+import { MarketApi } from "./api/MarketApi.js"
 
 
 export const general = Logger.category("General")
@@ -26,8 +25,11 @@ export const general = Logger.category("General")
 const database = await Database.create("./src/database", migrations)
 
 const hypixelAPI = new HypixelAPI(config.bridge.apiKey, database, Logger.category("HypixelAPI"))
+await hypixelAPI.init()
 
-await hypixelAPI.init(itemNames)
+const marketApi = new MarketApi(config.marketApiUrl)
+
+
 const slashCommands = new SlashCommandManager()
 
 if (config.discord.guildRequirements) {
@@ -77,7 +79,7 @@ await general.info(`
 	- Minecraft bot: ${config.minecraft.username}.
 `)
 
-const bridgeCommandManager = new SimpleCommandManager(hypixelAPI, Logger.category("Commands"))
+const bridgeCommandManager = new SimpleCommandManager(hypixelAPI, marketApi, Logger.category("Commands"))
 
 const minecraft = new MinecraftBot(
 	config.minecraft.username,
