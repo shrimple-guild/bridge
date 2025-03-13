@@ -8,10 +8,9 @@ import { migrations } from "../database/migrations.js"
 import { getGuildRank, getGuildRequirementResults } from "../discord/GuildReqs.js"
 const { apiKey, prefix } = config.bridge
 
-const logger = new Logger()
 const database = await Database.create("./src/database", migrations)
 
-const testAPI = new HypixelAPI(apiKey, database, logger.category("HypixelAPI"))
+const testAPI = new HypixelAPI(apiKey, database, Logger.category("HypixelAPI"))
 await testAPI.init(itemNames)
 
 const uuid = await testAPI.mojang.fetchUuid("lordjawbus")
