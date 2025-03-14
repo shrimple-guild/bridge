@@ -1,6 +1,6 @@
 import fuzzy from "fuzzysort"
-import { neuLevelingData } from "../utils/NeuLevelingData";
-import { Level, LevelCurve } from "../utils/Level";
+import { neuLevelingData } from "../utils/NeuLevelingData.js";
+import { Level, LevelCurve } from "../utils/Level.js";
 
 const slayerMapping: { name: string; slayer: SlayerName }[] = [
 	{ name: "revenant horror", slayer: "zombie" },

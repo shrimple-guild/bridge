@@ -1,5 +1,5 @@
-import { Level, OverflowLevel } from "../utils/Level"
-import { neuLevelingData } from "../utils/NeuLevelingData"
+import { Level, OverflowLevel } from "../utils/Level.js"
+import { neuLevelingData } from "../utils/NeuLevelingData.js"
 
 import fuzzy from "fuzzysort"
 

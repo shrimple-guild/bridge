@@ -1,5 +1,5 @@
 import leveling from "../data/leveling.json" assert { type: "json" }
-import { GeneratorLevelFunction, Level, LevelCurve, OverflowLevelCurve } from "./Level"
+import { GeneratorLevelFunction, LevelCurve, OverflowLevelCurve } from "./Level.js"
 
 const skillLevelFunction = new GeneratorLevelFunction(skillLevelGenerator())
 const skillLevelCurve = LevelCurve.create(skillLevelFunction)

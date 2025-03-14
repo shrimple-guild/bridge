@@ -1,5 +1,5 @@
-import { Level, OverflowLevel } from "../utils/Level"
-import { neuLevelingData } from "../utils/NeuLevelingData"
+import { OverflowLevel } from "../utils/Level.js"
+import { neuLevelingData } from "../utils/NeuLevelingData.js"
 
 const floors = [0, 1, 2, 3, 4, 5, 6, 7]
 
