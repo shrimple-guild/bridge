@@ -35,8 +35,8 @@ export class Skills {
 	readonly enchanting: OverflowLevel
 	readonly alchemy: OverflowLevel
 	readonly carpentry: OverflowLevel
-	readonly runecrafting: Level
-	readonly social: Level
+	readonly runecrafting: OverflowLevel
+	readonly social: OverflowLevel
 
 	constructor(member: any) {
 		const skills = member.player_data?.experience
@@ -73,6 +73,6 @@ export class Skills {
 			this.enchanting,
 			this.alchemy
 		]
-		return skills.reduce((prev, cur) => prev + (cur?.normal.getLevel() ?? 0), 0) / skills.length
+		return skills.reduce((prev, cur) => prev + (cur?.getLevel() ?? 0), 0) / skills.length
 	}
 }

@@ -45,9 +45,9 @@ class NeuLevelingData {
 	readonly combatCurve: OverflowLevelCurve
 	readonly fishingCurve: OverflowLevelCurve
 	readonly alchemyCurve: OverflowLevelCurve
+	readonly runecraftingCurve: OverflowLevelCurve
+	readonly socialCurve: OverflowLevelCurve
 
-	readonly runecraftingCurve: LevelCurve
-	readonly socialCurve: LevelCurve
 	readonly zombieCurve: LevelCurve
 	readonly spiderCurve: LevelCurve
 	readonly wolfCurve: LevelCurve
@@ -56,25 +56,26 @@ class NeuLevelingData {
 	readonly vampireCurve: LevelCurve
 
 	constructor(data: NeuLevelingJson) {
-		const dungeonCurve = LevelCurve.fromLevelXp(data.catacombs)
-		this.dungeonCurve = new OverflowLevelCurve(dungeonCurve, data.leveling_caps.catacombs)
+		this.dungeonCurve = LevelCurve.fromLevelXp(data.catacombs).withMaxLevel(data.leveling_caps.catacombs).allowOverflow()
 
-		this.tamingCurve = new OverflowLevelCurve(skillLevelCurve, 60)
-		this.miningCurve = new OverflowLevelCurve(skillLevelCurve, 60)
-		this.foragingCurve = new OverflowLevelCurve(skillLevelCurve, 50)
-		this.enchantingCurve = new OverflowLevelCurve(skillLevelCurve, 60)
-		this.carpentryCurve = new OverflowLevelCurve(skillLevelCurve, 50)
-		this.farmingCurve = new OverflowLevelCurve(skillLevelCurve, 60)
-		this.combatCurve = new OverflowLevelCurve(skillLevelCurve, 60)
-		this.fishingCurve = new OverflowLevelCurve(skillLevelCurve, 50)
-		this.alchemyCurve = new OverflowLevelCurve(skillLevelCurve, 50)
+		this.tamingCurve = skillLevelCurve.withMaxLevel(60).allowOverflow()
+		this.miningCurve = skillLevelCurve.withMaxLevel(data.leveling_caps.mining).allowOverflow()
+		this.foragingCurve = skillLevelCurve.withMaxLevel(data.leveling_caps.foraging).allowOverflow()
+		this.enchantingCurve = skillLevelCurve.withMaxLevel(data.leveling_caps.enchanting).allowOverflow()
+		this.carpentryCurve = skillLevelCurve.withMaxLevel(data.leveling_caps.carpentry).allowOverflow()
+		this.farmingCurve = skillLevelCurve.withMaxLevel(60).allowOverflow()
+		this.combatCurve = skillLevelCurve.withMaxLevel(data.leveling_caps.combat).allowOverflow()
+		this.fishingCurve = skillLevelCurve.withMaxLevel(data.leveling_caps.fishing).allowOverflow()
+		this.alchemyCurve = skillLevelCurve.withMaxLevel(data.leveling_caps.alchemy).allowOverflow()
 
 		this.runecraftingCurve = LevelCurve.fromLevelXp(data.runecrafting_xp).withMaxLevel(
 			data.leveling_caps.runecrafting
-		)
+		).allowOverflow()
+
 		this.socialCurve = LevelCurve.fromLevelXp(data.social).withMaxLevel(
 			data.leveling_caps.runecrafting
-		)
+		).allowOverflow()
+
 		this.zombieCurve = LevelCurve.fromCumulativeXp(data.slayer_xp.zombie)
 		this.spiderCurve = LevelCurve.fromCumulativeXp(data.slayer_xp.spider)
 		this.wolfCurve = LevelCurve.fromCumulativeXp(data.slayer_xp.wolf)

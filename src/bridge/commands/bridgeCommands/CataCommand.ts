@@ -39,21 +39,27 @@ export class CataCommand extends SimpleCommand {
 			message += `Fastest time (S): ${fastestRunS ?? "None"} | `
 			message += `Fastest time (S+): ${fastestRunSPlus ?? "None"}`
 		} else {
+			let messageHeader: string
+			let messageComponents: string[] = []
 			let level
 			if (isDungeonClass(commandArg)) {
 				level = profile.dungeons.classes[commandArg]
-				message = `${titleCase(commandArg)} `
+				messageHeader = `${titleCase(commandArg)} `
 			} else {
-				message = "Catacombs "
+				messageHeader = "Catacombs "
 				level = profile.dungeons.level
 			}
 
-			const overflow = level.overflow
+			messageHeader += `level for ${playerName} (${profile.cuteName}): `
+			messageComponents.push(`${formatNumber(level.getOverflowFractionalLevel(), 2, false)}`)
+			messageComponents.push(`Total XP: ${formatNumber(level.getTotalXp(), 2, true)}`)
 
-			message += `level for ${playerName} (${profile.cuteName}): `
-			message += `${formatNumber(overflow.getFractionalLevel(), 2, false)} | `
-			message += `Total XP: ${formatNumber(overflow.getTotalXp(), 2, true)} | `
-			message += `XP for level ${overflow.getLevel() + 1}: ${formatNumber(overflow.getXpToNextLevel() ?? Infinity, 2, true)}`
+			const xpToNext = level.getOverflowXpToNextLevel()
+			if (xpToNext != null) {
+				messageComponents.push(`XP for ${level.getOverflowLevel() + 1}: ${formatNumber(xpToNext, 2, true)}`)
+			}
+
+			message = `${messageHeader}${messageComponents.join(" | ")}`
 		}
 		return message
 	}

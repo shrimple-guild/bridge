@@ -34,25 +34,22 @@ export class SkillsCommand extends SimpleCommand {
 		}
 
 		const level = profile.skills[skillName]
-		const hasOverflowCurve = !(level instanceof Level)
-		const normal = hasOverflowCurve ? level.normal : level
-		const overflow = hasOverflowCurve ? level.overflow : level
 
 		let messageHeader = `${titleCase(skillName)} level for ${playerName} (${cuteName}): `
 		let messageComponents: string[] = []
 
-		messageComponents.push(`${formatNumber(overflow.getFractionalLevel(), 2, false)}`)
-		messageComponents.push(`Total XP: ${formatNumber(overflow.getTotalXp(), 3, true)}`)
-		if (
-			!normal.reachedUserCap() &&
-			(hasOverflowCurve || normal.getMaxLevel() != normal.getLevel())
-		) {
+		messageComponents.push(`${formatNumber(level.getOverflowFractionalLevel(), 2, false)}`)
+		messageComponents.push(`Total XP: ${formatNumber(level.getTotalXp(), 3, true)}`)
+
+		const xpToNext = level.getOverflowXpToNextLevel()
+		if (xpToNext != null && xpToNext > 0) {
 			messageComponents.push(
-				`XP for ${overflow.getLevel() + 1}: ${formatNumber(overflow.getXpToNextLevel() ?? Infinity, 2, true)}`
+				`XP for ${level.getOverflowLevel() + 1}: ${formatNumber(xpToNext, 2, true)}`
 			)
 		}
+		
 		messageComponents.push(
-			`XP past ${normal.getUserMaxLevel()}: ${formatNumber(normal.getCurrentXp(), 3, true)}`
+			`XP past ${level.getLevel()}: ${formatNumber(level.getCurrentXp(), 3, true)}`
 		)
 
 		return `${messageHeader} ${messageComponents.join(" | ")}`

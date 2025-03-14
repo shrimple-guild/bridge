@@ -30,6 +30,10 @@ export class LevelCurve {
 		return this.withMaxLevel(maxLevel)
 	}
 
+	allowOverflow(): OverflowLevelCurve {
+		return new OverflowLevelCurve(this.levelFunction, this.maxLevel)
+	}
+
 	at(xp: number, cap?: number): Level {
 		if (cap != null && cap > this.maxLevel) {
 			throw new Error("Cap cannot be higher than the max level.")
@@ -38,12 +42,25 @@ export class LevelCurve {
 	}
 }
 
+export class OverflowLevelCurve extends LevelCurve {
+	constructor(levelFunction: LevelFunction, maxLevel?: number) {
+		super(levelFunction, maxLevel)
+	}
+
+	at(xp: number, cap?: number): OverflowLevel {
+		if (cap != null && cap > this.maxLevel) {
+			throw new Error("Cap cannot be higher than the max level.")
+		}
+		return new OverflowLevel(this, xp, cap)
+	}
+}
+
 export class Level {
 	private totalXp: number
 	private cap: number | null
 
-	private curve: LevelCurve
-	private cachedLevel?: number
+	protected curve: LevelCurve
+	private unboundedLevel?: number
 
 	constructor(curve: LevelCurve, xp: number, cap?: number) {
 		this.curve = curve
@@ -51,12 +68,15 @@ export class Level {
 		this.cap = cap != null && cap != curve.maxLevel ? cap : null
 	}
 
-	getLevel(): number {
-		if (this.cachedLevel == null) {
-			const unboundedLevel = this.curve.levelFunction.getLevelForTotalXp(this.totalXp)
-			this.cachedLevel = Math.min(unboundedLevel, this.getUserMaxLevel())
+	getUnboundedLevel(): number {
+		if (this.unboundedLevel == null) {
+			this.unboundedLevel = this.curve.levelFunction.getLevelForTotalXp(this.totalXp)
 		}
-		return this.cachedLevel
+		return this.unboundedLevel
+	}
+
+	getLevel(): number {
+		return Math.min(this.getUnboundedLevel(), this.getUserMaxLevel())
 	}
 
 	getTotalXp(): number {
@@ -68,7 +88,7 @@ export class Level {
 	}
 
 	getUserMaxLevel(): number {
-		return Math.min(this.getMaxLevel(), this.cap ?? Infinity)
+		return Math.min(this.getMaxLevel(), this.getUserCap() ?? Infinity)
 	}
 
 	getMaxLevel(): number {
@@ -86,7 +106,7 @@ export class Level {
 	getXpToNextLevel(): number | null {
 		const levelXp = this.getLevelXp()
 		if (levelXp == null) return null
-		return levelXp - this.getCurrentXp()
+		return Math.max(levelXp - this.getCurrentXp(), 0)
 	}
 
 	getCurrentXp(): number {
@@ -94,7 +114,7 @@ export class Level {
 	}
 
 	getLevelXp(): number | null {
-		if (this.getLevel() >= this.curve.levelFunction.maxLevel) {
+		if (this.getLevel() >= this.getMaxLevel()) {
 			return null
 		}
 		const nextXp = this.curve.levelFunction.getTotalXpForLevel(this.getLevel() + 1)
@@ -108,6 +128,47 @@ export class Level {
 		}
 		const fraction = this.getCurrentXp() / (this.getLevelXp() ?? Infinity)
 		return this.getLevel() + Math.min(fraction, 1)
+	}
+}
+
+export class OverflowLevel extends Level {
+	getOverflowLevel() {
+		return Math.min(this.getUnboundedLevel(), this.getUserCap() ?? Infinity)
+	}
+
+	getOverflowMaxLevel() {
+		return this.curve.levelFunction.maxLevel
+	}
+
+	getOverflowUserMaxLevel() {
+		return Math.min(this.getOverflowMaxLevel(), this.getUserCap() ?? Infinity)
+	}
+
+	getOverflowXpToNextLevel(): number | null {
+		const levelXp = this.getOverflowLevelXp()
+		if (levelXp == null) return null
+		return Math.max(levelXp - this.getOverflowCurrentXp(), 0)
+	}
+
+	getOverflowCurrentXp(): number {
+		return this.getTotalXp() - this.curve.levelFunction.getTotalXpForLevel(this.getOverflowLevel())
+	}
+
+	getOverflowLevelXp(): number | null {
+		if (this.getOverflowLevel() >= this.getOverflowMaxLevel()) {
+			return null
+		}
+		const nextXp = this.curve.levelFunction.getTotalXpForLevel(this.getOverflowLevel() + 1)
+		const previousXp = this.curve.levelFunction.getTotalXpForLevel(this.getOverflowLevel())
+		return nextXp - previousXp
+	}
+
+	getOverflowFractionalLevel() {
+		if (this.reachedUserCap()) {
+			return this.getLevel()
+		}
+		const fraction = this.getOverflowCurrentXp() / (this.getOverflowLevelXp() ?? Infinity)
+		return this.getOverflowLevel() + Math.min(fraction, 1)
 	}
 }
 
@@ -185,24 +246,3 @@ export class GeneratorLevelFunction extends LevelFunction {
 		return Infinity
 	}
 }
-
-export class OverflowLevelCurve {
-	private normal: LevelCurve
-	private overflow: LevelCurve
-
-	constructor(levelCurve: LevelCurve, maxLevel: number) {
-		this.normal = levelCurve.withMaxLevel(maxLevel)
-		this.overflow = levelCurve
-	}
-
-	at(xp: number, cap?: number): OverflowLevel {
-		const normal = this.normal.at(xp, cap)
-		const overflowCap = normal.getUserCap() ? cap : undefined
-		return {
-			normal: this.normal.at(xp, cap),
-			overflow: this.overflow.at(xp, overflowCap)
-		}
-	}
-}
-
-export type OverflowLevel = { normal: Level; overflow: Level }
