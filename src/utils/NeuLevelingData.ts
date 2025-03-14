@@ -56,25 +56,33 @@ class NeuLevelingData {
 	readonly vampireCurve: LevelCurve
 
 	constructor(data: NeuLevelingJson) {
-		this.dungeonCurve = LevelCurve.fromLevelXp(data.catacombs).withMaxLevel(data.leveling_caps.catacombs).allowOverflow()
+		this.dungeonCurve = LevelCurve.fromLevelXp(data.catacombs)
+			.withMaxLevel(data.leveling_caps.catacombs)
+			.allowOverflow()
 
 		this.tamingCurve = skillLevelCurve.withMaxLevel(60).allowOverflow()
 		this.miningCurve = skillLevelCurve.withMaxLevel(data.leveling_caps.mining).allowOverflow()
-		this.foragingCurve = skillLevelCurve.withMaxLevel(data.leveling_caps.foraging).allowOverflow()
-		this.enchantingCurve = skillLevelCurve.withMaxLevel(data.leveling_caps.enchanting).allowOverflow()
-		this.carpentryCurve = skillLevelCurve.withMaxLevel(data.leveling_caps.carpentry).allowOverflow()
+		this.foragingCurve = skillLevelCurve
+			.withMaxLevel(data.leveling_caps.foraging)
+			.allowOverflow()
+		this.enchantingCurve = skillLevelCurve
+			.withMaxLevel(data.leveling_caps.enchanting)
+			.allowOverflow()
+		this.carpentryCurve = skillLevelCurve
+			.withMaxLevel(data.leveling_caps.carpentry)
+			.allowOverflow()
 		this.farmingCurve = skillLevelCurve.withMaxLevel(60).allowOverflow()
 		this.combatCurve = skillLevelCurve.withMaxLevel(data.leveling_caps.combat).allowOverflow()
 		this.fishingCurve = skillLevelCurve.withMaxLevel(data.leveling_caps.fishing).allowOverflow()
 		this.alchemyCurve = skillLevelCurve.withMaxLevel(data.leveling_caps.alchemy).allowOverflow()
 
-		this.runecraftingCurve = LevelCurve.fromLevelXp(data.runecrafting_xp).withMaxLevel(
-			data.leveling_caps.runecrafting
-		).allowOverflow()
+		this.runecraftingCurve = LevelCurve.fromLevelXp(data.runecrafting_xp)
+			.withMaxLevel(data.leveling_caps.runecrafting)
+			.allowOverflow()
 
-		this.socialCurve = LevelCurve.fromLevelXp(data.social).withMaxLevel(
-			data.leveling_caps.runecrafting
-		).allowOverflow()
+		this.socialCurve = LevelCurve.fromLevelXp(data.social)
+			.withMaxLevel(data.leveling_caps.runecrafting)
+			.allowOverflow()
 
 		this.zombieCurve = LevelCurve.fromCumulativeXp(data.slayer_xp.zombie)
 		this.spiderCurve = LevelCurve.fromCumulativeXp(data.slayer_xp.spider)

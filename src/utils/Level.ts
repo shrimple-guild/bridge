@@ -151,7 +151,9 @@ export class OverflowLevel extends Level {
 	}
 
 	getOverflowCurrentXp(): number {
-		return this.getTotalXp() - this.curve.levelFunction.getTotalXpForLevel(this.getOverflowLevel())
+		return (
+			this.getTotalXp() - this.curve.levelFunction.getTotalXpForLevel(this.getOverflowLevel())
+		)
 	}
 
 	getOverflowLevelXp(): number | null {

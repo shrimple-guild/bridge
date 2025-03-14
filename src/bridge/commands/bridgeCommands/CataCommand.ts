@@ -56,7 +56,9 @@ export class CataCommand extends SimpleCommand {
 
 			const xpToNext = level.getOverflowXpToNextLevel()
 			if (xpToNext != null) {
-				messageComponents.push(`XP for ${level.getOverflowLevel() + 1}: ${formatNumber(xpToNext, 2, true)}`)
+				messageComponents.push(
+					`XP for ${level.getOverflowLevel() + 1}: ${formatNumber(xpToNext, 2, true)}`
+				)
 			}
 
 			message = `${messageHeader}${messageComponents.join(" | ")}`

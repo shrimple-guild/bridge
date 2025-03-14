@@ -47,7 +47,7 @@ export class SkillsCommand extends SimpleCommand {
 				`XP for ${level.getOverflowLevel() + 1}: ${formatNumber(xpToNext, 2, true)}`
 			)
 		}
-		
+
 		messageComponents.push(
 			`XP past ${level.getLevel()}: ${formatNumber(level.getCurrentXp(), 3, true)}`
 		)
