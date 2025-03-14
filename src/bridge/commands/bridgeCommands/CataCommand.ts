@@ -47,14 +47,14 @@ export class CataCommand extends SimpleCommand {
 				message = "Catacombs "
 				level = profile.dungeons.level
 			}
+
+			const overflow = level.overflow
+
 			message += `level for ${playerName} (${profile.cuteName}): `
-			message += `${formatNumber(level.fractionalLevel, 2, false)} | `
-			message += `Total XP: ${formatNumber(level.xp, 2, true)} | `
-			if (level.level == level.maxLevel) {
-				message += `Overflow XP: ${formatNumber(level.overflow, 2, true)}`
-			} else {
-				message += `XP for level ${level.level + 1}: ${formatNumber(level.xpToNext, 2, true)}`
-			}
+			message += `${formatNumber(overflow.getFractionalLevel(), 2, false)} | `
+			message += `Total XP: ${formatNumber(overflow.getTotalXp(), 2, true)} | `
+			message += `XP for level ${overflow.getLevel() + 1}: ${formatNumber(overflow.getXpToNextLevel() ?? Infinity, 2, true)}`
+
 		}
 		return message
 	}

@@ -1,4 +1,5 @@
-import { Level } from "./Level.js"
+import { Level, OverflowLevel } from "../utils/Level"
+import { neuLevelingData } from "../utils/NeuLevelingData"
 
 const floors = [0, 1, 2, 3, 4, 5, 6, 7]
 
@@ -11,13 +12,13 @@ export function isDungeonClass(str: string): str is DungeonClass {
 }
 
 export class Dungeons {
-	readonly level: Level
+	readonly level: OverflowLevel
 	readonly classes: {
-		readonly healer: Level
-		readonly archer: Level
-		readonly tank: Level
-		readonly mage: Level
-		readonly berserk: Level
+		readonly healer: OverflowLevel
+		readonly archer: OverflowLevel
+		readonly tank: OverflowLevel
+		readonly mage: OverflowLevel
+		readonly berserk: OverflowLevel
 	}
 	private catacombs: {
 		readonly normal: (FloorData | undefined)[]
@@ -26,13 +27,14 @@ export class Dungeons {
 
 	constructor(member: any) {
 		const dungeons = member.dungeons
-		this.level = new Level("dungeons", dungeons?.dungeon_types?.catacombs?.experience ?? 0)
+		const experience = dungeons?.dungeon_types?.catacombs?.experience ?? 0
+		this.level = neuLevelingData.dungeonCurve.at(experience)
 		this.classes = {
-			healer: new Level("dungeons", dungeons?.player_classes?.healer?.experience ?? 0),
-			archer: new Level("dungeons", dungeons?.player_classes?.archer?.experience ?? 0),
-			tank: new Level("dungeons", dungeons?.player_classes?.tank?.experience ?? 0),
-			mage: new Level("dungeons", dungeons?.player_classes?.mage?.experience ?? 0),
-			berserk: new Level("dungeons", dungeons?.player_classes?.berserk?.experience ?? 0)
+			healer: neuLevelingData.dungeonCurve.at(this.getClassExperience(member, "healer")),
+			archer: neuLevelingData.dungeonCurve.at(this.getClassExperience(member, "archer")),
+			tank: neuLevelingData.dungeonCurve.at(this.getClassExperience(member, "tank")),
+			mage: neuLevelingData.dungeonCurve.at(this.getClassExperience(member, "mage")),
+			berserk: neuLevelingData.dungeonCurve.at(this.getClassExperience(member, "berserk"))
 		}
 		this.catacombs = {
 			normal: floors.map((floor) =>
@@ -42,6 +44,10 @@ export class Dungeons {
 				buildFloorData(dungeons?.dungeon_types?.master_catacombs, floor)
 			)
 		}
+	}
+
+	private getClassExperience(member: any, dungeonClass: string): number {
+		return member.dungeons?.player_classes?.[dungeonClass]?.experience ?? 0
 	}
 
 	floor(mode: "normal" | "master", floor: number) {

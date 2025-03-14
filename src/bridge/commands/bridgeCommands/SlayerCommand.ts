@@ -26,7 +26,7 @@ export class SlayerCommand extends SimpleCommand {
 		if (!resolvedSlayer) this.error(`${titleCase(slayerName)} is not a valid slayer name!`)
 		const slayer = profile.slayers[resolvedSlayer]
 		message = `${titleCase(resolvedSlayer)} slayer data for ${playerName} (${profile.cuteName}): `
-		message += `Total XP: ${formatNumber(slayer.level.xp, 2, true)} | Tier kills: `
+		message += `Total XP: ${formatNumber(slayer.level.getTotalXp(), 2, true)} | Tier kills: `
 		message += `(${slayer.kills.join(" | ")})`
 		return message
 	}

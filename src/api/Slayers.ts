@@ -1,9 +1,6 @@
-import { Level } from "./Level.js"
 import fuzzy from "fuzzysort"
-
-const slayers = ["zombie", "spider", "wolf", "enderman", "blaze", "vampire"] as const
-
-type SlayerName = (typeof slayers)[number]
+import { neuLevelingData } from "../utils/NeuLevelingData";
+import { Level, LevelCurve } from "../utils/Level";
 
 const slayerMapping: { name: string; slayer: SlayerName }[] = [
 	{ name: "revenant horror", slayer: "zombie" },
@@ -21,13 +18,13 @@ const slayerMapping: { name: string; slayer: SlayerName }[] = [
 	{ name: "woof", slayer: "wolf" }
 ]
 
+const slayers = ["zombie", "spider", "wolf", "enderman", "blaze", "vampire"] as const
+
+type SlayerName = (typeof slayers)[number]
+
 export function resolveSlayer(str: string): SlayerName | undefined {
 	const result = fuzzy.go(str, slayerMapping, { key: "name", limit: 1 })[0]?.obj
 	return result?.slayer
-}
-
-export function isSlayer(str: string): str is SlayerName {
-	return slayers.includes(str as SlayerName)
 }
 
 export class Slayers {
@@ -40,12 +37,12 @@ export class Slayers {
 
 	constructor(member: any) {
 		const bosses = member.slayer?.slayer_bosses
-		this.zombie = new Slayer("zombie", bosses)
-		this.spider = new Slayer("spider", bosses)
-		this.wolf = new Slayer("wolf", bosses)
-		this.enderman = new Slayer("enderman", bosses)
-		this.blaze = new Slayer("blaze", bosses)
-		this.vampire = new Slayer("vampire", bosses)
+		this.zombie = new Slayer("zombie", neuLevelingData.zombieCurve, bosses)
+		this.spider = new Slayer("spider", neuLevelingData.spiderCurve, bosses)
+		this.wolf = new Slayer("wolf", neuLevelingData.wolfCurve, bosses)
+		this.enderman = new Slayer("enderman", neuLevelingData.endermanCurve, bosses)
+		this.blaze = new Slayer("blaze", neuLevelingData.blazeCurve, bosses)
+		this.vampire = new Slayer("vampire", neuLevelingData.vampireCurve, bosses)
 	}
 }
 
@@ -53,9 +50,9 @@ export class Slayer {
 	readonly level: Level
 	readonly kills: number[]
 
-	constructor(slayer: string, bosses: any) {
+	constructor(slayer: string, levelCurve: LevelCurve, bosses: any) {
 		const slayerData = bosses?.[slayer]
-		this.level = new Level(slayer, slayerData?.xp ?? 0)
+		this.level = levelCurve.at(slayerData?.xp ?? 0)
 		this.kills = [0, 1, 2, 3, 4].map(
 			(i) => (slayerData?.[`boss_kills_tier_${i}`] ?? 0) as number
 		)

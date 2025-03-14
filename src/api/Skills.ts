@@ -1,6 +1,9 @@
-import { buildSkyblockSkillLike, Level } from "./Level.js"
+import { Level, OverflowLevel } from "../utils/Level"
+import { neuLevelingData } from "../utils/NeuLevelingData"
 
-const skills = [
+import fuzzy from "fuzzysort"
+
+const skillNames = [
 	"taming",
 	"farming",
 	"mining",
@@ -9,39 +12,55 @@ const skills = [
 	"fishing",
 	"enchanting",
 	"alchemy",
+	"carpentry",
 	"runecrafting",
-	"carpentry"
+	"social"
 ] as const
 
-type Skill = (typeof skills)[number]
 
-export function isSkill(str: string): str is Skill {
-	return skills.includes(str as Skill)
+export function resolveSkill(str: string): typeof skillNames[number] | undefined {
+	const result = fuzzy.go(str, skillNames, { limit: 1}).at(0)?.target
+	// @ts-expect-error
+	return result
 }
 
 export class Skills {
-	readonly taming?: Level
-	readonly farming?: Level
-	readonly mining?: Level
-	readonly combat?: Level
-	readonly foraging?: Level
-	readonly fishing?: Level
-	readonly enchanting?: Level
-	readonly alchemy?: Level
-	readonly carpentry?: Level
-	readonly runecrafting?: Level
+	private apiEnabled: boolean
+
+	readonly taming: OverflowLevel
+	readonly farming: OverflowLevel
+	readonly mining: OverflowLevel
+	readonly combat: OverflowLevel
+	readonly foraging: OverflowLevel
+	readonly fishing: OverflowLevel
+	readonly enchanting: OverflowLevel
+	readonly alchemy: OverflowLevel
+	readonly carpentry: OverflowLevel
+	readonly runecrafting: Level
+	readonly social: Level
 
 	constructor(member: any) {
-		this.taming = buildSkyblockSkill("TAMING", member)
-		this.farming = buildSkyblockSkill("FARMING", member)
-		this.mining = buildSkyblockSkill("MINING", member)
-		this.combat = buildSkyblockSkill("COMBAT", member)
-		this.foraging = buildSkyblockSkill("FORAGING", member)
-		this.fishing = buildSkyblockSkill("FISHING", member)
-		this.enchanting = buildSkyblockSkill("ENCHANTING", member)
-		this.alchemy = buildSkyblockSkill("ALCHEMY", member)
-		this.carpentry = buildSkyblockSkill("CARPENTRY", member)
-		this.runecrafting = buildSkyblockSkill("RUNECRAFTING", member)
+		const skills = member.player_data?.experience
+		this.apiEnabled = skills != null
+
+		const farmingLevelCap = 50 + (member.jacobs_contest?.perks?.farming_level_cap ?? 0)
+		const tamingLevelCap = 50 + (member.pets_data?.pet_care?.pet_types_sacrificed?.length ?? 0)
+
+		this.taming = neuLevelingData.tamingCurve.at(skills?.SKILL_TAMING ?? 0, tamingLevelCap)
+		this.farming = neuLevelingData.farmingCurve.at(skills?.SKILL_FARMING ?? 0, farmingLevelCap)
+		this.mining = neuLevelingData.miningCurve.at(skills?.SKILL_MINING ?? 0)
+		this.combat = neuLevelingData.combatCurve.at(skills?.SKILL_COMBAT ?? 0)
+		this.foraging = neuLevelingData.foragingCurve.at(skills?.SKILL_FORAGING ?? 0)
+		this.fishing = neuLevelingData.fishingCurve.at(skills?.SKILL_FISHING ?? 0)
+		this.enchanting = neuLevelingData.enchantingCurve.at(skills?.SKILL_ENCHANTING ?? 0)
+		this.alchemy = neuLevelingData.alchemyCurve.at(skills?.SKILL_ALCHEMY ?? 0)
+		this.carpentry = neuLevelingData.carpentryCurve.at(skills?.SKILL_CARPENTRY ?? 0)
+		this.runecrafting = neuLevelingData.runecraftingCurve.at(skills?.SKILL_RUNECRAFTING ?? 0)
+		this.social = neuLevelingData.socialCurve.at(skills?.SKILL_SOCIAL ?? 0)
+	}
+
+	isApiEnabled() {
+		return this.apiEnabled
 	}
 
 	get average() {
@@ -55,13 +74,7 @@ export class Skills {
 			this.enchanting,
 			this.alchemy
 		]
-		return skills.reduce((prev, cur) => cur?.level ?? 0, 0) / skills.length
+		return skills.reduce((prev, cur) => prev + (cur?.normal.getLevel() ?? 0), 0) / skills.length
 	}
 }
 
-function buildSkyblockSkill(skill: string, member: any) {
-	return buildSkyblockSkillLike(
-		skill.toLowerCase(),
-		member.player_data?.experience?.[`SKILL_${skill}`]
-	)
-}
