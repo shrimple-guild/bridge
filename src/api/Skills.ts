@@ -17,9 +17,8 @@ const skillNames = [
 	"social"
 ] as const
 
-
-export function resolveSkill(str: string): typeof skillNames[number] | undefined {
-	const result = fuzzy.go(str, skillNames, { limit: 1}).at(0)?.target
+export function resolveSkill(str: string): (typeof skillNames)[number] | undefined {
+	const result = fuzzy.go(str, skillNames, { limit: 1 }).at(0)?.target
 	// @ts-expect-error
 	return result
 }
@@ -77,4 +76,3 @@ export class Skills {
 		return skills.reduce((prev, cur) => prev + (cur?.normal.getLevel() ?? 0), 0) / skills.length
 	}
 }
-

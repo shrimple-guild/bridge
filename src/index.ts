@@ -19,8 +19,6 @@ import { InteractionRegistry } from "./discord/interactions/InteractionRegistry.
 import { LinkService } from "./verify/LinkService.js"
 import { Achievements } from "./achievements/Achievements.js"
 
-
-
 export const general = Logger.category("General")
 
 const database = await Database.create("./src/database", migrations)

@@ -54,7 +54,6 @@ export class CataCommand extends SimpleCommand {
 			message += `${formatNumber(overflow.getFractionalLevel(), 2, false)} | `
 			message += `Total XP: ${formatNumber(overflow.getTotalXp(), 2, true)} | `
 			message += `XP for level ${overflow.getLevel() + 1}: ${formatNumber(overflow.getXpToNextLevel() ?? Infinity, 2, true)}`
-
 		}
 		return message
 	}

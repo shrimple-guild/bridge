@@ -74,7 +74,7 @@ export class MinecraftBot {
 					client.emit("connect")
 				}
 			}
-		).catch(e => undefined /* already hanled */)
+		).catch((e) => undefined /* already hanled */)
 	}
 
 	connect(username: string) {
