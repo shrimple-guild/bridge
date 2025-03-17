@@ -65,8 +65,8 @@ export class Bestiary {
 	}
 
 	getByMob(mob: string) {
-		const mobs = this.data.flatMap(islandData => islandData.mobs)
-		const searchResult = fuzzysort.go(mob, mobs, { key: "name"})
+		const mobs = this.data.flatMap((islandData) => islandData.mobs)
+		const searchResult = fuzzysort.go(mob, mobs, { key: "name" })
 		return searchResult.at(0)?.obj
 	}
 }
