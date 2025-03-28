@@ -2,7 +2,6 @@ import { HypixelAPI } from "../api/HypixelAPI.js"
 import { Logger } from "../utils/Logger.js"
 
 import { config } from "../utils/config.js"
-import itemNames from "../data/itemNames.json" assert { type: "json" }
 import { Database } from "../database/database.js"
 import { migrations } from "../database/migrations.js"
 import { getGuildRank, getGuildRequirementResults } from "../discord/GuildReqs.js"
@@ -11,7 +10,7 @@ const { apiKey, prefix } = config.bridge
 const database = await Database.create("./src/database", migrations)
 
 const testAPI = new HypixelAPI(apiKey, database, Logger.category("HypixelAPI"))
-await testAPI.init(itemNames)
+await testAPI.init()
 
 const uuid = await testAPI.mojang.fetchUuid("lordjawbus")
 const profiles = await testAPI.fetchProfiles(uuid)
