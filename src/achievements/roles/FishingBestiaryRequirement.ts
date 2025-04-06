@@ -50,7 +50,20 @@ const requiredMobs = [
 	"nutcracker",
 	"reindrake",
 	"yeti",
-	"mithril grubber"
+	"mithril grubber",
+	"fried chicken",  
+	"fireproof witch",
+	"fiery scuttler",  
+	"ragnarok",  
+	"trash gobbler",  
+	"dumpster diver",  
+	"banshee",  
+	"snapping turtle",  
+	"bayou sludge",  
+	"alligator",  
+	"titanoboa",  
+	"blue ringed octopus",  
+	"wiki tiki"
 ]
 
 export class FishingBestiaryRequirement implements Requirement {

@@ -62,9 +62,13 @@ class ElectionCommandHelper {
 			this.year
 		)
 		const currentMayor = this.mayorNameWithPerks(electionData.mayor)
-		const currentMinister = this.mayorNameWithPerks(electionData.mayor.minister)
 
-		const currentSummary = `Current: ${currentMayor} + ${currentMinister}`
+		let currentSummary = `Current: ${currentMayor}`
+
+		if (electionData.mayor.minister) {
+			const currentMinister = this.mayorNameWithPerks(electionData.mayor.minister)
+			currentSummary += ` + ${currentMinister}`
+		}
 
 		const candidates = electionData.current?.candidates || []
 		const sortedCandidates = candidates.sort((a, b) => (b.votes || 0) - (a.votes || 0))

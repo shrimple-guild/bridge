@@ -1,0 +1,113 @@
+{
+	"success": true,
+	"lastUpdated": 1742521676296,
+	"mayor": {
+		"key": "shady",
+		"name": "Scorpius",
+		"perks": [
+			{
+				"name": "Bribe",
+				"description": "If Scorpius wins and you voted for him, Mayor Scorpius will offer you coins as a token of gratitude."
+			},
+			{
+				"name": "Darker Auctions",
+				"description": "Scorpius will intrude in Dark Auctions, increasing the amount of rounds to 7 and offering special items."
+			}
+		],
+		"election": {
+			"year": 408,
+			"candidates": [
+				{
+					"key": "fishing",
+					"name": "Marina",
+					"perks": [
+						{
+							"name": "Luck of the Sea 2.0",
+							"description": "Gain §315α Sea Creature Chance§7.",
+							"minister": true
+						}
+					],
+					"votes": 35518
+				},
+				{
+					"key": "farming",
+					"name": "Finnegan",
+					"perks": [
+						{
+							"name": "GOATed",
+							"description": "§eJacob\u0027s Farming Contest §7brackets include up to §a10% §7more players each.",
+							"minister": false
+						},
+						{
+							"name": "Pelt-pocalypse",
+							"description": "Obtain §a1.5x §7more §5pelts §7from §aTrevor §7in the §eMushroom Desert§7, hunt a new trapper mob, and purchase items from a new trapper shop.",
+							"minister": true
+						},
+						{
+							"name": "Blooming Business",
+							"description": "All Garden Visitors reward §aFine Flour§7 and §c+10% Copper §7for accepting offers. Invites §a5 §7unique visitors to your §aGarden §7and makes higher rarity visitors §a20% §7more likely to show up.",
+							"minister": false
+						}
+					],
+					"votes": 45699
+				},
+				{
+					"key": "mining",
+					"name": "Cole",
+					"perks": [
+						{
+							"name": "Prospection",
+							"description": "Mining minions work §a25% §7faster.",
+							"minister": false
+						},
+						{
+							"name": "Mining XP Buff",
+							"description": "Get §3+60☯ Mining Wisdom §7on public islands.",
+							"minister": true
+						},
+						{
+							"name": "Molten Forge",
+							"description": "Decrease the time it takes to §6forge §7items by §d25%§7.",
+							"minister": false
+						}
+					],
+					"votes": 59828
+				},
+				{
+					"key": "slayer",
+					"name": "Aatrox",
+					"perks": [
+						{
+							"name": "Slayer XP Buff",
+							"description": "Earn §d25% §7more Slayer XP.",
+							"minister": false
+						},
+						{
+							"name": "Pathfinder",
+							"description": "Gain rare drops §d20% §7more often.",
+							"minister": true
+						}
+					],
+					"votes": 68625
+				},
+				{
+					"key": "shady",
+					"name": "Scorpius",
+					"perks": [
+						{
+							"name": "Bribe",
+							"description": "If Scorpius wins and you voted for him, Mayor Scorpius will offer you coins as a token of gratitude.",
+							"minister": false
+						},
+						{
+							"name": "Darker Auctions",
+							"description": "Scorpius will intrude in Dark Auctions, increasing the amount of rounds to 7 and offering special items.",
+							"minister": false
+						}
+					],
+					"votes": 1040840
+				}
+			]
+		}
+	}
+}
