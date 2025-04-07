@@ -46,7 +46,7 @@ export class MojangAPI {
 
 		// Update the cached UUID if it is older than a week
 		// fixes issue if the username is now used by another account
-		if (Date.now() - data[0].lastUpdated > ONE_WEEK_MS) {
+		if (cachedUuid && Date.now() - data[0].lastUpdated > ONE_WEEK_MS) {
 			this.deleteName.run(lower)
 			cachedUuid = undefined
 		}
