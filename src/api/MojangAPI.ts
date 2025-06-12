@@ -79,7 +79,7 @@ export class MojangAPI {
 	}
 
 	private async fetchUuidFromAPI(username: string): Promise<string> {
-		const url = new URL(`https://api.mojang.com/users/profiles/minecraft/${username}`)
+		const url = new URL(`https://api.minecraftservices.com/minecraft/profile/lookup/name/${username}`)
 		const mojangResponse = await fetch(url)
 		if (mojangResponse.status == 200) return (await mojangResponse.json()).id as string
 		if (mojangResponse.ok) throw new Error(`Invalid username.`)
