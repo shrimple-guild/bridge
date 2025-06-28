@@ -6,6 +6,12 @@ import { deromanize as deromanization } from "romans"
 
 let emojiPattern = emojiRegex()
 
+export const ONE_HOUR_MS = 60 * 60 * 1000
+export const ONE_DAY_MS = 24 * ONE_HOUR_MS
+export const ONE_WEEK_MS = 7 * ONE_DAY_MS
+export const ONE_MONTH_MS = 30 * ONE_DAY_MS
+export const ONE_YEAR_MS = 365 * ONE_DAY_MS
+
 export function formatNumber(num: number, decimals: number, abbreviate: boolean) {
 	const formatter = Intl.NumberFormat("us-EN", {
 		maximumFractionDigits: decimals,

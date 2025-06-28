@@ -26,7 +26,7 @@ type Mayor = {
 	key: string
 	name: string
 	perks: Perk[]
-	minister: Minister
+	minister?: Minister
 	election: Election
 }
 

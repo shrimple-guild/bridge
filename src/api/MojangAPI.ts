@@ -1,5 +1,6 @@
 import { Statement } from "better-sqlite3"
 import { Database } from "../database/database"
+import { ONE_WEEK_MS } from "../utils/utils.js"
 
 type UUIDResponse = {
 	id: string
@@ -31,14 +32,25 @@ export class MojangAPI {
 
 	async fetchUuid(username: string) {
 		const lower = username.toLowerCase()
+
 		const data = this.selectUuid.all(lower) as UUIDResponse[]
+
 		let cachedUuid: string | undefined
+
 		if (data.length > 1) {
 			this.deleteName.run()
 			cachedUuid = undefined
 		} else {
 			cachedUuid = data[0]?.id
 		}
+
+		// Update the cached UUID if it is older than a week
+		// fixes issue if the username is now used by another account
+		if (cachedUuid && Date.now() - data[0].lastUpdated > ONE_WEEK_MS) {
+			this.deleteName.run(lower)
+			cachedUuid = undefined
+		}
+
 		try {
 			if (!cachedUuid) {
 				const uuid = await this.fetchUuidFromAPI(lower)
@@ -53,9 +65,11 @@ export class MojangAPI {
 			console.error(`Failed to get UUID from Mojang API for ${username}`)
 			console.error(e)
 		}
+
 		if (!cachedUuid) {
 			throw new Error("Failed to get UUID from API, and no cached UUID was found.")
 		}
+
 		return cachedUuid
 	}
 
@@ -65,7 +79,7 @@ export class MojangAPI {
 	}
 
 	private async fetchUuidFromAPI(username: string): Promise<string> {
-		const url = new URL(`https://api.mojang.com/users/profiles/minecraft/${username}`)
+		const url = new URL(`https://api.minecraftservices.com/minecraft/profile/lookup/name/${username}`)
 		const mojangResponse = await fetch(url)
 		if (mojangResponse.status == 200) return (await mojangResponse.json()).id as string
 		if (mojangResponse.ok) throw new Error(`Invalid username.`)
