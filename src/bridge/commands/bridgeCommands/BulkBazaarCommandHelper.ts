@@ -27,9 +27,10 @@ async function calculate(marketApi: MarketApi, mode: "instaBuy" | "instaSell", a
 	const { quantity, value } = market
 	const average = value / quantity
 	const action = isBuying ? "spent from buying" : "earned from selling"
+	const failAction = isBuying ? "buy" : "sell"
 	let output = `Total ${action} ${quantity} ${info.name}: ${format(value)} coins, average price per unit: ${format(average)} coins`
 	if (Number.isFinite(requestedQuantity) && quantity < requestedQuantity) {
-		output += `, could not sell ${requestedQuantity - quantity} items`
+		output += `, could not ${failAction} ${requestedQuantity - quantity} items`
 	}
 	return output
 }
