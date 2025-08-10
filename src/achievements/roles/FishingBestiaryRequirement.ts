@@ -19,7 +19,7 @@ const requiredMobs = [
 	"sea walker",
 	"sea witch",
 	"squid",
-	"sea emperor",
+	"loch emperor",
 	"water hydra",
 	"water worm",
 	"fire eel",
@@ -63,7 +63,11 @@ const requiredMobs = [
 	"alligator",  
 	"titanoboa",  
 	"blue ringed octopus",  
-	"wiki tiki"
+	"wiki tiki",
+	"tadgang",
+	"ent",
+	"stridersurfer"
+	"bogged"
 ]
 
 export class FishingBestiaryRequirement implements Requirement {
