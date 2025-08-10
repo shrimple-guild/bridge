@@ -1,13 +1,11 @@
 import { Database } from "../database/database.js"
 import { LoggerCategory } from "../utils/Logger.js"
-import { Bazaar } from "./Bazaar.js"
 import { CollectionCategory } from "./CollectionTypes.js"
 import { FarmingContests } from "./FarmingContests.js"
 import { HypixelAPIError } from "./HypixelAPIError.js"
 import { HypixelGuildMember } from "./HypixelGuildMember.js"
 import { HypixelPlayer } from "./HypixelPlayer.js"
 import { MojangAPI } from "./MojangAPI.js"
-import { SkyblockItems, SpecifiedNames } from "./SkyblockItems.js"
 import { SkyblockProfiles } from "./SkyblockProfiles.js"
 
 const maxRequestTime = 3
@@ -15,7 +13,6 @@ const maxRequestTime = 3
 export class HypixelAPI {
 	readonly mojang: MojangAPI
 	contests?: FarmingContests
-	bazaar?: Bazaar
 	collections?: CollectionCategory[]
 
 	constructor(
@@ -26,9 +23,7 @@ export class HypixelAPI {
 		this.mojang = new MojangAPI(database)
 	}
 
-	async init(specifiedNames?: SpecifiedNames) {
-		const items = await SkyblockItems.create(this, specifiedNames)
-		this.bazaar = new Bazaar(this, items, this.logger)
+	async init() {
 		this.contests = await FarmingContests.create(this.logger)
 		this.collections = await this.fetchCollections()
 		this.logger.info("Hypixel API initialized.")
