@@ -67,7 +67,8 @@ const requiredMobs = [
 	"tadgang",
 	"ent",
 	"stridersurfer"
-	"bogged"
+	"bogged",
+	"wetwing"
 ]
 
 export class FishingBestiaryRequirement implements Requirement {
