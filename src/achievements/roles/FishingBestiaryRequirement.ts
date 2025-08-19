@@ -66,7 +66,7 @@ const requiredMobs = [
 	"wiki tiki",
 	"tadgang",
 	"ent",
-	"stridersurfer"
+	"stridersurfer",
 	"bogged",
 	"wetwing"
 ]
