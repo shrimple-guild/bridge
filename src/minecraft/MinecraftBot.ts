@@ -1,6 +1,6 @@
 import mineflayer from "mineflayer"
 import { Bridge } from "../bridge/Bridge.js"
-import { sleep, stripColorCodes } from "../utils/utils.js"
+import { MessageSource, sleep } from "../utils/utils.js"
 import { PatternManager } from "./PatternManager.js"
 import { LoggerCategory } from "../utils/Logger.js"
 import { config } from "../utils/config.js"
@@ -23,6 +23,7 @@ export class MinecraftBot {
 		interval: this.chatDelay,
 		limit: 1
 	})
+	public lastSource: MessageSource | undefined
 
 	constructor(
 		readonly username: string,
@@ -97,8 +98,9 @@ export class MinecraftBot {
 		return bot
 	}
 
-	async sendToBridge(username: string, content: string, colorAlias?: string, guildRank?: string) {
+	async sendToBridge(source: MessageSource, username: string, content: string, colorAlias?: string, guildRank?: string) {
 		await this.bridge?.onMinecraftChat(
+			source,
 			username,
 			content,
 			this.isStaff(guildRank),
@@ -125,18 +127,20 @@ export class MinecraftBot {
 
 	onSpamProtection() {
 		if (Date.now() - this.spamProtectionLastSent < 120000) return
-		this.chat("⚠ Spam protection moment")
+		if (!this.lastSource) return
+		this.chat(this.lastSource, "⚠ Spam protection moment")
 		this.spamProtectionLastSent = Date.now()
 	}
 
-	chat(msg: string, priority?: number) {
+	chat(source: MessageSource, msg: string, priority?: number) {
+		this.lastSource = source;
 		for (const chunk of this.splitMsg(msg)) {
-			this.chatRaw(chunk, priority)
+			this.chatRaw(source, chunk, priority)
 		}
 	}
 
 	splitMsg(msg: string) {
-		const split = msg.match(/.{1,254}/g)
+		const split = msg.match(/.{1,251}/g)
 
 		if (!split) return []
 		if (split.length === 1) return split
@@ -154,10 +158,19 @@ export class MinecraftBot {
 		return split
 	}
 
-	chatRaw(msg: string, priority?: number) {
+	chatRaw(source: MessageSource, msg: string, priority?: number) {
 		this.throttle(() => {
 			try {
-				this.bot?.chat(msg)
+				let prefix;
+				switch (source) {
+					case MessageSource.Raw:
+						prefix = ""
+					case MessageSource.Guild:
+						prefix = "/gc "
+					case MessageSource.Staff:
+						prefix = "/oc "
+				}
+				this.bot?.chat(`${prefix}${msg}`)
 			} catch (e) {
 				console.error(e)
 			}
@@ -166,9 +179,9 @@ export class MinecraftBot {
 
 	async onEnd(reason: string) {
 		this.logger.warn(`Disconnected (reason: ${reason}).`)
-		if (this.status == "online") await this.bridge?.onBotLeave(reason)
+		if (this.status === "online") await this.bridge?.onBotLeave(reason)
 		this.status = "offline"
-		if (reason != "disconnect.quitting") {
+		if (reason !== "disconnect.quitting") {
 			const waitTime = Math.min(1000 * Math.pow(2, this.retries), 60 * 10 * 1000)
 			await sleep(waitTime)
 			try {
@@ -187,7 +200,7 @@ export class MinecraftBot {
 	}
 
 	async onSpawn() {
-		this.chatRaw("/limbo")
+		this.chatRaw(MessageSource.Raw, "/limbo")
 	}
 
 	isPrivileged(username: string) {

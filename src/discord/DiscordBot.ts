@@ -13,7 +13,7 @@ import { Bridge } from "../bridge/Bridge.js"
 import { simpleEmbed } from "../utils/discordUtils.js"
 import { LoggerCategory } from "../utils/Logger.js"
 import { imageLinkRegex } from "../utils/RegularExpressions.js"
-import { colorOf, cleanContent } from "../utils/utils.js"
+import { colorOf, cleanContent, MessageSource } from "../utils/utils.js"
 import { HypixelAPI } from "../api/HypixelAPI.js"
 import { config } from "../utils/config.js"
 //@ts-ignore
@@ -52,12 +52,12 @@ export class DiscordBot {
 
 		this.client.on(Events.MessageCreate, async (message) => {
 			if (!this.bridge || !message.inGuild() || message.author.bot) return
-			if (this.bridge.getDiscordChannelId() != message.channelId) return
-			let authorName
+			const messageSource = this.bridge.getDiscordMessageSource(message.channelId);
+			if (!messageSource) return
 			const author = message.member
 			if (!author) return
 
-			authorName = cleanContent(author.displayName ?? author.user.username ?? author.user.tag)
+			let authorName = cleanContent(author.displayName ?? author.user.username ?? author.user.tag)
 			if (!authorName) {
 				authorName = cleanContent(
 					message.author.displayName ?? message.author.username ?? message.author.tag
@@ -89,7 +89,7 @@ export class DiscordBot {
 			logger?.info(
 				`Discord chat: ${authorName}${replyAuthor ? ` to ${replyAuthor}` : ""}: ${content}`
 			)
-			await this.bridge.onDiscordChat(authorName, content, this.isStaff(author), replyAuthor)
+			await this.bridge.onDiscordChat(messageSource, authorName, content, this.isStaff(author), replyAuthor)
 		})
 	}
 
@@ -103,12 +103,13 @@ export class DiscordBot {
 	}
 
 	async sendGuildChatEmbed(
+		source: MessageSource,
 		username: string,
 		content: string,
 		colorValue?: string,
 		guildRank?: string
 	) {
-		const channel = this.getGuildBridgeChannel()
+		const channel = this.getGuildBridgeChannel(source)
 		if (!channel) return
 		const imageAttachment = content.match(imageLinkRegex)?.at(0)
 		const contentWithoutImage = content.replace(imageLinkRegex, "")
@@ -124,8 +125,8 @@ export class DiscordBot {
 			.catch((e) => this.logger?.error("Failed to send embed", e))
 	}
 
-	async sendSimpleEmbed(title: string, content: string, footer?: string) {
-		const channel = this.getGuildBridgeChannel()
+	async sendSimpleEmbed(source: MessageSource, title: string, content: string, footer?: string) {
+		const channel = this.getGuildBridgeChannel(source)
 		if (!channel) return
 		const embed = simpleEmbed(title, content, footer)
 		await channel
@@ -133,12 +134,13 @@ export class DiscordBot {
 			.catch((e) => this.logger?.error("Failed to send embed", e))
 	}
 
-	private getGuildBridgeChannel(): TextChannel | undefined {
+	private getGuildBridgeChannel(source: MessageSource): TextChannel | undefined {
 		if (!this.bridge) return undefined
-		return this.getTextChannel(this.bridge.getDiscordChannelId())
+		return this.getTextChannel(this.bridge.getDiscordChannelId(source))
 	}
 
-	private getTextChannel(channelId: string): TextChannel | undefined {
+	private getTextChannel(channelId: string | undefined): TextChannel | undefined {
+		if (!channelId) return undefined // staff channel not configured
 		const channel = this.client.channels.cache.get(channelId)
 		return channel?.type == ChannelType.GuildText ? channel : undefined
 	}

@@ -1,7 +1,7 @@
 import { SimpleCommandManager } from "./commands/SimpleCommandManager.js"
 import { DiscordBot } from "../discord/DiscordBot.js"
 import { MinecraftBot } from "../minecraft/MinecraftBot.js"
-import { sleep } from "../utils/utils.js"
+import { MessageSource, sleep } from "../utils/utils.js"
 import { LoggerCategory } from "../utils/Logger.js"
 
 export class Bridge {
@@ -10,18 +10,26 @@ export class Bridge {
 		private minecraft: MinecraftBot,
 		private commandManager: SimpleCommandManager,
 		private logger: LoggerCategory,
-		private discordChannelId: string
+		private discordChannelId: string,
+		private officerDiscordChannelId: string
 	) {
 		minecraft.bridge = this
 		discord.bridge = this
 		commandManager.addBridgeCommands(this)
 	}
 
-	getDiscordChannelId() {
-		return this.discordChannelId
+	getDiscordChannelId(source: MessageSource) {
+		return source === MessageSource.Staff ? this.officerDiscordChannelId : this.discordChannelId
+	}
+
+	getDiscordMessageSource(channelId: string) {
+		if (channelId === this.officerDiscordChannelId) return MessageSource.Staff
+		else if (channelId === this.discordChannelId) return MessageSource.Guild
+		return undefined
 	}
 
 	async onMinecraftChat(
+		source: MessageSource,
 		username: string,
 		content: string,
 		isStaff: boolean,
@@ -29,12 +37,13 @@ export class Bridge {
 		guildRank?: string
 	) {
 		await Promise.all([
-			this.discord.sendGuildChatEmbed(username, content, colorAlias, guildRank),
-			this.handleCommand(content, isStaff, false, username)
+			this.discord.sendGuildChatEmbed(source, username, content, colorAlias, guildRank),
+			this.handleCommand(source, content, isStaff, false, username)
 		])
 	}
 
 	async onDiscordChat(
+		source: MessageSource,
 		author: string,
 		content: string,
 		isStaff: boolean,
@@ -43,30 +52,31 @@ export class Bridge {
 		const replyString = replyAuthor ? ` [to] ${replyAuthor}` : ""
 		const message = `${author}${replyString}: ${content}`
 		await Promise.all([
-			this.minecraft.chat(message),
-			this.handleCommand(content, isStaff, true)
+			this.minecraft.chat(source, message),
+			this.handleCommand(source, content, isStaff, true)
 		])
 	}
 
-	async handleCommand(content: string, isStaff: boolean, isDiscord: boolean, username?: string) {
+	async handleCommand(source: MessageSource, content: string, isStaff: boolean, isDiscord: boolean, username?: string) {
 		const response = await this.commandManager
 			.execute(content, isStaff, isDiscord, username)
 			.catch((e) => `⚠ ${e}`)
 
 		if (response) {
-			if (response.startsWith("Pong!")) this.minecraft.chat(`/gc ${response}`)
-			else await this.chatAsBot(response)
+			if (response.startsWith("Pong!")) this.minecraft.chat(source, response)
+			else await this.chatAsBot(source, response)
 		}
 	}
 
-	async chatMinecraftRaw(content: string, priority?: number) {
-		this.minecraft.chatRaw(content, priority)
+	async chatMinecraftRaw(source: MessageSource, content: string, priority?: number) {
+		this.minecraft.chatRaw(source, content, priority)
 	}
 
-	async chatAsBot(content: string, priority?: number) {
+	async chatAsBot(source: MessageSource, content: string, priority?: number) {
 		await Promise.all([
-			this.minecraft.chat(content, priority),
+			this.minecraft.chat(source, content, priority),
 			this.discord.sendGuildChatEmbed(
+				source,
 				this.minecraft.username,
 				content?.replace(/<@[^>]+>$/g, "")?.trim(),
 				"BOT"
@@ -75,15 +85,15 @@ export class Bridge {
 	}
 
 	async onMinecraftJoinLeave(username: string, action: "joined" | "left") {
-		await this.discord.sendGuildChatEmbed(username, `**${action}.**`, action.toUpperCase())
+		await this.discord.sendGuildChatEmbed(MessageSource.Guild, username, `**${action}.**`, action.toUpperCase())
 	}
 
 	async onBotLeave(reason: string) {
-		await this.discord.sendSimpleEmbed(this.minecraft.username, "❌ Bot offline.", reason)
+		await this.discord.sendSimpleEmbed(MessageSource.Guild, this.minecraft.username, "❌ Bot offline.", reason)
 	}
 
 	async onBotJoin() {
-		await this.discord.sendSimpleEmbed(this.minecraft.username, "✅ Bot online.")
+		await this.discord.sendSimpleEmbed(MessageSource.Guild, this.minecraft.username, "✅ Bot online.")
 	}
 
 	async quit() {

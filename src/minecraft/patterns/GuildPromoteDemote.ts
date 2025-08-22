@@ -1,5 +1,6 @@
 import { Pattern } from "./Pattern"
 import { config } from "../../utils/config.js"
+import { MessageSource } from "../../utils/utils"
 
 export const guildPromoteDemote: Pattern = {
 	name: "guildPromoteDemote",
@@ -8,6 +9,7 @@ export const guildPromoteDemote: Pattern = {
 	execute: async (bot, groups) => {
 		const promoted = groups.action == "promoted"
 		await bot.sendToBridge(
+			MessageSource.Guild,
 			config.minecraft.username,
 			`**${groups.name} was ${groups.action} to ${groups.final}!**`,
 			promoted ? "JOINED" : "LEFT"
