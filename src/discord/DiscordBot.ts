@@ -53,6 +53,7 @@ export class DiscordBot {
 		this.client.on(Events.MessageCreate, async (message) => {
 			if (!this.bridge || !message.inGuild() || message.author.bot) return
 			const messageSource = this.bridge.getDiscordMessageSource(message.channelId);
+			logger?.debug(`Message source for channel ID ${message.channelId}: ${messageSource}`);
 			if (!messageSource) return
 			const author = message.member
 			if (!author) return

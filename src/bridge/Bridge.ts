@@ -23,8 +23,6 @@ export class Bridge {
 	}
 
 	getDiscordMessageSource(channelId: string) {
-		this.logger.debug(`Getting message source for channel ID: ${channelId}`)
-		this.logger.debug(`Discord channel ID: ${this.discordChannelId}, Officer channel ID: ${this.officerDiscordChannelId}`)
 		if (channelId === this.officerDiscordChannelId) return MessageSource.Staff
 		else if (channelId === this.discordChannelId) return MessageSource.Guild
 		return undefined
