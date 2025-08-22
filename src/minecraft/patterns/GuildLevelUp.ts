@@ -1,6 +1,6 @@
 import { Pattern } from "./Pattern"
 import { config } from "../../utils/config.js"
-import { MessageSource } from "../../utils/utils"
+import { MessageSource } from "../../utils/utils.js"
 
 export const guildLevelUp: Pattern = {
 	name: "guildLevelUp",

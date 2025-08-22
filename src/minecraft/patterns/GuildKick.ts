@@ -1,4 +1,4 @@
-import { MessageSource } from "../../utils/utils"
+import { MessageSource } from "../../utils/utils.js"
 import { Pattern } from "./Pattern"
 
 export const guildKick: Pattern = {
