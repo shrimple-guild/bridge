@@ -54,7 +54,7 @@ export class DiscordBot {
 			if (!this.bridge || !message.inGuild() || message.author.bot) return
 			const messageSource = this.bridge.getDiscordMessageSource(message.channelId);
 			logger?.debug(`Message source for channel ID ${message.channelId}: ${messageSource}`);
-			if (!messageSource) return
+			if (messageSource === undefined) return
 			const author = message.member
 			if (!author) return
 
