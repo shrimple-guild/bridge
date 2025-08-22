@@ -128,8 +128,7 @@ export class MinecraftBot {
 	onSpamProtection() {
 		const time = Date.now() - this.spamProtectionLastSent;
 		if (time < 120000) return
-		this.logger.debug(`Spam protection triggered, lastSource: ${this.lastSource}, time since last ${time}`)
-		if (!this.lastSource) return
+		if (this.lastSource === undefined) return
 		this.chat(this.lastSource, "⚠ Spam protection moment")
 		this.spamProtectionLastSent = Date.now()
 	}
