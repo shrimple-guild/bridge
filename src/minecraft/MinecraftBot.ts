@@ -75,7 +75,7 @@ export class MinecraftBot {
 					client.emit("connect")
 				}
 			}
-		).catch(e => undefined /* already hanled */)
+		).catch(e => undefined /* already handled */)
 	}
 
 	connect(username: string) {
@@ -126,7 +126,9 @@ export class MinecraftBot {
 	}
 
 	onSpamProtection() {
-		if (Date.now() - this.spamProtectionLastSent < 120000) return
+		const time = Date.now() - this.spamProtectionLastSent;
+		if (time < 120000) return
+		this.logger.debug(`Spam protection triggered, lastSource: ${this.lastSource}, time since last ${time}`)
 		if (!this.lastSource) return
 		this.chat(this.lastSource, "⚠ Spam protection moment")
 		this.spamProtectionLastSent = Date.now()
