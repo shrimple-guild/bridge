@@ -9,6 +9,7 @@ export const guildChat: Pattern = {
 		if (groups.username === bot.username) {
 			if (!groups.content.startsWith("Pong!")) return
 		}
+		console.log(`|${groups.source}|`)
 		const messageSource = groups.source === "Guild" ? MessageSource.Guild : MessageSource.Staff
 		await bot.sendToBridge(
 			messageSource,

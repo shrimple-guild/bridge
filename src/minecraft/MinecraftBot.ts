@@ -1,6 +1,6 @@
 import mineflayer from "mineflayer"
 import { Bridge } from "../bridge/Bridge.js"
-import { MessageSource, sleep } from "../utils/utils.js"
+import { getPrefix, MessageSource, sleep } from "../utils/utils.js"
 import { PatternManager } from "./PatternManager.js"
 import { LoggerCategory } from "../utils/Logger.js"
 import { config } from "../utils/config.js"
@@ -161,16 +161,7 @@ export class MinecraftBot {
 	chatRaw(source: MessageSource, msg: string, priority?: number) {
 		this.throttle(() => {
 			try {
-				let prefix;
-				switch (source) {
-					case MessageSource.Raw:
-						prefix = ""
-					case MessageSource.Guild:
-						prefix = "/gc "
-					case MessageSource.Staff:
-						prefix = "/oc "
-				}
-				this.bot?.chat(`${prefix}${msg}`)
+				this.bot?.chat(`${getPrefix(source)}${msg}`)
 			} catch (e) {
 				console.error(e)
 			}
