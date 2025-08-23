@@ -19,8 +19,8 @@ export class Bridge {
 	}
 
 	getDiscordChannelId(source: MessageSource) {
-		if (source === MessageSource.Raw && this.minecraft.lastSource !== undefined) {
-			source = this.minecraft.lastSource
+		if (source === MessageSource.Raw) {
+			source = this.minecraft.lastSource ?? source
 		}
 		return source === MessageSource.Staff ? this.officerDiscordChannelId : this.discordChannelId
 	}
