@@ -1,3 +1,4 @@
+import { MessageSource } from "../../../utils/utils.js"
 import { Bridge } from "../../Bridge.js"
 import { SimpleCommand } from "./Command.js"
 
@@ -16,9 +17,9 @@ export class BoopCommand extends SimpleCommand {
 
 		const boop = args[0]
 		if (!boop) {
-			this.bridge.chatAsBot("/boop demonhunter990")
+			this.bridge.chatAsBot(MessageSource.Raw, "/boop demonhunter990")
 		} else {
-			this.bridge.chatAsBot(`/boop ${boop}`)
+			this.bridge.chatAsBot(MessageSource.Raw, `/boop ${boop}`)
 		}
 		this.lastBoop = Date.now()
 	}

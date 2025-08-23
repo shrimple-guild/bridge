@@ -126,3 +126,20 @@ export function stripColorCodes(str: string) {
 export function antiSpamProtString() {
 	return `<@${Math.random().toString(36).substring(2)}>`
 }
+
+export enum MessageSource {
+	Guild,
+	Staff,
+	Raw
+}
+
+export function getPrefix(source: MessageSource) {
+	switch (source) {
+		case MessageSource.Raw:
+			return "";
+		case MessageSource.Guild:
+			return "/gc ";
+		case MessageSource.Staff:
+			return "/oc ";
+	}
+}

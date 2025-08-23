@@ -20,6 +20,7 @@ type Config = {
 		client: string
 		guild: string
 		channel: string
+		officerChannel: string
 		shutdownWebhook: string
 		loggerWebhook: string
 		verification: {

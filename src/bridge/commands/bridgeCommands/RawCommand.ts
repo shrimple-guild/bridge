@@ -1,3 +1,4 @@
+import { MessageSource } from "../../../utils/utils.js"
 import { Bridge } from "../../Bridge.js"
 import { SimpleCommand } from "./Command.js"
 
@@ -14,6 +15,6 @@ export class RawCommand extends SimpleCommand {
 		if (args.length === 0) this.throwUsageError()
 		if (!isStaff) this.error("No permission")
 		const message = args.join(" ")
-		await this.bridge.chatAsBot(message)
+		await this.bridge.chatAsBot(MessageSource.Raw, message)
 	}
 }
