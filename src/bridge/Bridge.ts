@@ -7,7 +7,7 @@ import { LoggerCategory } from "../utils/Logger.js"
 export class Bridge {
 	constructor(
 		public discord: DiscordBot,
-		private minecraft: MinecraftBot,
+		public minecraft: MinecraftBot,
 		private commandManager: SimpleCommandManager,
 		private logger: LoggerCategory,
 		private discordChannelId: string,
