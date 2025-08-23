@@ -134,7 +134,9 @@ export class MinecraftBot {
 	}
 
 	chat(source: MessageSource, msg: string, priority?: number) {
-		this.lastSource = source;
+		if (source !== MessageSource.Raw) {
+			this.lastSource = source;
+		}
 		for (const chunk of this.splitMsg(msg)) {
 			this.chatRaw(source, chunk, priority)
 		}

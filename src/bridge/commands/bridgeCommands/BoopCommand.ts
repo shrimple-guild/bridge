@@ -16,13 +16,11 @@ export class BoopCommand extends SimpleCommand {
 		if (!this.bridge) this.error("Bridge not set.")
 
 		const boop = args[0]
-		const lastSource = this.bridge.minecraft.lastSource // workaround to keep correct source
 		if (!boop) {
 			this.bridge.chatAsBot(MessageSource.Raw, "/boop demonhunter990")
 		} else {
 			this.bridge.chatAsBot(MessageSource.Raw, `/boop ${boop}`)
 		}
-		this.bridge.minecraft.lastSource = lastSource
 		this.lastBoop = Date.now()
 	}
 }
