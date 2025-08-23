@@ -8,7 +8,7 @@ export const privateMessageFailed: Pattern = {
 		if (!bot.lastSource) return
 		const content = `⚠ Could not send a private message to that player.`
 		bot.chat(bot.lastSource, `${content} ${antiSpamProtString()}`)
-		if (bot.lastSource) bot.sendToBridge(bot.lastSource, bot.username, content)
+		bot.sendToBridge(bot.lastSource, bot.username, content)
 	}
 }
 
@@ -19,7 +19,7 @@ export const privateMessageFailedOffline: Pattern = {
 		if (!bot.lastSource) return
 		const content = `⚠ Can't message an offline player.`
 		bot.chat(bot.lastSource, `${content} ${antiSpamProtString()}`)
-		if (bot.lastSource) bot.sendToBridge(bot.lastSource, bot.username, content)
+		bot.sendToBridge(bot.lastSource, bot.username, content)
 	}
 }
 
@@ -30,6 +30,6 @@ export const privateMessageFailedBlocked: Pattern = {
 		if (!bot.lastSource) return
 		const content = `⚠ This player has blocked me :(`
 		bot.chat(bot.lastSource, `${content} ${antiSpamProtString()}`)
-		if (bot.lastSource) bot.sendToBridge(bot.lastSource, bot.username, content)
+		bot.sendToBridge(bot.lastSource, bot.username, content)
 	}
 }
