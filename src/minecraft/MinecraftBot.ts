@@ -143,7 +143,7 @@ export class MinecraftBot {
 	}
 
 	splitMsg(msg: string) {
-		const split = msg.match(/.{1,251}/g)
+		const split = msg.match(/.{1,250}/g)
 
 		if (!split) return []
 		if (split.length === 1) return split
