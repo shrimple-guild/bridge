@@ -1,3 +1,4 @@
+import { MessageSource } from "../../../utils/utils.js"
 import { Bridge } from "../../Bridge.js"
 import { SimpleCommand } from "./Command.js"
 
@@ -60,7 +61,7 @@ class GListData {
 	async resetData(bridge: Bridge) {
 		gListData.clear()
 		gListData.listening = true
-		bridge.chatMinecraftRaw("/g list")
+		bridge.chatMinecraftRaw(MessageSource.Raw, "/g list")
 		await gListData.done()
 	}
 }
@@ -105,7 +106,7 @@ export class GListCommand extends SimpleCommand {
 		}
 
 		embedMessage += `Total Members: ${gListData.totalMembers}\nOnline Members: ${gListData.onlineMembers}`
-		this.bridge!.discord.sendSimpleEmbed("Guild List", embedMessage)
+		this.bridge!.discord.sendSimpleEmbed(MessageSource.Guild, "Guild List", embedMessage)
 		return "Sent guild list to bridge channel."
 	}
 }
@@ -144,7 +145,7 @@ export class GOnlineCommand extends SimpleCommand {
 
 		embedMessage += `Total Online Members: ${onlineMembers.length}`
 
-		this.bridge!.discord.sendSimpleEmbed("Guild Online", embedMessage)
+		this.bridge!.discord.sendSimpleEmbed(MessageSource.Guild, "Guild Online", embedMessage)
 		return "Sent online guild members to bridge channel."
 	}
 }

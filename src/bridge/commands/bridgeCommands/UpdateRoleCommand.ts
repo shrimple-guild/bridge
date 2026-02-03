@@ -3,7 +3,7 @@ import { Bridge } from "../../Bridge.js"
 import { HypixelAPI } from "../../../api/HypixelAPI.js"
 import { GuildRole, config } from "../../../utils/config.js"
 import { SkyblockProfile } from "../../../api/SkyblockProfile.js"
-import { formatNumber, sleep } from "../../../utils/utils.js"
+import { formatNumber, MessageSource, sleep } from "../../../utils/utils.js"
 import { HypixelGuildMember } from "../../../api/HypixelGuildMember.js"
 import { Logger } from "../../../utils/Logger.js"
 
@@ -78,7 +78,7 @@ export class UpdateRoleCommand extends SimpleCommand {
 		if (!config.guildRoles.find((role) => role.name == currentRole)) return
 
 		void logger.info(`Updating role for ${member.uuid} to ${role.name}.`)
-		await this.bridge!.chatMinecraftRaw(`/g setrank ${member.uuid} ${role.name}`)
+		await this.bridge!.chatMinecraftRaw(MessageSource.Raw, `/g setrank ${member.uuid} ${role.name}`)
 	}
 
 	private async update(username: string): Promise<string> {
@@ -122,7 +122,7 @@ export class UpdateRoleCommand extends SimpleCommand {
 		}
 
 		void logger.info(`Updating role for ${username} to ${role.name}.`)
-		await this.bridge!.chatMinecraftRaw(`/g setrank ${username} ${role.name}`)
+		await this.bridge!.chatMinecraftRaw(MessageSource.Raw, `/g setrank ${username} ${role.name}`)
 		return "Role updated!"
 	}
 

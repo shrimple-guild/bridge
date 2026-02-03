@@ -12,7 +12,7 @@ import exitHook from "async-exit-hook"
 import { Database } from "./database/database.js"
 import { migrations } from "./database/migrations.js"
 import { postDisconnectEmbed } from "./utils/discordUtils.js"
-import { sleep } from "./utils/utils.js"
+import { MessageSource, sleep } from "./utils/utils.js"
 import { GuildReqsCommand } from "./discord/commands/GuildReqsCommand.js"
 import { InteractionRegistry } from "./discord/interactions/InteractionRegistry.js"
 import { LinkService } from "./verify/LinkService.js"
@@ -93,7 +93,8 @@ const bridge = new Bridge(
 	minecraft,
 	bridgeCommandManager,
 	Logger.category("Bridge"),
-	config.discord.channel
+	config.discord.channel,
+	config.discord.officerChannel
 )
 
 const rl = readline.createInterface({
@@ -103,7 +104,7 @@ const rl = readline.createInterface({
 
 rl.on("line", async (input) => {
 	if (input != "quit") {
-		await bridge.chatAsBot(input)
+		await bridge.chatAsBot(MessageSource.Guild, input)
 	} else {
 		await bridge.quit()
 	}
@@ -111,7 +112,7 @@ rl.on("line", async (input) => {
 
 exitHook(async (cb) => {
 	await postDisconnectEmbed()
-	await bridge.chatAsBot("Process ended...")
+	await bridge.chatAsBot(MessageSource.Guild, "Process ended...")
 	await sleep(1000)
 	await bridge.quit()
 	await sleep(1000)

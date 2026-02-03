@@ -1,3 +1,4 @@
+import { MessageSource } from "../../utils/utils.js"
 import { Pattern } from "./Pattern"
 
 export const minecraftJoinLeave: Pattern = {
@@ -6,6 +7,7 @@ export const minecraftJoinLeave: Pattern = {
 	execute: async (bot, groups) => {
 		const online = groups.action === "joined"
 		await bot.sendToBridge(
+			MessageSource.Guild,
 			groups.username,
 			online ? "**joined.**" : "**left.**",
 			online ? "JOINED" : "LEFT"
