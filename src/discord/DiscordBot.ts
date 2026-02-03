@@ -16,8 +16,7 @@ import { imageLinkRegex } from "../utils/RegularExpressions.js"
 import { colorOf, cleanContent } from "../utils/utils.js"
 import { HypixelAPI } from "../api/HypixelAPI.js"
 import { config } from "../utils/config.js"
-//@ts-ignore
-import { STuF } from "stuf"
+import { encode } from "../utils/urlEncoding.js"
 import { InteractionRegistry } from "./interactions/InteractionRegistry.js"
 
 export class DiscordBot {
@@ -71,11 +70,11 @@ export class DiscordBot {
 
 			let content = cleanContent(message.cleanContent).replace(
 				this.urlRegex,
-				(url) => `[LINK](${STuF.encode(url)})`
+				(url) => `[LINK](${encode(url)})`
 			)
 
 			const attachments = message.attachments
-				.map((attachment) => `[LINK](${STuF.encode(attachment.url)})`)
+				.map((attachment) => `[LINK](${encode(attachment.url)})`)
 				?.join(" ")
 			if (attachments) {
 				content += ` ${attachments}`
