@@ -10,6 +10,7 @@
 		"client": "snowflake",
 		"guild": "snowflake",
 		"channel": "snowflake",
+		"officerChannel": "snowflake",
 		"shutdownWebhook": "snowflake",
 		"loggerWebhook": "snowflake",
 		"verification": {
