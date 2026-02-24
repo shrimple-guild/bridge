@@ -10,7 +10,8 @@ const skills = [
 	"enchanting",
 	"alchemy",
 	"runecrafting",
-	"carpentry"
+	"carpentry",
+	"hunting"
 ] as const
 
 type Skill = (typeof skills)[number]
@@ -30,6 +31,7 @@ export class Skills {
 	readonly alchemy?: Level
 	readonly carpentry?: Level
 	readonly runecrafting?: Level
+	readonly hunting?: Level
 
 	constructor(member: any) {
 		this.taming = buildSkyblockSkill("TAMING", member)
@@ -42,6 +44,7 @@ export class Skills {
 		this.alchemy = buildSkyblockSkill("ALCHEMY", member)
 		this.carpentry = buildSkyblockSkill("CARPENTRY", member)
 		this.runecrafting = buildSkyblockSkill("RUNECRAFTING", member)
+		this.hunting = buildSkyblockSkill("HUNTING", member)
 	}
 
 	get average() {
@@ -54,6 +57,7 @@ export class Skills {
 			this.fishing,
 			this.enchanting,
 			this.alchemy
+			this.hunting
 		]
 		return skills.reduce((prev, cur) => cur?.level ?? 0, 0) / skills.length
 	}
