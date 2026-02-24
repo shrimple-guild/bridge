@@ -56,7 +56,7 @@ export class Skills {
 			this.foraging,
 			this.fishing,
 			this.enchanting,
-			this.alchemy
+			this.alchemy,
 			this.hunting
 		]
 		return skills.reduce((prev, cur) => cur?.level ?? 0, 0) / skills.length
