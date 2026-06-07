@@ -17,12 +17,11 @@ export class SeenCommand extends SimpleCommand {
         if (!uuid) this.error(`Could not find a player with the name ${playerName}.`)
 
         const status = await this.hypixelAPI.fetchStatus(uuid)
-        const session = status.session
 
-        if (session?.online) {
-            const gameType = session.gameType || "unknown game"
-            const mode = session.mode || "unknown mode"
-            const map = session.map || ""
+        if (status?.online) {
+            const gameType = status.gameType || "unknown game"
+            const mode = status.mode || "unknown mode"
+            const map = status.map || ""
 
             if (gameType !== "SKYBLOCK") {
                 return `${playerName} is currently online in ${gameType}.`
