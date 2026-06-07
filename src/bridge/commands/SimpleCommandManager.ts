@@ -29,6 +29,7 @@ import { antiSpamProtString } from "../../utils/utils.js"
 import { BooCommand } from "./bridgeCommands/BooCommand.js"
 import { GListCommand, GOnlineCommand } from "./bridgeCommands/GuildStatusCommands.js"
 import { MarketApi } from "../../api/MarketApi.js"
+import { SeenCommand } from "./bridgeCommands/SeenCommand.js"
 
 export class SimpleCommandManager {
 	commands: SimpleCommand[]
@@ -58,7 +59,8 @@ export class SimpleCommandManager {
 			new InstasellPriceCalcCommand(marketApi),
 			new InstabuyPriceCalcCommand(marketApi),
 			new CollectionCommand(hypixelAPI),
-			new BestiaryCommand(hypixelAPI)
+			new BestiaryCommand(hypixelAPI),
+			new SeenCommand(hypixelAPI)
 		]
 	}
 
