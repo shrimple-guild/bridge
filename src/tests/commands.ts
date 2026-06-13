@@ -4,9 +4,9 @@ import { Logger } from "../utils/Logger.js"
 import readline from "readline"
 
 import { config } from "../utils/config.js"
-import itemNames from "../data/itemNames.json" assert { type: "json" }
 import { Database } from "../database/database.js"
 import { migrations } from "../database/migrations.js"
+import { MarketApi } from "../api/MarketApi.js"
 const { apiKey } = config.bridge
 
 const rl = readline.createInterface({
@@ -17,16 +17,11 @@ const rl = readline.createInterface({
 const database = await Database.create("./src/database", migrations)
 
 const testAPI = new HypixelAPI(apiKey, database, Logger.category("HypixelAPI"))
-await testAPI.init(itemNames)
+await testAPI.init()
 
-const commandManager = new SimpleCommandManager(testAPI)
+const marketApi = new MarketApi(config.marketApiUrl)
 
-const results = await Promise.all([
-	commandManager.execute("_bz grand", false, false),
-	commandManager.execute("_bz p jasper", false, false)
-])
-
-console.log(results)
+const commandManager = new SimpleCommandManager(testAPI, marketApi)
 
 rl.on("line", async (input) => {
 	console.log(await commandManager.execute(input, false, true))

@@ -10,6 +10,7 @@
 		"client": "snowflake",
 		"guild": "snowflake",
 		"channel": "snowflake",
+		"officerChannel": "snowflake",
 		"shutdownWebhook": "snowflake",
 		"loggerWebhook": "snowflake",
 		"verification": {
@@ -49,5 +50,6 @@
 		}
 	],
 	"linking": true,
-	"achievementRoles": true
+	"achievementRoles": true,
+	"marketApiUrl": "http://example-market-api.com"
 }

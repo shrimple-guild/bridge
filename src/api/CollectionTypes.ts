@@ -1,5 +1,5 @@
 export type UnlockedTierEntry = {
-	[key: string]: number[]
+	[key: string]: number
 }
 
 export type CollectionItemTier = {

@@ -28,18 +28,21 @@ import { BoopCommand } from "./bridgeCommands/BoopCommand.js"
 import { antiSpamProtString } from "../../utils/utils.js"
 import { BooCommand } from "./bridgeCommands/BooCommand.js"
 import { GListCommand, GOnlineCommand } from "./bridgeCommands/GuildStatusCommands.js"
+import { MarketApi } from "../../api/MarketApi.js"
+import { SeenCommand } from "./bridgeCommands/SeenCommand.js"
 
 export class SimpleCommandManager {
 	commands: SimpleCommand[]
 
 	constructor(
 		private hypixelAPI: HypixelAPI,
+		marketApi: MarketApi,
 		private logger?: LoggerCategory,
 		public prefix?: string
 	) {
 		this.commands = [
-			new AuctionCommand(),
-			new BazaarCommand(hypixelAPI),
+			new AuctionCommand(marketApi),
+			new BazaarCommand(marketApi),
 			new CataCommand(hypixelAPI),
 			new EightballCommand(),
 			new ElectionCommand(hypixelAPI),
@@ -53,10 +56,11 @@ export class SimpleCommandManager {
 			new ContestCommand(hypixelAPI),
 			new FarmingWeightCommand(hypixelAPI),
 			new FortuneCookieCommand(),
-			new InstasellPriceCalcCommand(hypixelAPI),
-			new InstabuyPriceCalcCommand(hypixelAPI),
+			new InstasellPriceCalcCommand(marketApi),
+			new InstabuyPriceCalcCommand(marketApi),
 			new CollectionCommand(hypixelAPI),
-			new BestiaryCommand(hypixelAPI)
+			new BestiaryCommand(hypixelAPI),
+			new SeenCommand(hypixelAPI)
 		]
 	}
 

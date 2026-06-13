@@ -20,6 +20,7 @@ type Config = {
 		client: string
 		guild: string
 		channel: string
+		officerChannel: string
 		shutdownWebhook: string
 		loggerWebhook: string
 		verification: {
@@ -52,6 +53,7 @@ type Config = {
 	}[]
 	linking?: boolean
 	achievementRoles?: boolean
+	marketApiUrl: string
 }
 
 export let config = JSON.parse(await fs.readFile("./src/config.json", "utf-8")) as Config
