@@ -13,6 +13,7 @@ import { InteractionRegistry } from "../discord/interactions/InteractionRegistry
 import { LinkButtonHandler } from "./interactions/LinkButtonHandler.js"
 import { LinkModalHandler } from "./interactions/LinkModalHandler.js"
 import { SetVerificationRolesCommand } from "./commands/SetVerificationRolesCommand.js"
+import { PlayerLookupCommand } from "./commands/PlayerLookupCommand.js"
 
 export class Verification {
 	private verificationService: VerificationService
@@ -33,7 +34,8 @@ export class Verification {
 			new SyncCommand(this),
 			new LinkCommand(this, hypixelAPI),
 			new SetLinkChannelCommand(this),
-			new SetVerificationRolesCommand(this)
+			new SetVerificationRolesCommand(this),
+			new PlayerLookupCommand(this, hypixelAPI)
 		)
 
 		interactionRegistry.register(
