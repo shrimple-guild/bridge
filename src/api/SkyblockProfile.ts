@@ -50,7 +50,11 @@ export class SkyblockProfile {
 		// TODO make sure an instance always exists (this may be undefined on old profiles)
 		this.bestiary = new Bestiary(this.memberRaw)
 
-		this.collections = new Collections(this.memberRaw, api, this.getMaxUnlockedTiers(raw.members))
+		this.collections = new Collections(
+			this.memberRaw,
+			api,
+			this.getMaxUnlockedTiers(raw.members)
+		)
 		this.farmingWeight = farmingWeight(raw, uuid)
 	}
 

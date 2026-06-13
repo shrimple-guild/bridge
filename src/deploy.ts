@@ -21,9 +21,7 @@ type Command = {
 	toJSON: () => RESTPostAPIChatInputApplicationCommandsJSONBody
 }
 
-const slashCommands: Command[] = [	
-	GuildReqsCommand.data,
-]
+const slashCommands: Command[] = [GuildReqsCommand.data]
 
 if (config.linking) {
 	slashCommands.push(

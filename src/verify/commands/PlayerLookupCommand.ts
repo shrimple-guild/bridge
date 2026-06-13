@@ -27,12 +27,9 @@ export class PlayerLookupCommand implements SlashCommand {
 				.setName("discord")
 				.setDescription("Look up by Discord user")
 				.addUserOption((option) =>
-					option
-						.setName("user")
-						.setDescription("Discord user")
-						.setRequired(true)
+					option.setName("user").setDescription("Discord user").setRequired(true)
 				)
-		);
+		)
 
 	constructor(
 		private verification: Verification,
@@ -52,7 +49,6 @@ export class PlayerLookupCommand implements SlashCommand {
 					await this.lookupDiscord(interaction)
 					break
 			}
-
 		} catch (e) {
 			if (e instanceof Error) {
 				await interaction.followUp({
@@ -66,7 +62,8 @@ export class PlayerLookupCommand implements SlashCommand {
 		const username = interaction.options.getString("username", true)
 		const uuid = await this.hypixelAPI.mojang.fetchUuid(username)
 		const discordId = await this.verification.getDiscord(interaction.guild, uuid)
-		if (discordId == null) throw new Error(`\`${username}\` is not linked to a Discord account.`)
+		if (discordId == null)
+			throw new Error(`\`${username}\` is not linked to a Discord account.`)
 
 		await interaction.followUp({
 			embeds: [
@@ -84,7 +81,7 @@ export class PlayerLookupCommand implements SlashCommand {
 		const uuid = this.verification.getMinecraft(interaction.guild, member.id)
 		if (uuid == null) throw new Error(`${member} is not linked to a Minecraft account.`)
 
-		const username = this.hypixelAPI.mojang.fetchUsername(uuid);
+		const username = this.hypixelAPI.mojang.fetchUsername(uuid)
 		await interaction.followUp({
 			embeds: [
 				statusEmbed(

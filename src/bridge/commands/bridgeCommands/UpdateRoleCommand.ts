@@ -78,7 +78,10 @@ export class UpdateRoleCommand extends SimpleCommand {
 		if (!config.guildRoles.find((role) => role.name == currentRole)) return
 
 		void logger.info(`Updating role for ${member.uuid} to ${role.name}.`)
-		await this.bridge!.chatMinecraftRaw(MessageSource.Raw, `/g setrank ${member.uuid} ${role.name}`)
+		await this.bridge!.chatMinecraftRaw(
+			MessageSource.Raw,
+			`/g setrank ${member.uuid} ${role.name}`
+		)
 	}
 
 	private async update(username: string): Promise<string> {
@@ -122,7 +125,10 @@ export class UpdateRoleCommand extends SimpleCommand {
 		}
 
 		void logger.info(`Updating role for ${username} to ${role.name}.`)
-		await this.bridge!.chatMinecraftRaw(MessageSource.Raw, `/g setrank ${username} ${role.name}`)
+		await this.bridge!.chatMinecraftRaw(
+			MessageSource.Raw,
+			`/g setrank ${username} ${role.name}`
+		)
 		return "Role updated!"
 	}
 

@@ -84,13 +84,13 @@ export class HypixelAPI {
 		return data as ElectionResponse
 	}
 
-    async fetchStatus(uuid: string): Promise<StatusResponse> {
-        const { data } = await this.fetchHypixel("/status", {
-            uuid: uuid,
-            key: this.apiKey
-        })
-        return data.session as StatusResponse
-    }
+	async fetchStatus(uuid: string): Promise<StatusResponse> {
+		const { data } = await this.fetchHypixel("/status", {
+			uuid: uuid,
+			key: this.apiKey
+		})
+		return data.session as StatusResponse
+	}
 
 	async fetchHypixel(
 		endpoint: string,

@@ -25,9 +25,7 @@ export class MojangAPI {
 			`SELECT id, nameLastUpdated AS lastUpdated FROM Players WHERE lower(name) = ?`
 		)
 
-		this.selectName = db.prepare(
-			`SELECT name, nameLastUpdated FROM Players WHERE id = ?`
-		)
+		this.selectName = db.prepare(`SELECT name, nameLastUpdated FROM Players WHERE id = ?`)
 
 		this.upsertName = db.prepare(`
      	 	INSERT INTO Players (id, name, nameLastUpdated)
@@ -43,12 +41,12 @@ export class MojangAPI {
 	async fetchUsername(uuid: string): Promise<string | undefined> {
 		const uuidTrimmed = uuid.replace("-", "").toLowerCase()
 
-		const cached = this.selectUuid.get(uuidTrimmed) as NameResponse | undefined;
+		const cached = this.selectUuid.get(uuidTrimmed) as NameResponse | undefined
 
 		if (cached?.name && Date.now() - cached?.lastUpdated < ONE_HOUR_MS) {
 			return cached.name
 		}
-		
+
 		try {
 			const username = await this.fetchUsernameFromApi(uuidTrimmed)
 			this.upsertName.run({
@@ -65,7 +63,6 @@ export class MojangAPI {
 		if (cached?.name) return cached.name
 		throw new Error("Failed to get username from API, and no cached value was found.")
 	}
-
 
 	async fetchUuid(username: string) {
 		const lower = username.toLowerCase()
@@ -116,7 +113,9 @@ export class MojangAPI {
 	}
 
 	private async fetchUuidFromAPI(username: string): Promise<string> {
-		const url = new URL(`https://api.minecraftservices.com/minecraft/profile/lookup/name/${username}`)
+		const url = new URL(
+			`https://api.minecraftservices.com/minecraft/profile/lookup/name/${username}`
+		)
 		const mojangResponse = await fetch(url)
 		if (mojangResponse.status == 200) return (await mojangResponse.json()).id as string
 		if (mojangResponse.ok) throw new Error(`Invalid username.`)

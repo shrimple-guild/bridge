@@ -1,6 +1,6 @@
 type StatusResponse = {
-    online: boolean,
-    gameType: string,
-    mode: string,
-    map: string
+	online: boolean
+	gameType: string
+	mode: string
+	map: string
 }
