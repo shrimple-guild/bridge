@@ -25,6 +25,7 @@ async function fetchData() {
 		"https://raw.githubusercontent.com/NotEnoughUpdates/NotEnoughUpdates-REPO/master/constants/bestiary.json"
 	).then((res) => res.json())
 	const jsonData = Object.values(data) as any[]
+	const bracketSets = jsonData.shift() // for now ignore this, as it is not used in the current implementation
 	const brackets = jsonData.shift() as { [key: string]: number[] }
 	const types = jsonData as TypeData[]
 	for (const type of types) {
