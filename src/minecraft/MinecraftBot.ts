@@ -88,7 +88,8 @@ export class MinecraftBot {
 			chatLengthLimit: 256,
 			auth: "microsoft",
 			version: "1.8.9",
-			checkTimeoutInterval: 10000
+			checkTimeoutInterval: 10000,
+			profilesFolder: "./auth-cache"
 		})
 		bot.on("message", (raw) => this.onChat(raw.toMotd(), raw.toString()))
 		bot.on("end", (reason) => this.onEnd(reason))
