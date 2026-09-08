@@ -1,6 +1,5 @@
 export class MarketApi {
 	private readonly url: URL
-
 	constructor(url: string) {
 		this.url = new URL(url)
 	}
@@ -29,6 +28,27 @@ export class MarketApi {
 		)
 	}
 
+	async getHarvestFeast(): Promise<MarketApiHarvestFeastResponse> {
+		const response = await fetch("https://api.elitebot.dev/harvest-feast/current")
+		if (!response.ok) {
+			throw new Error(`Harvest Feast API threw ${response.status}.`)
+		}
+		const raw = await response.json() as FeastApiResponse
+		
+		const knownTimestamps = Object.values(raw.next).filter((t): t is number => t !== null)
+		const soonest = knownTimestamps.length > 0 ? Math.min(...knownTimestamps) : null
+		const nextCrops = soonest !== null
+			? Object.entries(raw.next).filter(([, t]) => t === soonest).map(([crop]) => crop)
+			: Object.keys(raw.next)
+
+		return {
+			currentCrops: raw.current,
+			nextCrops,
+			nextStartTime: soonest,
+			isGrandFeast: raw.isGrandFeast,
+		}
+	}
+
 	private async fetchApi<T>(path: string, query: string): Promise<T> {
 		this.url.pathname = path
 		let response
@@ -45,6 +65,22 @@ export class MarketApi {
 			throw new Error(`Market API threw ${response.status}.`)
 		}
 	}
+}
+
+type FeastApiResponse = {
+	year: number
+	month: number
+	complete: boolean
+	current: string[]
+	next: Record<string, number | null>
+	isGrandFeast: boolean
+}
+
+export type MarketApiHarvestFeastResponse = {
+	currentCrops: string[]
+	nextCrops: string[]
+	nextStartTime: number | null 
+	isGrandFeast: boolean
 }
 
 export type MarketApiLowestBinResponse = {
