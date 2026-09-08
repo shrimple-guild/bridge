@@ -11,6 +11,7 @@ import { SyncCommand } from "./verify/commands/SyncCommand.js"
 import { UnlinkCommand } from "./verify/commands/UnlinkCommand.js"
 import { LinkCommand } from "./verify/commands/LinkCommand.js"
 import { SetLinkChannelCommand } from "./verify/commands/SetLinkChannelCommand.js"
+import { PlayerLookupCommand } from "./verify/commands/PlayerLookupCommand.js"
 import { GuildReqsCommand } from "./discord/commands/GuildReqsCommand.js"
 import { SetVerificationRolesCommand } from "./verify/commands/SetVerificationRolesCommand.js"
 import { AchievementSettingsCommand } from "./achievements/commands/AchievementSettingsCommand.js"
@@ -20,15 +21,19 @@ type Command = {
 	toJSON: () => RESTPostAPIChatInputApplicationCommandsJSONBody
 }
 
-const slashCommands: Command[] = [
-	ManualVerifyCommand.data,
-	LinkCommand.data,
-	UnlinkCommand.data,
-	SyncCommand.data,
-	SetLinkChannelCommand.data,
-	GuildReqsCommand.data,
-	SetVerificationRolesCommand.data
-]
+const slashCommands: Command[] = [GuildReqsCommand.data]
+
+if (config.linking) {
+	slashCommands.push(
+		ManualVerifyCommand.data,
+		LinkCommand.data,
+		UnlinkCommand.data,
+		SyncCommand.data,
+		SetLinkChannelCommand.data,
+		SetVerificationRolesCommand.data,
+		PlayerLookupCommand.data
+	)
+}
 
 if (config.achievementRoles) {
 	slashCommands.push(AchievementSettingsCommand.data, AchievementsCommand.data)

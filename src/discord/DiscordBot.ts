@@ -51,13 +51,15 @@ export class DiscordBot {
 
 		this.client.on(Events.MessageCreate, async (message) => {
 			if (!this.bridge || !message.inGuild() || message.author.bot) return
-			const messageSource = this.bridge.getDiscordMessageSource(message.channelId);
-			logger?.debug(`Message source for channel ID ${message.channelId}: ${messageSource}`);
+			const messageSource = this.bridge.getDiscordMessageSource(message.channelId)
+			logger?.debug(`Message source for channel ID ${message.channelId}: ${messageSource}`)
 			if (messageSource === undefined) return
 			const author = message.member
 			if (!author) return
 
-			let authorName = cleanContent(author.displayName ?? author.user.username ?? author.user.tag)
+			let authorName = cleanContent(
+				author.displayName ?? author.user.username ?? author.user.tag
+			)
 			if (!authorName) {
 				authorName = cleanContent(
 					message.author.displayName ?? message.author.username ?? message.author.tag
@@ -89,7 +91,13 @@ export class DiscordBot {
 			logger?.info(
 				`Discord chat: ${authorName}${replyAuthor ? ` to ${replyAuthor}` : ""}: ${content}`
 			)
-			await this.bridge.onDiscordChat(messageSource, authorName, content, this.isStaff(author), replyAuthor)
+			await this.bridge.onDiscordChat(
+				messageSource,
+				authorName,
+				content,
+				this.isStaff(author),
+				replyAuthor
+			)
 		})
 	}
 

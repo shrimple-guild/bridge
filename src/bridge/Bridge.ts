@@ -60,7 +60,13 @@ export class Bridge {
 		])
 	}
 
-	async handleCommand(source: MessageSource, content: string, isStaff: boolean, isDiscord: boolean, username?: string) {
+	async handleCommand(
+		source: MessageSource,
+		content: string,
+		isStaff: boolean,
+		isDiscord: boolean,
+		username?: string
+	) {
 		const response = await this.commandManager
 			.execute(content, isStaff, isDiscord, username)
 			.catch((e) => `⚠ ${e}`)
@@ -88,15 +94,29 @@ export class Bridge {
 	}
 
 	async onMinecraftJoinLeave(username: string, action: "joined" | "left") {
-		await this.discord.sendGuildChatEmbed(MessageSource.Guild, username, `**${action}.**`, action.toUpperCase())
+		await this.discord.sendGuildChatEmbed(
+			MessageSource.Guild,
+			username,
+			`**${action}.**`,
+			action.toUpperCase()
+		)
 	}
 
 	async onBotLeave(reason: string) {
-		await this.discord.sendSimpleEmbed(MessageSource.Guild, this.minecraft.username, "❌ Bot offline.", reason)
+		await this.discord.sendSimpleEmbed(
+			MessageSource.Guild,
+			this.minecraft.username,
+			"❌ Bot offline.",
+			reason
+		)
 	}
 
 	async onBotJoin() {
-		await this.discord.sendSimpleEmbed(MessageSource.Guild, this.minecraft.username, "✅ Bot online.")
+		await this.discord.sendSimpleEmbed(
+			MessageSource.Guild,
+			this.minecraft.username,
+			"✅ Bot online."
+		)
 	}
 
 	async quit() {

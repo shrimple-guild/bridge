@@ -136,10 +136,10 @@ export enum MessageSource {
 export function getPrefix(source: MessageSource) {
 	switch (source) {
 		case MessageSource.Raw:
-			return "";
+			return ""
 		case MessageSource.Guild:
-			return "/gc ";
+			return "/gc "
 		case MessageSource.Staff:
-			return "/oc ";
+			return "/oc "
 	}
 }

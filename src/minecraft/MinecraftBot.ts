@@ -75,7 +75,7 @@ export class MinecraftBot {
 					client.emit("connect")
 				}
 			}
-		).catch(e => undefined /* already handled */)
+		).catch((e) => undefined /* already handled */)
 	}
 
 	connect(username: string) {
@@ -99,7 +99,13 @@ export class MinecraftBot {
 		return bot
 	}
 
-	async sendToBridge(source: MessageSource, username: string, content: string, colorAlias?: string, guildRank?: string) {
+	async sendToBridge(
+		source: MessageSource,
+		username: string,
+		content: string,
+		colorAlias?: string,
+		guildRank?: string
+	) {
 		await this.bridge?.onMinecraftChat(
 			source,
 			username,
@@ -127,7 +133,7 @@ export class MinecraftBot {
 	}
 
 	onSpamProtection() {
-		const time = Date.now() - this.spamProtectionLastSent;
+		const time = Date.now() - this.spamProtectionLastSent
 		if (time < 120000) return
 		if (this.lastSource === undefined) return
 		this.chat(this.lastSource, "⚠ Spam protection moment")
@@ -136,7 +142,7 @@ export class MinecraftBot {
 
 	chat(source: MessageSource, msg: string, priority?: number) {
 		if (source !== MessageSource.Raw) {
-			this.lastSource = source;
+			this.lastSource = source
 		}
 		for (const chunk of this.splitMsg(msg)) {
 			this.chatRaw(source, chunk, priority)

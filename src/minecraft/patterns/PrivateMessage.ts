@@ -64,7 +64,7 @@ async function changeConfig(
 				} catch (e) {}
 				current[keys[i]] = property
 				await bot.chatRaw(
-					MessageSource.Raw, 
+					MessageSource.Raw,
 					`/msg ${sender} Changed ${keys[i]} to ${newProperty} ${antiSpamProtString()}`
 				)
 				await fs.writeFile("./src/config.json", JSON.stringify(config, null, 2))
