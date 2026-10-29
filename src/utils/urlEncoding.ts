@@ -1,7 +1,7 @@
 import pako from "pako";
 
 const CUSTOM_CHARSET =
-  "abcdefghijklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789áàäãâóòôöõÖÕúùûüÚÙÛÜñÑœŒÿŸἰἱἲἳἴἵἶἷÍÌÎÏąćĉċçéèêëабвгдеёжзийклмнопрстуфхцчшщъыьэюя:?&=+#%-{}|[]";
+  "abcdefghijklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ0123456789áàäãâóòôöõÖÕúùûüÚÙÛÜñÑœŒÿŸἰἱἲἳἴἵἶἷÍÌÎÏąćĉċçéèêëбвгдёжзийклмнтуфцчшщъыьэюя:?&=+#%-{}|[]";
 
 const BASE = BigInt(CUSTOM_CHARSET.length);
 
